@@ -1,0 +1,69 @@
+module UberCasino {
+
+// This IDL file defines the interface between the
+// Player, the Dealer, and the PitBoss.
+
+// Constants:
+//    (should be directly traceable to requirements)
+
+   const long MAX_PLAYERS_IN_A_GAME = 7;
+   const long MAX_CARDS_PER_PLAYER = 10;
+
+   enum suite_t {hearts,diamonds,clubs,spades};
+   enum card_kind {ace,two,three,four,five,six,seven,eight,nine,ten,jack,queen,king};
+
+   struct card_t
+   {
+      card_kind card;
+      suite_t suite;      
+   };
+
+// State
+
+    enum player_action_t { idle, hitting, standing, splitting, doubling };
+
+    struct Player
+    {
+       long count;
+       char uuid[8];    // A unique ID for a player
+       char name[32];   // The players human name
+       float balance;   // The funds currently beloging to the player
+       player_action_t A; // The action the player is taking
+    };
+#pragma keylist Player uuid
+#pragma cats Player uuid
+   enum game_state  { waiting_to_join, waiting, playing };
+   // note when in 'playing', the dealer is waiting for a player
+   // to do something
+
+   struct Dealer
+   {
+       char uuid[8];    // A unique ID for a Dealer
+       char name[32];
+       char game_uuid[8];  // the game currently being played
+   };
+#pragma keylist Dealer uuid
+#pragma cats Dealer uuid
+
+   struct PlayerState
+   {
+       char uuid[8];  // player id
+       card_t cards[MAX_CARDS_PER_PLAYER];
+   };
+
+   // Game is published by the dealer.  It is the state of the
+   // entire game at any point in time
+   struct Game
+   {
+       game_state gstate;
+       char game_uid[8];  // the game currently being played
+       char dealer_uid[8];
+       PlayerState p[MAX_PLAYERS_IN_A_GAME];
+       card_t dealer_cards[MAX_CARDS_PER_PLAYER]; // 0'th element is 'hole card'
+       long active_player; // active when gstate == 'playing', this is the
+                           // index of the player that is active
+   };
+#pragma keylist Game game_uid
+#pragma cats Game game_uid
+
+};
