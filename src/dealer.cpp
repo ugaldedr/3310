@@ -85,14 +85,12 @@ void dealer::manage_state ()
 
 void dealer::timer_expired ()
 {
-std::cout << "DEALER TIMER EXPIRED " << std::endl;
    timer_event = true;
    manage_state ();
 }
 
 void dealer::external_data ()
 {
-std::cout << "dealer external data" << std::endl;
 }
 
 void dealer::user_input (std::string I)
@@ -124,15 +122,4 @@ dealer::dealer ()
 
 dealer::~dealer ()
 {
-#ifdef XX
-   if (D_IO)
-   {
-     delete D_IO;
-   }
-
-   if (P_IO)
-   {
-     delete P_IO;
-   }
-#endif
 }
