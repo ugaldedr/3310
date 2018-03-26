@@ -4,7 +4,7 @@ OSPL_LIBS = -lpthread -lddskernel -ldcpssacpp
 LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread
 
 CFLAGS = -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys
-CXXFLAGS = 
+CXXFLAGS = -std=c++11
 
 all: PitBoss Dealer Player recv send
 
@@ -27,7 +27,7 @@ IDL_GENERATED=${IDL_GENERATED_H} ${IDL_GENERATED_CPP}
 ${IDL_GENERATED}: idl/UberCasino.idl
 	${OSPL_HOME}/bin/idlpp -l cpp idl/UberCasino.idl
 
-COMMON_CPP= src/io.cpp src/CheckStatus.cpp src/DDSEntityManager.cpp \
+COMMON_CPP= src/CheckStatus.cpp src/DDSEntityManager.cpp \
             src/PlayerDataListener.cpp
 
 COMMON_H= src/io.h src/CheckStatus.h src/DDSEntityManager.cpp \

@@ -30,7 +30,7 @@ module UberCasino {
        float balance;   // The funds currently beloging to the player
        player_action_t A; // The action the player is taking
     };
-#pragma keylist Player uuid
+#pragma keylist Player count
 #pragma cats Player uuid
    enum game_state  { waiting_to_join, waiting, playing };
    // note when in 'playing', the dealer is waiting for a player

@@ -24,33 +24,26 @@ void dealer::manage_state ()
             {
                transition = true;
                next_state = waiting;
-               // A sloppy way to delay a callback
-               boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
-               //Dealer D;
-               //D_IO->publish  ( D );
-               Player P;
-               P.count = 1;
-               P_IO->publish  ( P );
-               P.count = 4;
-               //P_IO->publish  ( P );
             }
             break;
       case waiting: 
             if ( timer_event )
             {
-               player_publisher* Z = new player_publisher ();
-               delete (Z);
-               Player P;
-               P.count = 2;
-               //P_IO->publish  ( P );
-               P.count = 3;
-               //P_IO->publish  ( P );
                transition = true;
                next_state = waiting_for_more;
             }
             break;
-      case waiting_for_more: break;
-      case dealing: break;
+      case waiting_for_more: 
+            if ( timer_event )
+            {
+               transition = true;
+               next_state = waiting;
+            }
+            break;
+      case dealing: 
+            break;
+      default:
+            break;
    }
    // if there is a transition, then we have to run the exit 
    // and entrance processing
@@ -59,6 +52,21 @@ void dealer::manage_state ()
       // on exit
       switch (dealer_state)
       {
+         case init:
+         {
+         }
+         break;
+         case waiting:
+         {
+               static Player P;
+               P.count++;
+               p_io->publish  ( P );
+         }
+         break;
+         case waiting_for_more:
+         {
+         }
+         break;
          default:
             break;
       }
@@ -66,9 +74,26 @@ void dealer::manage_state ()
       // on entrance
       switch (next_state)
       {
+         case init:
+         {
+         }
+         break;
+         case waiting:
+         {
+               // A sloppy way to delay a callback 
+               boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
+         }
+         break;
+         case waiting_for_more:
+         {
+               // A sloppy way to delay a callback 
+               boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
+         }
+         break;
          default:
             break;
       }
+
       // make the transition
       if ( dealer_state != next_state )
       {
@@ -111,9 +136,13 @@ dealer::dealer ()
    dealer_state = init;
 
    // member objects
-   //D_IO = new dealer_io ();
-   P_IO = new player_io (false);
-
+   p_io = new dds_io<Player,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
+                     PlayerDataWriter>
+                ( (char*) "ListenerData_Msg", true );
+   d_io = new dds_io<Dealer,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
+                     DealerDataWriter>
+                ( (char*) "xxListenerData_Msg", true );
+   
    // event flags
    timer_event = false;
    user_event = false;

@@ -3,6 +3,8 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <functional>
+
 #include "DDSEntityManager.h"
 #include "ccpp_UberCasino.h"
 #include "vortex_os.h"
@@ -12,48 +14,67 @@ using namespace DDS;
 using namespace UberCasino;
 
 
-
 // Interfaces to the pub/sub network
-class player_publisher
+// this code is derived (copied!) from the opensplice examples
+
+template <typename MSG, typename TYPE_SUPPORT_VAR, class TYPE_SUPPORT,
+          typename DATA_WRITER_VAR, class DATA_WRITER>
+class dds_io
 {
    private:
       DDSEntityManager mgr;
+      TYPE_SUPPORT_VAR mt;
+      DataWriter_var dwriter;
+      DATA_WRITER_VAR listenerWriter;
    public:
-     player_publisher ();
-     ~player_publisher ();
-};
-class player_subscriber
-{
-   private:
-      DDSEntityManager mgr;
-   public:
-      player_subscriber ();
-      ~player_subscriber ();
+      dds_io ( int i)
+      {
+         dds_io ( (char*) "xxx" , false );
+      }
+
+      dds_io ( char *topicName, bool pub_flag = false ) 
+      {
+         DDSEntityManager mgr;
+
+         // create domain participant
+         char partition_name[] = "Listener example";
+         mgr.createParticipant(partition_name);
+
+         //create type
+         mt = new TYPE_SUPPORT();
+         mgr.registerType(mt.in());
+
+         //create Topic
+         mgr.createTopic( topicName );
+
+         if (pub_flag) // meaning we intend to publish from this object
+         {
+std::cout << "the pub flag is true" << std::endl;
+            //create Publisher
+            mgr.createPublisher();
+
+            // create DataWriter
+            mgr.createWriter();
+
+           // Publish Events
+           dwriter = mgr.getWriter();
+           listenerWriter = DATA_WRITER::_narrow(dwriter.in());
+         }
+      }
+
+      void subscribe ( std::function <void (void)> callback )
+      {
+      }
+
+      void publish ( MSG D )
+      {
+         MSG msgInstance; 
+         msgInstance =  D;
+         std::cout << "publishing " << std::endl;
+         DDS::InstanceHandle_t handle = listenerWriter->register_instance(msgInstance);
+         ReturnCode_t status = listenerWriter->write(msgInstance, handle );
+         checkStatus(status, "MsgDataWriter::write");
+      }
 };
 
-class player_io
-{
-   private:
-      DDSEntityManager mgr;
-      PlayerDataWriter_var PlayerWriter;
-      PlayerTypeSupport_var mt;
-      PlayerDataListener *myListener;
-   public:
-      bool publish ( Player D);
-      bool subscribe (void *S); // add the callback )
-      player_io (bool);  // true if you subscribe
-      ~player_io ();
-};
-
-class dealer_io
-{
-   private:
-      DDSEntityManager mgr;
-      DealerDataWriter_var DealerWriter;
-   public:
-      bool publish ( Dealer D);
-      bool subscribe (void *S); // add the callback )
-      dealer_io ();
-      ~dealer_io ();
-};
 #endif

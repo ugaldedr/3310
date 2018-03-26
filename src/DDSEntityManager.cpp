@@ -33,6 +33,8 @@ void DDSEntityManager::createTopic(char *topicName)
   checkStatus(status, "DDS::DomainParticipant::get_default_topic_qos");
   reliable_topic_qos.reliability.kind = RELIABLE_RELIABILITY_QOS;
   reliable_topic_qos.durability.kind = TRANSIENT_DURABILITY_QOS;
+  //reliable_topic_qos.history.depth = 100;
+  reliable_topic_qos.history.kind = KEEP_LAST_HISTORY_QOS;
 
   // DeadlineQoSPolicy : period used to trigger the listener
   // (on_requested_deadline_missed)

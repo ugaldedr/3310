@@ -32,7 +32,7 @@ void PlayerDataListener::on_data_available(DDS::DataReader_ptr reader)
   PlayerSeq msgList;
   SampleInfoSeq infoSeq;
 
-  status = m_MsgReader->take(msgList, infoSeq, LENGTH_UNLIMITED,
+  status = m_MsgReader->read(msgList, infoSeq, LENGTH_UNLIMITED,
     ANY_SAMPLE_STATE, NEW_VIEW_STATE, ANY_INSTANCE_STATE);
   checkStatus(status, "MsgDataReader::read");
   printf("=== [PlayerDataListener::on_data_available] - msgList.length : %d\n", msgList.length());
