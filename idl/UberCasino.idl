@@ -30,8 +30,8 @@ module UberCasino {
        float balance;   // The funds currently beloging to the player
        player_action_t A; // The action the player is taking
     };
-#pragma keylist Player count
-#pragma cats Player uuid
+#pragma keylist Player
+
    enum game_state  { waiting_to_join, waiting, playing };
    // note when in 'playing', the dealer is waiting for a player
    // to do something
@@ -42,8 +42,7 @@ module UberCasino {
        char name[32];
        char game_uuid[8];  // the game currently being played
    };
-#pragma keylist Dealer uuid
-#pragma cats Dealer uuid
+#pragma keylist Dealer
 
    struct PlayerState
    {
@@ -63,7 +62,6 @@ module UberCasino {
        long active_player; // active when gstate == 'playing', this is the
                            // index of the player that is active
    };
-#pragma keylist Game game_uid
-#pragma cats Game game_uid
+#pragma keylist Game
 
 };
