@@ -1,5 +1,4 @@
 #include <iostream>
-#include "cb.h"
 #include "dealer.h"
 
 static dealer* DPTR;
