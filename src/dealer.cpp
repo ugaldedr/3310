@@ -5,7 +5,7 @@
 
 #include "dealer.h"
 
-static void delay_thread ( int seconds, std::function <void(void)> callback)
+void delay_thread ( int seconds, std::function <void(void)> callback)
 {
   // this routine is created as a posix thread.
   sleep (seconds);
@@ -81,7 +81,7 @@ void dealer::manage_state ()
          case waiting:
          {
                // A sloppy way to delay a callback 
-               boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
+               boost::thread t( delay_thread , 5, std::bind ( &dealer::timer_expired , this ) );
          }
          break;
          case waiting_for_more:
@@ -110,16 +110,41 @@ void dealer::manage_state ()
 
 void dealer::timer_expired ()
 {
+   // this is called by the timer thread callback when the delay has expired
+   // note: only one timer can be active at a time
    timer_event = true;
    manage_state ();
 }
 
-void dealer::external_data ()
+void dealer::external_data (Player P)
 {
+   // this is called when data is received
+   m_P = P;
+   external_event = true;
+   manage_state ();
+std::cout << "in external_data " << std::endl;
+}
+
+void dealer::external_data (Dealer D)
+{
+   // this is called when data is received
+   m_D = D;
+   external_event = true;
+   manage_state ();
+}
+
+void dealer::external_data (Game G)
+{
+   // this is called when data is received
+   m_G = G;
+   external_event = true;
+   manage_state ();
 }
 
 void dealer::user_input (std::string I)
 {
+   // this is called when the user types in input
+   // from the console.  any / all input is accepted
    user_event_string = I;
    user_event = true;
    manage_state ();
@@ -130,19 +155,25 @@ void dealer::setName (std::string Name )
    name = Name;
 
 }
+
 dealer::dealer ()
 {
    // member variables
    dealer_state = init;
 
+   //pl_func_type X = &dealer::external_data;
+   Player XX;
    // member objects
-   p_io = new dds_io<Player,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
+   p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
                 ( (char*) "ListenerData_Msg", true, true );
-   d_io = new dds_io<Dealer,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
+
+   d_io = new dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
                      DealerDataWriter,DealerDataReader_var,DealerDataReader>
                 ( (char*) "xxListenerData_Msg", true, false );
-   
+   g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
+                     GameDataWriter,GameDataReader_var,GameDataReader>
+                ( (char*) "game", true, false );
    // event flags
    timer_event = false;
    user_event = false;
