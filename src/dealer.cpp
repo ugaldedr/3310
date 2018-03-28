@@ -137,11 +137,11 @@ dealer::dealer ()
 
    // member objects
    p_io = new dds_io<Player,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
-                     PlayerDataWriter>
-                ( (char*) "ListenerData_Msg", true );
+                     PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
+                ( (char*) "ListenerData_Msg", true, true );
    d_io = new dds_io<Dealer,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
-                     DealerDataWriter>
-                ( (char*) "xxListenerData_Msg", true );
+                     DealerDataWriter,DealerDataReader_var,DealerDataReader>
+                ( (char*) "xxListenerData_Msg", true, false );
    
    // event flags
    timer_event = false;

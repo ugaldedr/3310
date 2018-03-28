@@ -16,9 +16,9 @@ class dealer
       std::string user_event_string;
       bool external_event;
       dds_io<Player,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
-             PlayerDataWriter> *p_io;
+             PlayerDataWriter,PlayerDataReader_var,PlayerDataReader> *p_io;
       dds_io<Dealer,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
-             DealerDataWriter> *d_io;
+             DealerDataWriter,DealerDataReader_var,DealerDataReader> *d_io;
    public:
       void setName (std::string);
       // There are 3 possible inputs to the dealer
