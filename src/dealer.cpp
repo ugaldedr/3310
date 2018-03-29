@@ -63,7 +63,6 @@ void dealer::manage_state ()
          break;
          case waiting:
          {
-               p_io->publish  ( m_P );
          }
          break;
          case waiting_for_more:
@@ -180,7 +179,7 @@ dealer::dealer ()
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
-                ( (char*) "player", true, true );
+                ( (char*) "player", false, true );
 
    d_io = new dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
                      DealerDataWriter,DealerDataReader_var,DealerDataReader>
@@ -188,7 +187,7 @@ dealer::dealer ()
 
    g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
                      GameDataWriter,GameDataReader_var,GameDataReader>
-                ( (char*) "game", true, true );
+                ( (char*) "game", true, false );
    // event flags
    timer_event = false;
    user_event = false;

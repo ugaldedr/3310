@@ -9,7 +9,7 @@ static dealer* DPTR;
 void _cb ( UberCasino::Player P )
 {
 #ifdef DEBUG_PRINT
-  std::cout << "RECEIVED" ;
+  std::cout << "\nRECEIVED" ;
 #endif
   DPTR->external_data ( P );
 }

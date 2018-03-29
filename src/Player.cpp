@@ -25,7 +25,9 @@ void _cb ( UberCasino::Dealer D )
   std::cout << "   name " << D.name << std::endl;
   memcpy(&u, D.game_uuid, 16); 
   std::cout << "   game_uuid " << boost::uuids::to_string( u ) << std::endl;
-  PPTR->external_data ( D );
+  // for these, we just keep them in a list
+  PPTR->dealer_received ( D );
+  //PPTR->external_data ( D );
 #endif
 }
 void _cb ( UberCasino::Game G )

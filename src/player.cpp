@@ -152,8 +152,20 @@ void player::user_input (std::string I)
 
 void player::setName (std::string Name )
 {
-   name = Name;
+   strncpy ( m_P.name, Name.c_str(), sizeof (m_P.name) - 1 );
+}
+void player::dealer_received ( Dealer D)
+{
+   m_dealer_list.push_back ( D );
+}
 
+void player::print_dealers ()
+{
+   std::cout << "Dealers in the casino " << '\n';
+   for ( unsigned int i=0;i<m_dealer_list.size ();i++ )
+   {
+      std::cout << i << "  " << m_dealer_list[i].name << std::endl;
+   }
 }
 
 player::player ()
@@ -164,15 +176,15 @@ player::player ()
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
-                ( (char*) "player", true, true );
+                ( (char*) "player", true, false );
 
    d_io = new dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
                      DealerDataWriter,DealerDataReader_var,DealerDataReader>
-                ( (char*) "dealer", true, true );
+                ( (char*) "dealer", false, true );
 
    g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
                      GameDataWriter,GameDataReader_var,GameDataReader>
-                ( (char*) "game", true, true );
+                ( (char*) "game", false, true );
 
    // event flags
    timer_event = false;

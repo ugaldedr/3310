@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <string>
+#include <vector>
 
 #include "io.h"
 
@@ -10,6 +11,7 @@ class player
    private:
       enum dealer_state_t {init,waiting,waiting_for_more,dealing} dealer_state;
       std::string name;
+      void print_dealers ();
       void manage_state ();
       bool timer_event;
       bool user_event;
@@ -25,7 +27,9 @@ class player
       Dealer m_D; 
       Game   m_G;
    public:
+      std::vector<Dealer> m_dealer_list;
       void setName (std::string);
+      void dealer_received ( Dealer D);
       // There are 3 possible inputs to the dealer
       //    1. timer expiration
       //    2. external data recieved
