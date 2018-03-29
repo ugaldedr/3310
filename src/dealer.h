@@ -1,7 +1,17 @@
 #ifndef DEALER_H
 #define DEALER_H
 
+
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
+#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
+
+
+
 #include <string>
+
+
+
 
 #include "io.h"
 
@@ -34,6 +44,7 @@ class dealer
       void external_data (Player P);
       void external_data (Dealer D);
       void external_data (Game G);
+      void setuuid (boost::uuids::uuid uuid );
       void user_input (std::string);
       dealer ();
       ~dealer ();

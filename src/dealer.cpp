@@ -1,5 +1,7 @@
 #include <iostream>
 #include <functional>
+#include <vector>
+
 
 #include <boost/thread.hpp>
 
@@ -54,13 +56,14 @@ void dealer::manage_state ()
       {
          case init:
          {
+           // publish out the dealer structure
+           std::cout << "i am publishing the dealer structure" << std::endl;
+           d_io->publish ( m_D );
          }
          break;
          case waiting:
          {
-               static Player P;
-               P.count++;
-               p_io->publish  ( P );
+               p_io->publish  ( m_P );
          }
          break;
          case waiting_for_more:
@@ -152,10 +155,23 @@ void dealer::user_input (std::string I)
 
 void dealer::setName (std::string Name )
 {
-   name = Name;
+   strncpy ( m_D.name, Name.c_str(), sizeof (m_D.name) -1 );
 
 }
 
+void dealer::setuuid (boost::uuids::uuid uuid )
+{
+#ifdef XXX
+ struct Dealer
+   {
+       char uuid[8];    // A unique ID for a Dealer
+       char name[32];
+       char game_uuid[8];  // the game currently being played
+   };
+#endif
+   boost::uuids::uuid u;
+   std::copy(u.begin(), u.end(), m_D.uuid);
+}
 dealer::dealer ()
 {
    // member variables
@@ -172,7 +188,7 @@ dealer::dealer ()
 
    g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
                      GameDataWriter,GameDataReader_var,GameDataReader>
-                ( (char*) "game", true, false );
+                ( (char*) "game", true, true );
    // event flags
    timer_event = false;
    user_event = false;

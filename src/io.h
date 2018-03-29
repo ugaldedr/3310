@@ -7,13 +7,20 @@
 
 #include "DDSEntityManager.h"
 #include "ccpp_UberCasino.h"
-#include "vortex_os.h"
 
 using namespace DDS;
 using namespace UberCasino;
 
 // Interfaces to the pub/sub network
 // this code is derived (copied!) from the opensplice examples
+
+
+// this is a terrible hack. was unable to use a polymorphic
+// function signature through all of the generics and with
+// a 'pointer to member' callback.
+//
+// thus, the reversion to the simplest static approach
+
 
 void _cb ( UberCasino::Player );
 void _cb ( UberCasino::Dealer );
@@ -27,17 +34,9 @@ class read_listener: public virtual DDS::DataReaderListener
 {
   public:
      DATA_READER_VAR m_Reader;
-     typedef void (*cb_func_type)( MSG );
-     cb_func_type cb_func;
      read_listener ()
      {
-       cb_func = NULL;
      }
-     void set_callback ( cb_func_type CB )
-     {
-       cb_func = CB;        
-     }
-
      /* Callback method implementation. */
       virtual void on_data_available(DDS::DataReader_ptr reader)
       {
@@ -50,12 +49,10 @@ class read_listener: public virtual DDS::DataReaderListener
          checkStatus(status, "MsgDataReader::read");
          for (DDS::ULong i = 0; i < msgList.length(); i++)
          {
-            printf("\n    --- message received ---%d\n",msgList.length());
-            if (1)
+            //printf("\n    --- message received ---%d\n",msgList.length());
+            if (msgList.length()>0) // you can get callback with no actual data payload
             {
-               MSG D;
-               D = msgList[i];
-               _cb ( D );
+               _cb ( msgList[i] );
             }
          }
          status = m_Reader->return_loan(msgList, infoSeq);
@@ -106,25 +103,13 @@ class dds_io
       DataWriter_var dwriter;
       DATA_WRITER_VAR listenerWriter;
       DataReader_var dreader;
-      cb_func_type CB;
-      //DATA_READER_VAR listenerReader;
    public:
-      dds_io ( int i)
-      {
-         dds_io ( (char*) "xxx" , false );
-      }
-
-      void set_callback ( cb_func_type cb)
-      {
-         CB = cb;
-      }
       dds_io ( char *topicName, bool pub = false, bool sub = false ) 
       {
-         CB = NULL;
          DDSEntityManager mgr;
 
          // create domain participant
-         char partition_name[] = "Listener example";
+         char partition_name[] = "";
          mgr.createParticipant(partition_name);
 
          //create type
@@ -136,7 +121,6 @@ class dds_io
 
          if (pub) // meaning we intend to publish from this object
          {
-std::cout << "the pub flag is true" << std::endl;
             //create Publisher
             mgr.createPublisher();
 
@@ -148,7 +132,7 @@ std::cout << "the pub flag is true" << std::endl;
            listenerWriter = DATA_WRITER::_narrow(dwriter.in());
          }
 
-         if (sub)
+         if (sub) // meaning we intend to subscribe
          {
            // this is a subscription
            //create Subscriber
@@ -161,22 +145,17 @@ std::cout << "the pub flag is true" << std::endl;
        
            read_listener<DATA_READER_VAR,SEQ,MSG> *myListener = new read_listener<DATA_READER_VAR,SEQ,MSG> ();
 
-           myListener->set_callback ( CB );
-
            myListener->m_Reader = DATA_READER::_narrow(dreader.in());
            checkHandle(myListener->m_Reader.in(), "MsgDataReader::_narrow");
 
-           cout << "=== [ListenerDataSubscriber] set_listener" << endl;
               DDS::StatusMask mask =
                     DDS::DATA_AVAILABLE_STATUS;
            myListener->m_Reader->set_listener(myListener, mask);
-           cout << "=== [ListenerDataSubscriber] Ready ..." << endl;
          }
       }
 
       void publish ( MSG D )
       {
-         std::cout << "publishing" << std::endl;
          ReturnCode_t status = listenerWriter->write(D, DDS::HANDLE_NIL );
          checkStatus(status, "MsgDataWriter::write");
       }

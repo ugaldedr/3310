@@ -1,14 +1,32 @@
 #include <iostream>
+
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
+#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
+
+
+
 #include "player.h"
 
 static player* PPTR;
 void _cb ( UberCasino::Player P )
 {
+#ifdef DEBUG_PRINT
+#endif
   PPTR->external_data ( P );
 }
 void _cb ( UberCasino::Dealer D )
 {
+#ifdef DEBUG_PRINT
+  std::cout << "\nRECEIVED -- Dealer" << std::endl;
+  boost::uuids::uuid u;
+  memcpy(&u, D.uuid, 16); 
+  std::cout << "   uuid " << boost::uuids::to_string( u ) << std::endl;
+  std::cout << "   name " << D.name << std::endl;
+  memcpy(&u, D.game_uuid, 16); 
+  std::cout << "   game_uuid " << boost::uuids::to_string( u ) << std::endl;
   PPTR->external_data ( D );
+#endif
 }
 void _cb ( UberCasino::Game G )
 {

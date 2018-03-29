@@ -168,11 +168,12 @@ player::player ()
 
    d_io = new dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
                      DealerDataWriter,DealerDataReader_var,DealerDataReader>
-                ( (char*) "dealer", true, false );
+                ( (char*) "dealer", true, true );
 
    g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
                      GameDataWriter,GameDataReader_var,GameDataReader>
-                ( (char*) "game", true, false );
+                ( (char*) "game", true, true );
+
    // event flags
    timer_event = false;
    user_event = false;
