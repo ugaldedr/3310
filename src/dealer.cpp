@@ -161,16 +161,15 @@ dealer::dealer ()
    // member variables
    dealer_state = init;
 
-   //pl_func_type X = &dealer::external_data;
-   Player XX;
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
-                ( (char*) "ListenerData_Msg", true, true );
+                ( (char*) "player", true, true );
 
    d_io = new dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
                      DealerDataWriter,DealerDataReader_var,DealerDataReader>
-                ( (char*) "xxListenerData_Msg", true, false );
+                ( (char*) "dealer", true, false );
+
    g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
                      GameDataWriter,GameDataReader_var,GameDataReader>
                 ( (char*) "game", true, false );

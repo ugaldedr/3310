@@ -36,8 +36,8 @@ void DDSEntityManager::createTopic(char *topicName)
 
   // DeadlineQoSPolicy : period used to trigger the listener
   // (on_requested_deadline_missed)
-  reliable_topic_qos.deadline.period.nanosec = 0;
-  reliable_topic_qos.deadline.period.sec = 1;
+  //reliable_topic_qos.deadline.period.nanosec = 0;
+  //reliable_topic_qos.deadline.period.sec = 1;
 
   /* Make the tailored QoS the new default. */
   status = participant->set_default_topic_qos(reliable_topic_qos);

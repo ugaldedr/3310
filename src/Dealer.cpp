@@ -4,18 +4,15 @@
 static dealer* DPTR;
 void _cb ( UberCasino::Player P )
 {
-  std::cout << "i am calling the callback routine Player " << std::endl;
   DPTR->external_data ( P );
 }
 void _cb ( UberCasino::Dealer D )
 {
   DPTR->external_data ( D );
-  std::cout << "i am calling the callback routine Dealer " << std::endl;
 }
 void _cb ( UberCasino::Game G )
 {
   DPTR->external_data ( G );
-  std::cout << "i am calling the callback routine Game " << std::endl;
 }
 
 int main ( int argc, char* argv[] )

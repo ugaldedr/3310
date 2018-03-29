@@ -34,13 +34,16 @@ COMMON_H= src/io.h src/CheckStatus.h src/DDSEntityManager.cpp
 DEALER_FILES = src/dealer.cpp
 DEALER_H_FILES = src/dealer.h
 
+PLAYER_FILES = src/player.cpp
+PLAYER_H_FILES = src/player.h
+
 PitBoss: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/PitBoss.cpp
 	g++ -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
 Dealer: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/Dealer.cpp ${DEALER_FILES} ${DEALER_H_FILES}  ${COMMON_H} ${COMMON_CPP}
 	g++ -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
-Player: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/Player.cpp ${COMMON_H} ${COMMON_CPP}
+Player: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/Player.cpp ${PLAYER_FILES} ${PLAYER_H_FILES} ${COMMON_H} ${COMMON_CPP}
 	g++ -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
 clean:
