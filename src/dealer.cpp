@@ -13,30 +13,42 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
   sleep (seconds);
   callback ();
 }
-#ifdef XXX
-//{Init,Waiting,WaitingForOthers,Dealing}
-switch ()
+
+std::string dealer::print_state ( dealer_state_t d )
 {
-   case Init:
+   std::string retval;
+   switch ( d )
+   {
+    case Init:
+         retval = "Init";
+         break; 
+    case Waiting:
+         retval = "Waiting";
          break;
-   case Waiting:
+    case WaitingForOthers:
+         retval = "WaitingForOthers";
          break;
-   case WaitingForOthers:
+    case Dealing:
+         retval = "Dealing";
          break;
-   case Dealing:
-         break;
-   // no default, we want to specify everything
+   }
+   return retval;
 }
-#endif
 
 void dealer::manage_state ()
 {
    // determine if we have a state transition
    bool transition = false;
    dealer_state_t next_state;
-   switch (dealer_state)
+
+   switch (m_dealer_state)
    {
       case Init:
+         if (m_user_event) 
+         {
+            transition = true;
+            next_state = Waiting;
+         }
          break;
       case Waiting:
          break;
@@ -51,9 +63,11 @@ void dealer::manage_state ()
    if (transition)
    {
       // on exit
-      switch (dealer_state)
+      switch (m_dealer_state)
       {
        case Init:
+             // this tells everyone listening, "i am starting a game"
+             d_io->publish ( m_D_pub );
           break;
        case Waiting:
           break;
@@ -64,7 +78,7 @@ void dealer::manage_state ()
          // no default, we want to specify everything
       }
 #ifdef OLD
-      switch (dealer_state)
+      switch (m_dealer_state)
       {
          case init:
          {
@@ -123,16 +137,19 @@ void dealer::manage_state ()
       }
 #endif
       // make the transition
-      if ( dealer_state != next_state )
+      if ( m_dealer_state != next_state )
       {
-          std::cout << "State change from " << dealer_state << " to " << next_state << std::endl;
+          std::cout << "State change from " << print_state ( m_dealer_state ) 
+                    << " to " << print_state ( next_state ) << std::endl;
       }
-      dealer_state = next_state;
+      m_dealer_state = next_state;
    }
    // clear all event flags
    timer_event = false;
-   user_event = false;
-   external_event = false;
+   m_user_event = false;
+   m_Player_recv = false;
+   m_Game_recv = false;
+   m_Dealer_recv = false;
 }
 
 
@@ -147,24 +164,24 @@ void dealer::timer_expired ()
 void dealer::external_data (Player P)
 {
    // this is called when data is received
-   m_P = P;
-   external_event = true;
+   m_P_sub = P;
+   m_Player_recv = true;
    manage_state ();
 }
 
 void dealer::external_data (Dealer D)
 {
    // this is called when data is received
-   m_D = D;
-   external_event = true;
+   m_D_sub = D;
+   m_Dealer_recv = true;
    manage_state ();
 }
 
 void dealer::external_data (Game G)
 {
    // this is called when data is received
-   m_G = G;
-   external_event = true;
+   m_G_sub = G;
+   m_Game_recv = true;
    manage_state ();
 }
 
@@ -172,26 +189,29 @@ void dealer::user_input (std::string I)
 {
    // this is called when the user types in input
    // from the console.  any / all input is accepted
-   user_event_string = I;
-   user_event = true;
-   manage_state ();
+   if (m_user_event_mask == I )
+   {
+      m_user_event = true;
+      manage_state ();
+   }
 }
 
 void dealer::setName (std::string Name )
 {
-   strncpy ( m_D.name, Name.c_str(), sizeof (m_D.name) -1 );
+   strncpy ( m_D_pub.name, Name.c_str(), sizeof (m_D_pub.name) -1 );
 
 }
 
 void dealer::setuuid (boost::uuids::uuid uuid )
 {
    boost::uuids::uuid u;
-   std::copy(u.begin(), u.end(), m_D.uuid);
+   std::copy(u.begin(), u.end(), m_D_pub.uuid);
 }
 dealer::dealer ()
 {
    // member variables
-   dealer_state = Init;
+   m_dealer_state = Init;
+   m_user_event_mask = "start";  // this is the first event we will be looking for
 
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
@@ -208,8 +228,10 @@ dealer::dealer ()
                 ( (char*) "game", true, false );
    // event flags
    timer_event = false;
-   user_event = false;
-   external_event = false;
+   m_user_event = false;
+   m_Dealer_recv = false;
+   m_Game_recv = false;
+   m_Player_recv = false;
 }
 
 dealer::~dealer ()
