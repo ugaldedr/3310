@@ -8,38 +8,14 @@
 
 #include "player.h"
 
-static player* PPTR;
-void _cb ( UberCasino::Player P )
-{
-#ifdef DEBUG_PRINT
-#endif
-  PPTR->external_data ( P );
-}
-void _cb ( UberCasino::Dealer D )
-{
-#ifdef DEBUG_PRINT
-  std::cout << "\nRECEIVED -- Dealer" << std::endl;
-  boost::uuids::uuid u;
-  memcpy(&u, D.uuid, 16); 
-  std::cout << "   uuid " << boost::uuids::to_string( u ) << std::endl;
-  std::cout << "   name " << D.name << std::endl;
-  memcpy(&u, D.game_uuid, 16); 
-  std::cout << "   game_uuid " << boost::uuids::to_string( u ) << std::endl;
-  // for these, we just keep them in a list
-  PPTR->dealer_received ( D );
-  //PPTR->external_data ( D );
-#endif
-}
-void _cb ( UberCasino::Game G )
-{
-  PPTR->external_data ( G );
-}
+static player* PTR;
+#include "callback.h" // uses PTR as a global
 
 int main ( int argc, char* argv[] )
 {
    // create the dealer object
    player P = player ();
-   PPTR = &P;
+   PTR = &P;
    P.setName ("jim");
    // a buffer to accept input
    char line[100];

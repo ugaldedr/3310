@@ -13,6 +13,21 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
   sleep (seconds);
   callback ();
 }
+#ifdef XXX
+//{Init,Waiting,WaitingForOthers,Dealing}
+switch ()
+{
+   case Init:
+         break;
+   case Waiting:
+         break;
+   case WaitingForOthers:
+         break;
+   case Dealing:
+         break;
+   // no default, we want to specify everything
+}
+#endif
 
 void dealer::manage_state ()
 {
@@ -21,37 +36,34 @@ void dealer::manage_state ()
    dealer_state_t next_state;
    switch (dealer_state)
    {
-      case init:
-            if (user_event_string == "start")
-            {
-               transition = true;
-               next_state = waiting;
-            }
-            break;
-      case waiting: 
-            if ( timer_event )
-            {
-               transition = true;
-               next_state = waiting_for_more;
-            }
-            break;
-      case waiting_for_more: 
-            if ( timer_event )
-            {
-               transition = true;
-               next_state = waiting;
-            }
-            break;
-      case dealing: 
-            break;
-      default:
-            break;
+      case Init:
+         break;
+      case Waiting:
+         break;
+      case WaitingForOthers:
+         break;
+      case Dealing:
+         break;
+   // no default, we want to specify everything
    }
    // if there is a transition, then we have to run the exit 
    // and entrance processing
    if (transition)
    {
       // on exit
+      switch (dealer_state)
+      {
+       case Init:
+          break;
+       case Waiting:
+          break;
+       case WaitingForOthers:
+          break;
+       case Dealing:
+          break;
+         // no default, we want to specify everything
+      }
+#ifdef OLD
       switch (dealer_state)
       {
          case init:
@@ -72,8 +84,22 @@ void dealer::manage_state ()
          default:
             break;
       }
+#endif
 
       // on entrance
+      switch (next_state)
+      {
+       case Init:
+          break;
+       case Waiting:
+          break;
+       case WaitingForOthers:
+          break;
+       case Dealing:
+          break;
+         // no default, we want to specify everything
+      }
+#ifdef OLD
       switch (next_state)
       {
          case init:
@@ -95,7 +121,7 @@ void dealer::manage_state ()
          default:
             break;
       }
-
+#endif
       // make the transition
       if ( dealer_state != next_state )
       {
@@ -124,7 +150,6 @@ void dealer::external_data (Player P)
    m_P = P;
    external_event = true;
    manage_state ();
-std::cout << "in external_data " << std::endl;
 }
 
 void dealer::external_data (Dealer D)
@@ -160,26 +185,19 @@ void dealer::setName (std::string Name )
 
 void dealer::setuuid (boost::uuids::uuid uuid )
 {
-#ifdef XXX
- struct Dealer
-   {
-       char uuid[8];    // A unique ID for a Dealer
-       char name[32];
-       char game_uuid[8];  // the game currently being played
-   };
-#endif
    boost::uuids::uuid u;
    std::copy(u.begin(), u.end(), m_D.uuid);
 }
 dealer::dealer ()
 {
    // member variables
-   dealer_state = init;
+   dealer_state = Init;
 
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
                 ( (char*) "player", false, true );
+                       // topic name, publish, subscribe
 
    d_io = new dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
                      DealerDataWriter,DealerDataReader_var,DealerDataReader>
