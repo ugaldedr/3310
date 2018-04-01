@@ -131,14 +131,14 @@ void dealer::manage_state ()
                  m_G_pub.gstate = waiting_to_join;
                  // the UID's don't change, so they can be copied again
                  memcpy ( m_G_pub.game_uid,  
-                          m_D_pub.game_uuid, 
+                          m_D_pub.game_uid, 
                           sizeof (m_G_pub.game_uid) );
                  memcpy ( m_G_pub.dealer_uid,  
-                          m_D_pub.uuid, 
+                          m_D_pub.uid, 
                           sizeof (m_G_pub.dealer_uid) );
-                 memcpy ( m_G_pub.p[m_number_of_players].uuid, 
-                          m_P_sub.uuid, 
-                          sizeof ( m_G_pub.p[m_number_of_players].uuid ) );
+                 memcpy ( m_G_pub.p[m_number_of_players].uid, 
+                          m_P_sub.uid, 
+                          sizeof ( m_G_pub.p[m_number_of_players].uid ) );
 
                  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
                  {
