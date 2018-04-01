@@ -126,6 +126,10 @@ void player::manage_state ()
          {
                // Send a Player , telling the dealer we
                // would like to join
+               memcpy ( m_P.game_uid, 
+                        m_dealer_list[m_dealer_idx].game_uid,
+                        sizeof ( m_P.game_uid ) );
+
                p_io->publish  ( m_P );
                // Wait 30 seconds for the dealer to act
                boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
@@ -211,7 +215,7 @@ void player::external_data (Game G)
    memcpy ( &t, G.game_uid, sizeof ( t ) );
    boost::uuids::uuid current_game; 
    memcpy ( &current_game, 
-             m_dealer_list[m_dealer_idx].game_uuid, 
+             m_dealer_list[m_dealer_idx].game_uid, 
              sizeof ( current_game ) );
    std::cout << "Comparing " << t << " " << current_game << std::endl;
    if (t == current_game)

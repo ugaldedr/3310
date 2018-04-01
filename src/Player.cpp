@@ -16,12 +16,12 @@ int main ( int argc, char* argv[] )
    // create the dealer object
    player P = player ();
    PTR = &P; // see callback.h to understand this
-   P.setName ("jim");
+   P.setName ("Jim");
 
    // player unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
    std::cout << "The players uuid id is " << uuid << std::endl;
-   memcpy ( P.m_P.uuid, &uuid, sizeof ( P.m_P.uuid ) );
+   memcpy ( P.m_P.uid, &uuid, sizeof ( P.m_P.uid ) );
 
    // a buffer to accept input
    char line[100];
