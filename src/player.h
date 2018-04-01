@@ -13,6 +13,7 @@ class player
       std::string m_name;
       void manage_state ();
 
+      unsigned int m_dealer_idx;
       std::vector<Dealer> m_dealer_list;
       std::string m_user_event_string;
 

@@ -39,7 +39,7 @@ void dealer::manage_state ()
 {
    // determine if we have a state transition
    bool transition = false;
-   dealer_state_t next_state;
+   dealer_state_t next_state = m_dealer_state;
 
    switch (m_dealer_state)
    {
@@ -196,17 +196,6 @@ void dealer::user_input (std::string I)
    }
 }
 
-void dealer::setName (std::string Name )
-{
-   strncpy ( m_D_pub.name, Name.c_str(), sizeof (m_D_pub.name) -1 );
-
-}
-
-void dealer::setuuid (boost::uuids::uuid uuid )
-{
-   boost::uuids::uuid u;
-   std::copy(u.begin(), u.end(), m_D_pub.uuid);
-}
 dealer::dealer ()
 {
    // member variables
@@ -232,6 +221,7 @@ dealer::dealer ()
    m_Dealer_recv = false;
    m_Game_recv = false;
    m_Player_recv = false;
+
 }
 
 dealer::~dealer ()

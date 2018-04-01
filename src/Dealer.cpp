@@ -1,4 +1,7 @@
 #include <iostream>
+#include <string.h>
+
+
 #include <boost/uuid/uuid.hpp>            // uuid class
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
@@ -14,11 +17,17 @@ int main ( int argc, char* argv[] )
    // create the dealer object
    dealer D = dealer ();
    PTR = &D;
-
+   // dealer unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
    std::cout << uuid << std::endl;
-   D.setuuid ( uuid );
-   D.setName ("Bud"); // should this be entered by the user. probably!
+   memcpy ( D.m_D_pub.uuid, &uuid, sizeof ( D.m_D_pub.uuid ) );
+   //D.setuuid ( uuid );
+   strncpy ( D.m_D_pub.name,"Bud",sizeof ( D.m_D_pub.name ) );
+   // should this be entered by the user. probably!
+
+   // game unique ID
+   boost::uuids::uuid game_uuid = boost::uuids::random_generator()();
+   memcpy ( D.m_D_pub.game_uuid, &game_uuid, sizeof ( D.m_D_pub.game_uuid ) );
 
    std::cout << "Welcome to UberCasino.  The fast paced, command line BlackJack system." << std::endl;
    std::cout << "-------------------------------------------" << std::endl;

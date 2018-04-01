@@ -4,8 +4,9 @@ module UberCasino {
 // Player, the Dealer, and the PitBoss.
 
 // Constants:
-//    (should be directly traceable to requirements)
+    const long SIZE_OF_UUID = 16;
 
+//    (should be directly traceable to requirements)
    const long MAX_PLAYERS_IN_A_GAME = 7;
    const long MAX_CARDS_PER_PLAYER = 10;
 
@@ -38,15 +39,15 @@ module UberCasino {
 
    struct Dealer
    {
-       char uuid[8];    // A unique ID for a Dealer
+       char uuid[SIZE_OF_UUID];    // A unique ID for a Dealer
        char name[32];
-       char game_uuid[8];  // the game currently being played
+       char game_uuid[SIZE_OF_UUID];  // the game currently being played
    };
 #pragma keylist Dealer
 
    struct PlayerState
    {
-       char uuid[8];  // player id
+       char uuid[SIZE_OF_UUID];  // player id
        card_t cards[MAX_CARDS_PER_PLAYER];
    };
 
@@ -55,8 +56,8 @@ module UberCasino {
    struct Game
    {
        game_state gstate;
-       char game_uid[8];  // the game currently being played
-       char dealer_uid[8];
+       char game_uid[SIZE_OF_UUID];  // the game currently being played
+       char dealer_uid[SIZE_OF_UUID];
        PlayerState p[MAX_PLAYERS_IN_A_GAME];
        card_t dealer_cards[MAX_CARDS_PER_PLAYER]; // 0'th element is 'hole card'
        long active_player; // active when gstate == 'playing', this is the

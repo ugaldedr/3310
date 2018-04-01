@@ -51,10 +51,15 @@ void player::manage_state ()
          }
          if ( m_user_event )
          {
+std::cout << "m_user_event is true" << std::endl;
             // the user has entered a number, we hope
-            unsigned int dealer_idx = std::stoi ( m_user_event_string );
-            if (dealer_idx < m_dealer_list.size () )
+            m_dealer_idx = std::stoi ( m_user_event_string );
+std::cout << "the number entered is " << m_dealer_idx << std::endl;
+            if (m_dealer_idx < m_dealer_list.size () )
             {
+               // this is the dealer we want to play with
+               next_state = Waiting;
+               transition = true;
             }
          }
          break;
@@ -121,7 +126,7 @@ void player::manage_state ()
       if ( m_player_state != next_state )
       {
           std::cout << "State change from " << print_state (m_player_state)
-                    << " to " << print_state ( m_player_state ) << std::endl;
+                    << " to " << print_state ( next_state ) << std::endl;
       }
       m_player_state = next_state;
    }
@@ -159,8 +164,12 @@ void player::external_data (Dealer D)
    m_Dealer_recv = true;
 
    m_dealer_list.push_back ( D );
-   std::cout << "Dealer # " << m_dealer_list.size () -1 
-             << "  name " << D.name << std::endl;
+   std::cout << "The available dealers has changed:" << std::endl;
+   for (unsigned int i=0;i<m_dealer_list.size ();i++)
+   {
+      std::cout << "Dealer # " << i 
+                << " name " << m_dealer_list[i].name << std::endl;
+   }
    manage_state ();
 }
 
@@ -178,6 +187,7 @@ void player::user_input (std::string I)
    // from the console.  any / all input is accepted
    m_user_event_string = I;
    m_user_event = true;
+   std::cout << "the input string is " << I << std::endl;
    manage_state ();
 }
 

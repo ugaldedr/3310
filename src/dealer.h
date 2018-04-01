@@ -12,7 +12,6 @@ class dealer
    private:
       // look at the state diagram to understand the states
       enum dealer_state_t {Init,Waiting,WaitingForOthers,Dealing} m_dealer_state;
-      std::string m_name;
       void manage_state ();
       bool timer_event;
       bool m_user_event;
@@ -32,14 +31,13 @@ class dealer
       dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
              GameDataWriter,GameDataReader_var,GameDataReader> *g_io;
       // these are class members that store the published / recieved structs
+   public:
       Player m_P_pub;
       Player m_P_sub;
       Dealer m_D_pub;
       Dealer m_D_sub;
       Game   m_G_pub;
       Game   m_G_sub;
-   public:
-      void setName ( std::string );
       // There are 3 possible inputs to the dealer
       //    1. timer expiration
       //    2. external data recieved
