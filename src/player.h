@@ -41,10 +41,11 @@ class player
 
       std::string print_state ( player_state_t );
 
-      Player m_P; // stores the last recieved data
+   public:
+      Player m_P; // stores the last data
       Dealer m_D; 
       Game   m_G;
-   public:
+
       void setName (std::string);
       // There are 3 possible inputs to the dealer
       //    1. timer expiration

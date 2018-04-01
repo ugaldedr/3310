@@ -17,10 +17,12 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
 void dealer::lock ()
 {
    // pthread mutex works well
+   // suggest you put it in if needed
 }
 
 void dealer::unlock ()
 {
+   // see remarks under lock(), above
 }
 
 std::string dealer::print_state ( dealer_state_t d )
@@ -46,10 +48,10 @@ std::string dealer::print_state ( dealer_state_t d )
 
 void dealer::manage_state ()
 {
-   // determine if we have a state transition
    bool transition = false;
    dealer_state_t next_state = m_dealer_state;
 
+   // determine if we have a state transition
    switch (m_dealer_state)
    {
       case Init:
@@ -121,10 +123,33 @@ void dealer::manage_state ()
        case Waiting:
           break;
        case WaitingForOthers:
+          {
+             // if there is room, need to accept the 
+             // new player
+             if ( m_number_of_players<UberCasino::MAX_PLAYERS_IN_A_GAME )
+             {
+                 m_G_pub.gstate = waiting_to_join;
+                 // the UID's don't change, so they can be copied again
+                 memcpy ( m_G_pub.game_uid,  
+                          m_D_pub.game_uuid, 
+                          sizeof (m_G_pub.game_uid) );
+                 memcpy ( m_G_pub.dealer_uid,  
+                          m_D_pub.uuid, 
+                          sizeof (m_G_pub.dealer_uid) );
+                 memcpy ( m_G_pub.p[m_number_of_players].uuid, 
+                          m_P_sub.uuid, 
+                          sizeof ( m_G_pub.p[m_number_of_players].uuid ) );
+
+                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+                 {
+                   m_G_pub.p[ m_number_of_players ].cards[ i ].valid  = false;
+                 }
+                 m_number_of_players++;
+             }
+          }
           break;
        case Dealing:
           break;
-         // no default, we want to specify everything
       }
       // make the transition
       if ( m_dealer_state != next_state )
@@ -201,7 +226,7 @@ dealer::dealer ()
    // member variables
    m_dealer_state = Init;
    m_user_event_mask = "start";  // this is the first event we will be looking for
-
+   m_number_of_players = 0;
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>

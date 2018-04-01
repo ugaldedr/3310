@@ -124,6 +124,9 @@ void player::manage_state ()
          break;
          case Waiting:
          {
+               // Send a Player , telling the dealer we
+               // would like to join
+               p_io->publish  ( m_P );
                // Wait 30 seconds for the dealer to act
                boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
          }
@@ -256,6 +259,8 @@ player::player ()
                 ( (char*) "game", false, true );
 
    m_dealer_list.clear ();
+
+   m_P.balance = 1000.0;
 
    // event flags
    m_timer_event = false;

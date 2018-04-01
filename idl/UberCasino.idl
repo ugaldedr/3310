@@ -34,7 +34,8 @@ module UberCasino {
    struct card_t
    {
       card_kind card;
-      suite_t suite;      
+      suite_t suite;
+      boolean valid;      // the card is valid and in the game      
    };
 
 // State
@@ -44,7 +45,7 @@ module UberCasino {
     struct Player
     {
        long count;
-       char uuid[8];    // A unique ID for a player
+       char uuid[SIZE_OF_UUID];    // A unique ID for a player
        char name[32];   // The players human name
        float balance;   // The funds currently beloging to the player
        player_action_t A; // The action the player is taking

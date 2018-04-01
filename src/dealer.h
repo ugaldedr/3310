@@ -7,12 +7,15 @@
 
 #include "io.h"
 
+
+
 class dealer
 {
    private:
       // look at the state diagram to understand the states
       enum dealer_state_t {Init,Waiting,WaitingForOthers,Dealing} m_dealer_state;
       void manage_state ();
+      unsigned int m_number_of_players;
       bool m_timer_event;
       bool m_user_event;
       bool m_Player_recv;
