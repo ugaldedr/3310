@@ -15,6 +15,14 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
   callback ();
 }
 
+void player::lock ()
+{
+}
+
+void player::unlock ()
+{
+}
+
 std::string player::print_state ( player_state_t p )
 {
    std::string retval;
@@ -51,10 +59,8 @@ void player::manage_state ()
          }
          if ( m_user_event )
          {
-std::cout << "m_user_event is true" << std::endl;
             // the user has entered a number, we hope
             m_dealer_idx = std::stoi ( m_user_event_string );
-std::cout << "the number entered is " << m_dealer_idx << std::endl;
             if (m_dealer_idx < m_dealer_list.size () )
             {
                // this is the dealer we want to play with
@@ -64,18 +70,28 @@ std::cout << "the number entered is " << m_dealer_idx << std::endl;
          }
          break;
      case Waiting:
+         if ( m_timer_event )
+         {
+               // the dealer did not 'accept' us
+               next_state = Init;
+               transition = true;
+         }
+         if ( m_Game_recv )
+         {
+               next_state = Playing;
+               transition = true;
+         }
          break;
      case Playing:
          break;
      case Turn:
          break;
    }
-// enum player_state_t {Init,Waiting,Playing,Turn} m_player_state;
+
    // if there is a transition, then we have to run the exit 
    // and entrance processing
    if (transition)
    {
-#ifdef XXX
       // on exit
       switch (m_player_state)
       {
@@ -85,9 +101,9 @@ std::cout << "the number entered is " << m_dealer_idx << std::endl;
          break;
          case Waiting:
          {
-               static Player P;
-               P.count++;
-               p_io->publish  ( P );
+               //static Player P;
+               //P.count++;
+               //p_io->publish  ( P );
          }
          break;
          case Playing:
@@ -102,26 +118,29 @@ std::cout << "the number entered is " << m_dealer_idx << std::endl;
       // on entrance
       switch (next_state)
       {
-         case init:
+         case Init:
          {
          }
          break;
-         case waiting:
+         case Waiting:
+         {
+               // Wait 30 seconds for the dealer to act
+               boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
+         }
+         break;
+         case Playing:
          {
                // A sloppy way to delay a callback 
-               boost::thread t( delay_thread , 5, std::bind ( &player::timer_expired , this ) );
+               //boost::thread t( delay_thread , 10, std::bind ( &player::timer_expired , this ) );
          }
          break;
-         case waiting_for_more:
+         case Turn:
          {
-               // A sloppy way to delay a callback 
-               boost::thread t( delay_thread , 10, std::bind ( &player::timer_expired , this ) );
          }
-         break;
          default:
             break;
       }
-#endif
+
       // make the transition
       if ( m_player_state != next_state )
       {
@@ -145,21 +164,26 @@ void player::timer_expired ()
 {
    // this is called by the timer thread callback when the delay has expired
    // note: only one timer can be active at a time
+   lock ();
    m_timer_event = true;
    manage_state ();
+   unlock ();
 }
 
 void player::external_data (Player P)
 {
    // this is called when data is received
+   lock ();
    m_P = P;
    m_Player_recv = true;
    manage_state ();
+   unlock ();
 }
 
 void player::external_data (Dealer D)
 {
    // this is called when data is received
+   lock ();
    m_D = D;
    m_Dealer_recv = true;
 
@@ -171,24 +195,41 @@ void player::external_data (Dealer D)
                 << " name " << m_dealer_list[i].name << std::endl;
    }
    manage_state ();
+   unlock ();
 }
 
 void player::external_data (Game G)
 {
-   // this is called when data is received
-   m_G = G;
-   m_Game_recv = true;
-   manage_state ();
+   // only care about games
+   // we are in. m_dealer_idx is the
+   // key to figuring this out
+   lock ();
+   boost::uuids::uuid t;
+   memcpy ( &t, G.game_uid, sizeof ( t ) );
+   boost::uuids::uuid current_game; 
+   memcpy ( &current_game, 
+             m_dealer_list[m_dealer_idx].game_uuid, 
+             sizeof ( current_game ) );
+   std::cout << "Comparing " << t << " " << current_game << std::endl;
+   if (t == current_game)
+   {
+     m_Game_recv = true;
+     m_G = G;
+     manage_state ();
+   }
+   unlock ();
 }
 
 void player::user_input (std::string I)
 {
    // this is called when the user types in input
    // from the console.  any / all input is accepted
+   lock ();
    m_user_event_string = I;
    m_user_event = true;
    std::cout << "the input string is " << I << std::endl;
    manage_state ();
+   unlock ();
 }
 
 void player::setName (std::string Name )

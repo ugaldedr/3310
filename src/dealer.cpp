@@ -14,6 +14,15 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
   callback ();
 }
 
+void dealer::lock ()
+{
+   // pthread mutex works well
+}
+
+void dealer::unlock ()
+{
+}
+
 std::string dealer::print_state ( dealer_state_t d )
 {
    std::string retval;
@@ -44,20 +53,42 @@ void dealer::manage_state ()
    switch (m_dealer_state)
    {
       case Init:
-         if (m_user_event) 
+         if ( m_user_event ) 
          {
             transition = true;
             next_state = Waiting;
          }
          break;
       case Waiting:
+         if ( m_Player_recv )
+         {
+            transition = true;
+            next_state = WaitingForOthers;
+         }
          break;
       case WaitingForOthers:
+         if ( m_Player_recv )
+         {
+            transition = true;
+            next_state = WaitingForOthers;
+         }
+         if ( m_timer_event )
+         {
+            next_state = Dealing;
+            transition = true;
+         }
+
          break;
       case Dealing:
+         if ( m_Player_recv )
+         {
+            transition = true;
+            next_state = Dealing;
+         }
+         // need to check for exit here
          break;
-   // no default, we want to specify everything
    }
+
    // if there is a transition, then we have to run the exit 
    // and entrance processing
    if (transition)
@@ -66,39 +97,21 @@ void dealer::manage_state ()
       switch (m_dealer_state)
       {
        case Init:
+          {
              // this tells everyone listening, "i am starting a game"
              d_io->publish ( m_D_pub );
+          }
           break;
        case Waiting:
+          {
+             boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
+          }
           break;
        case WaitingForOthers:
           break;
        case Dealing:
           break;
-         // no default, we want to specify everything
       }
-#ifdef OLD
-      switch (m_dealer_state)
-      {
-         case init:
-         {
-           // publish out the dealer structure
-           std::cout << "i am publishing the dealer structure" << std::endl;
-           d_io->publish ( m_D );
-         }
-         break;
-         case waiting:
-         {
-         }
-         break;
-         case waiting_for_more:
-         {
-         }
-         break;
-         default:
-            break;
-      }
-#endif
 
       // on entrance
       switch (next_state)
@@ -113,29 +126,6 @@ void dealer::manage_state ()
           break;
          // no default, we want to specify everything
       }
-#ifdef OLD
-      switch (next_state)
-      {
-         case init:
-         {
-         }
-         break;
-         case waiting:
-         {
-               // A sloppy way to delay a callback 
-               boost::thread t( delay_thread , 5, std::bind ( &dealer::timer_expired , this ) );
-         }
-         break;
-         case waiting_for_more:
-         {
-               // A sloppy way to delay a callback 
-               boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
-         }
-         break;
-         default:
-            break;
-      }
-#endif
       // make the transition
       if ( m_dealer_state != next_state )
       {
@@ -145,7 +135,7 @@ void dealer::manage_state ()
       m_dealer_state = next_state;
    }
    // clear all event flags
-   timer_event = false;
+   m_timer_event = false;
    m_user_event = false;
    m_Player_recv = false;
    m_Game_recv = false;
@@ -157,43 +147,53 @@ void dealer::timer_expired ()
 {
    // this is called by the timer thread callback when the delay has expired
    // note: only one timer can be active at a time
-   timer_event = true;
+   lock ();
+   m_timer_event = true;
    manage_state ();
+   unlock ();
 }
 
 void dealer::external_data (Player P)
 {
+   lock ();
    // this is called when data is received
    m_P_sub = P;
    m_Player_recv = true;
    manage_state ();
+   unlock ();
 }
 
 void dealer::external_data (Dealer D)
 {
+   lock ();
    // this is called when data is received
    m_D_sub = D;
    m_Dealer_recv = true;
    manage_state ();
+   unlock ();
 }
 
 void dealer::external_data (Game G)
 {
+   lock ();
    // this is called when data is received
    m_G_sub = G;
    m_Game_recv = true;
    manage_state ();
+   unlock ();
 }
 
 void dealer::user_input (std::string I)
 {
    // this is called when the user types in input
    // from the console.  any / all input is accepted
+   lock ();
    if (m_user_event_mask == I )
    {
       m_user_event = true;
       manage_state ();
    }
+   unlock ();
 }
 
 dealer::dealer ()
@@ -216,7 +216,7 @@ dealer::dealer ()
                      GameDataWriter,GameDataReader_var,GameDataReader>
                 ( (char*) "game", true, false );
    // event flags
-   timer_event = false;
+   m_timer_event = false;
    m_user_event = false;
    m_Dealer_recv = false;
    m_Game_recv = false;

@@ -13,16 +13,18 @@ class dealer
       // look at the state diagram to understand the states
       enum dealer_state_t {Init,Waiting,WaitingForOthers,Dealing} m_dealer_state;
       void manage_state ();
-      bool timer_event;
+      bool m_timer_event;
       bool m_user_event;
       bool m_Player_recv;
       bool m_Game_recv;
       bool m_Dealer_recv;
       // below are used to filter events
       std::string m_user_event_mask;
-       
+      
+      // misc methods 
       std::string print_state ( dealer_state_t );
-
+      void lock ();
+      void unlock ();
       // these generics are complicated.  check the ctors of dealer for more info
       dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
              PlayerDataWriter,PlayerDataReader_var,PlayerDataReader> *p_io;

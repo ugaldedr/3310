@@ -4,6 +4,13 @@
 #include <string>
 #include <vector>
 
+
+#include <boost/uuid/uuid.hpp>            // uuid class
+#include <boost/uuid/uuid_generators.hpp> // generators
+#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
+
+
+
 #include "io.h"
 
 class player
@@ -12,6 +19,8 @@ class player
       enum player_state_t {Init,Waiting,Playing,Turn} m_player_state;
       std::string m_name;
       void manage_state ();
+      void lock ();
+      void unlock ();
 
       unsigned int m_dealer_idx;
       std::vector<Dealer> m_dealer_list;

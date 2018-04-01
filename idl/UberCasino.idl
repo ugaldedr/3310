@@ -3,7 +3,25 @@ module UberCasino {
 // This IDL file defines the interface between the
 // Player, the Dealer, and the PitBoss.
 
+// Below will probably be set in DDSEntityManager.cpp
+// ----------------------
+// QOS Settings:
+
+//     reliability.kind = RELIABLE_RELIABILITY_QOS;
+//     durability.kind = TRANSIENT_DURABILITY_QOS;
+
+// Partition Name
+//    ""
+
+// Topic Names
+//    "player"
+//    "game"
+//    "dealer"
+// -----------------------
+
+
 // Constants:
+//    (real(!),unchangeable)
     const long SIZE_OF_UUID = 16;
 
 //    (should be directly traceable to requirements)
