@@ -29,7 +29,7 @@ ${IDL_GENERATED}: idl/UberCasino.idl
 
 COMMON_CPP= src/CheckStatus.cpp src/DDSEntityManager.cpp 
 
-COMMON_H= src/io.h src/CheckStatus.h src/DDSEntityManager.cpp 
+COMMON_H= src/io.h src/CheckStatus.h src/DDSEntityManager.h 
 
 DEALER_FILES = src/dealer.cpp
 DEALER_H_FILES = src/dealer.h

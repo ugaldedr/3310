@@ -13,7 +13,7 @@ void _cb ( UberCasino::Player P )
 void _cb ( UberCasino::Dealer D )
 {
 #ifdef DEBUG_PRINT
-  std::cout << "\nRECEIVED -- Dealer" << std::endl;
+  std::cout << "RECEIVED -- Dealer" << std::endl;
   boost::uuids::uuid u;
   memcpy(&u, D.uuid, 16);
   std::cout << "   uuid " << boost::uuids::to_string( u ) << std::endl;

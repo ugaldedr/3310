@@ -28,7 +28,6 @@ void _cb ( UberCasino::Game );
 
 
 
-//void external_data (Player P);
 template <typename DATA_READER_VAR,typename SEQ,typename MSG> 
 class read_listener: public virtual DDS::DataReaderListener
 {
@@ -49,7 +48,6 @@ class read_listener: public virtual DDS::DataReaderListener
          checkStatus(status, "MsgDataReader::read");
          for (DDS::ULong i = 0; i < msgList.length(); i++)
          {
-            printf("\n    --- message received ---%d\n",msgList.length());
             if (msgList.length()>0) // you can get callback with no actual data payload
             {
                _cb ( msgList[i] );

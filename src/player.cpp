@@ -1,7 +1,10 @@
 #include <iostream>
 #include <functional>
+#include <cstdlib>
+
 
 #include <boost/thread.hpp>
+
 
 #include "player.h"
 
@@ -12,63 +15,83 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
   callback ();
 }
 
+std::string player::print_state ( player_state_t p )
+{
+   std::string retval;
+   switch ( p )
+   {
+      case Init:
+         retval = "Init";
+         break;
+      case Waiting:
+         retval = "Waiting";
+         break;
+      case Playing:
+         retval = "Playing";
+         break;
+      case Turn:
+         retval = "Turn";
+         break;
+   }
+   return retval;
+}
+
 void player::manage_state ()
 {
    // determine if we have a state transition
    bool transition = false;
-   dealer_state_t next_state;
-   switch (dealer_state)
+   player_state_t next_state = m_player_state;
+   switch ( m_player_state )
    {
-      case init:
-            if (user_event_string == "start")
+     case Init:
+         if ( m_Dealer_recv )
+         {
+            next_state = Init; // not really needed
+            transition = true;
+         }
+         if ( m_user_event )
+         {
+            // the user has entered a number, we hope
+            unsigned int dealer_idx = std::stoi ( m_user_event_string );
+            if (dealer_idx < m_dealer_list.size () )
             {
-               transition = true;
-               next_state = waiting;
             }
-            break;
-      case waiting: 
-            if ( timer_event )
-            {
-               transition = true;
-               next_state = waiting_for_more;
-            }
-            break;
-      case waiting_for_more: 
-            if ( timer_event )
-            {
-               transition = true;
-               next_state = waiting;
-            }
-            break;
-      case dealing: 
-            break;
-      default:
-            break;
+         }
+         break;
+     case Waiting:
+         break;
+     case Playing:
+         break;
+     case Turn:
+         break;
    }
+// enum player_state_t {Init,Waiting,Playing,Turn} m_player_state;
    // if there is a transition, then we have to run the exit 
    // and entrance processing
    if (transition)
    {
+#ifdef XXX
       // on exit
-      switch (dealer_state)
+      switch (m_player_state)
       {
-         case init:
+         case Init:
          {
          }
          break;
-         case waiting:
+         case Waiting:
          {
                static Player P;
                P.count++;
                p_io->publish  ( P );
          }
          break;
-         case waiting_for_more:
+         case Playing:
+         {
+         }
+         case Turn:
          {
          }
          break;
-         default:
-            break;
       }
 
       // on entrance
@@ -93,18 +116,23 @@ void player::manage_state ()
          default:
             break;
       }
-
+#endif
       // make the transition
-      if ( dealer_state != next_state )
+      if ( m_player_state != next_state )
       {
-          std::cout << "State change from " << dealer_state << " to " << next_state << std::endl;
+          std::cout << "State change from " << print_state (m_player_state)
+                    << " to " << print_state ( m_player_state ) << std::endl;
       }
-      dealer_state = next_state;
+      m_player_state = next_state;
    }
+
    // clear all event flags
-   timer_event = false;
-   user_event = false;
-   external_event = false;
+   m_timer_event = false;
+   m_user_event  = false;
+   m_Player_recv = false;
+   m_Game_recv   = false;
+   m_Dealer_recv = false;
+ 
 }
 
 
@@ -112,7 +140,7 @@ void player::timer_expired ()
 {
    // this is called by the timer thread callback when the delay has expired
    // note: only one timer can be active at a time
-   timer_event = true;
+   m_timer_event = true;
    manage_state ();
 }
 
@@ -120,16 +148,19 @@ void player::external_data (Player P)
 {
    // this is called when data is received
    m_P = P;
-   external_event = true;
+   m_Player_recv = true;
    manage_state ();
-std::cout << "in external_data " << std::endl;
 }
 
 void player::external_data (Dealer D)
 {
    // this is called when data is received
    m_D = D;
-   external_event = true;
+   m_Dealer_recv = true;
+
+   m_dealer_list.push_back ( D );
+   std::cout << "Dealer # " << m_dealer_list.size () -1 
+             << "  name " << D.name << std::endl;
    manage_state ();
 }
 
@@ -137,7 +168,7 @@ void player::external_data (Game G)
 {
    // this is called when data is received
    m_G = G;
-   external_event = true;
+   m_Game_recv = true;
    manage_state ();
 }
 
@@ -145,8 +176,8 @@ void player::user_input (std::string I)
 {
    // this is called when the user types in input
    // from the console.  any / all input is accepted
-   user_event_string = I;
-   user_event = true;
+   m_user_event_string = I;
+   m_user_event = true;
    manage_state ();
 }
 
@@ -154,24 +185,11 @@ void player::setName (std::string Name )
 {
    strncpy ( m_P.name, Name.c_str(), sizeof (m_P.name) - 1 );
 }
-void player::dealer_received ( Dealer D)
-{
-   m_dealer_list.push_back ( D );
-}
-
-void player::print_dealers ()
-{
-   std::cout << "Dealers in the casino " << '\n';
-   for ( unsigned int i=0;i<m_dealer_list.size ();i++ )
-   {
-      std::cout << i << "  " << m_dealer_list[i].name << std::endl;
-   }
-}
 
 player::player ()
 {
    // member variables
-   dealer_state = init;
+   m_player_state = Init;
 
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
@@ -186,10 +204,14 @@ player::player ()
                      GameDataWriter,GameDataReader_var,GameDataReader>
                 ( (char*) "game", false, true );
 
+   m_dealer_list.clear ();
+
    // event flags
-   timer_event = false;
-   user_event = false;
-   external_event = false;
+   m_timer_event = false;
+   m_user_event  = false;
+   m_Player_recv = false;
+   m_Game_recv   = false;
+   m_Dealer_recv = false;
 }
 
 player::~player ()

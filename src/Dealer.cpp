@@ -21,7 +21,12 @@ int main ( int argc, char* argv[] )
    D.setName ("Bud"); // should this be entered by the user. probably!
 
    std::cout << "Welcome to UberCasino.  The fast paced, command line BlackJack system." << std::endl;
-   std::cout << "The dealers name is \"Bud\" and his UUID is " << uuid << std::endl;
+   std::cout << "-------------------------------------------" << std::endl;
+
+   std::cout << "The dealers name is \"Bud\"." << std::endl;
+   std::cout <<  "With a UUID of " << uuid << std::endl;
+   std::cout << "-------------------------------------------" << std::endl;
+
    std::cout << "Enter 'start' to begin the game" << std::endl;
    std::cout << "Enter 'q' to exit" << std::endl;
    std::cout << "-------------------------------------------" << std::endl;

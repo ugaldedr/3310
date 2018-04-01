@@ -9,27 +9,33 @@
 class player
 {
    private:
-      enum dealer_state_t {init,waiting,waiting_for_more,dealing} dealer_state;
-      std::string name;
-      void print_dealers ();
+      enum player_state_t {Init,Waiting,Playing,Turn} m_player_state;
+      std::string m_name;
       void manage_state ();
-      bool timer_event;
-      bool user_event;
-      std::string user_event_string;
-      bool external_event;
+
+      std::vector<Dealer> m_dealer_list;
+      std::string m_user_event_string;
+
+      bool m_timer_event; // timer has expired
+      bool m_user_event;  // user typed in something
+      bool m_Player_recv; // data recved
+      bool m_Game_recv;   // data recved
+      bool m_Dealer_recv; // data recved
+
       dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
              PlayerDataWriter,PlayerDataReader_var,PlayerDataReader> *p_io;
       dds_io<Dealer,DealerSeq,DealerTypeSupport_var,DealerTypeSupport,DealerDataWriter_var,
              DealerDataWriter,DealerDataReader_var,DealerDataReader> *d_io;
       dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
              GameDataWriter,GameDataReader_var,GameDataReader> *g_io;
+
+      std::string print_state ( player_state_t );
+
       Player m_P; // stores the last recieved data
       Dealer m_D; 
       Game   m_G;
    public:
-      std::vector<Dealer> m_dealer_list;
       void setName (std::string);
-      void dealer_received ( Dealer D);
       // There are 3 possible inputs to the dealer
       //    1. timer expiration
       //    2. external data recieved
