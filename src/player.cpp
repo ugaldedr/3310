@@ -214,6 +214,7 @@ void player::external_data (Game G)
    boost::uuids::uuid t;
    memcpy ( &t, G.game_uid, sizeof ( t ) );
    boost::uuids::uuid current_game; 
+   std::cout << "the index is " << m_dealer_idx << std::endl;
    memcpy ( &current_game, 
              m_dealer_list[m_dealer_idx].game_uid, 
              sizeof ( current_game ) );

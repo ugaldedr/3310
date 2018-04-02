@@ -110,6 +110,28 @@ void dealer::manage_state ()
           }
           break;
        case WaitingForOthers:
+          // time to start the game and deal some cards
+          //  two for the dealer
+          m_G_pub.dealer_cards[0].valid = true;
+          m_G_pub.dealer_cards[0].card = four;
+          m_G_pub.dealer_cards[0].suite = clubs;
+          m_G_pub.dealer_cards[1].valid = true;
+          m_G_pub.dealer_cards[1].card = six;
+          m_G_pub.dealer_cards[1].suite = spades;
+         
+          //  one for each player
+          for (unsigned int i=0;i<m_number_of_players;i++)
+          {
+             m_G_pub.p[ i ].cards[ 0 ].valid  = true;
+             m_G_pub.p[ i ].cards[ 0 ].card   = jack;
+             m_G_pub.p[ i ].cards[ 0 ].suite  = diamonds;
+          }
+          // and another card for the first player
+          m_G_pub.active_player = 0;
+          m_G_pub.p[ 0 ].cards[ 1 ].valid  = true;
+          m_G_pub.p[ 0 ].cards[ 1 ].card   = ten;
+          m_G_pub.p[ 0 ].cards[ 1 ].suite  = hearts;
+          g_io->publish ( m_G_pub );
           break;
        case Dealing:
           break;
@@ -143,6 +165,10 @@ void dealer::manage_state ()
                  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
                  {
                    m_G_pub.p[ m_number_of_players ].cards[ i ].valid  = false;
+                 }
+                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+                 {
+                   m_G_pub.dealer_cards[i].valid = false;
                  }
                  m_number_of_players++;
                  std::cout << m_number_of_players << " in game" << std::endl;
