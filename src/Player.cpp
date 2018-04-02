@@ -20,13 +20,12 @@ int main ( int argc, char* argv[] )
 
    // player unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-   std::cout << "The players uuid id is " << uuid << std::endl;
+   std::cout << "The players id is " << uuid << std::endl;
    memcpy ( P.m_P.uid, &uuid, sizeof ( P.m_P.uid ) );
 
    // a buffer to accept input
    char line[100];
    // the main loop
-   std::cout << "Enter 'start' to begin the game" << std::endl;
    std::cout << "Enter 'q' to exit" << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
    while (std::cin.getline(line, 100))

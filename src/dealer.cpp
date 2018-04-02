@@ -145,6 +145,8 @@ void dealer::manage_state ()
                    m_G_pub.p[ m_number_of_players ].cards[ i ].valid  = false;
                  }
                  m_number_of_players++;
+                 std::cout << m_number_of_players << " in game" << std::endl;
+                 g_io->publish ( m_G_pub );
              }
           }
           break;
