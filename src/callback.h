@@ -15,6 +15,8 @@ void _cb ( UberCasino::Player P )
   std::cout << "    name " << P.name << std::endl;
   std::cout << " balance " << P.balance << std::endl;
   std::cout << "  action  " << to_string ( P.A ) << std::endl;
+  std::cout << "-------------------------------------------------------" 
+            << std::endl;
 #endif
   PTR->external_data ( P );
 }
@@ -28,6 +30,8 @@ void _cb ( UberCasino::Dealer D )
   std::cout << "   name " << D.name << std::endl;
   memcpy(&u, D.game_uid, 16);
   std::cout << "    game_uid " << boost::uuids::to_string( u ) << std::endl;
+  std::cout << "-------------------------------------------------------" 
+            << std::endl;
 #endif
   PTR->external_data ( D );
 }
@@ -35,6 +39,8 @@ void _cb ( UberCasino::Game G )
 {
 #ifdef DEBUG_PRINT
   std::cout << "RECEIVED -- Game" << std::endl;
+  std::cout << "-------------------------------------------------------" 
+            << std::endl;
 #endif
   PTR->external_data ( G );
 }
