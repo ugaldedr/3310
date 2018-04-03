@@ -101,9 +101,6 @@ void player::manage_state ()
          break;
          case Waiting:
          {
-               //static Player P;
-               //P.count++;
-               //p_io->publish  ( P );
          }
          break;
          case Playing:
@@ -129,7 +126,7 @@ void player::manage_state ()
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
-
+               m_P.A = idle;
                p_io->publish  ( m_P );
                // Wait 30 seconds for the dealer to act
                boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
@@ -137,8 +134,9 @@ void player::manage_state ()
          break;
          case Playing:
          {
-               // A sloppy way to delay a callback 
-               //boost::thread t( delay_thread , 10, std::bind ( &player::timer_expired , this ) );
+               // need to decide what to do and send it
+               m_P.A = standing;
+               p_io->publish  ( m_P );
          }
          break;
          case Turn:
@@ -196,6 +194,7 @@ void player::external_data (Dealer D)
 
    m_dealer_list.push_back ( D );
    std::cout << "The available dealers has changed:" << std::endl;
+   std::cout << "Enter the idx to join.." << std::endl;
    for (unsigned int i=0;i<m_dealer_list.size ();i++)
    {
       std::cout << "Dealer # " << i 
@@ -211,15 +210,26 @@ void player::external_data (Game G)
    // we are in. m_dealer_idx is the
    // key to figuring this out
    lock ();
+
    boost::uuids::uuid t;
    memcpy ( &t, G.game_uid, sizeof ( t ) );
    boost::uuids::uuid current_game; 
-   std::cout << "the index is " << m_dealer_idx << std::endl;
+   //std::cout << "the index is " << m_dealer_idx << std::endl;
    memcpy ( &current_game, 
              m_dealer_list[m_dealer_idx].game_uid, 
              sizeof ( current_game ) );
-   std::cout << "Comparing " << t << " " << current_game << std::endl;
-   if (t == current_game)
+   //std::cout << "Comparing " << t << " " << current_game << std::endl;
+
+   boost::uuids::uuid my_uid;
+   memcpy ( &my_uid, m_P.uid, sizeof ( my_uid ) );
+   boost::uuids::uuid this_move_id;
+   memcpy ( &this_move_id, G.p[G.active_player].uid, sizeof ( this_move_id ) );
+
+   //m_G_pub.gstate = waiting_to_join; 
+   if ( 
+        (t == current_game && G.gstate != playing ) ||
+        (t == current_game && G.gstate == playing && my_uid==this_move_id  &&
+        G.p[G.active_player].cards[0].valid   ) )
    {
      m_Game_recv = true;
      m_G = G;

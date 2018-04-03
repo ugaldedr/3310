@@ -27,7 +27,7 @@ void _cb ( UberCasino::Dealer D )
   boost::uuids::uuid u;
   memcpy(&u, D.uid, 16);
   std::cout << "         uid " << boost::uuids::to_string( u ) << std::endl;
-  std::cout <<      "   name " << D.name << std::endl;
+  std::cout << "        name " << D.name << std::endl;
   memcpy(&u, D.game_uid, 16);
   std::cout << "    game_uid " << boost::uuids::to_string( u ) << std::endl;
   std::cout << "-------------------------------------------------------" 

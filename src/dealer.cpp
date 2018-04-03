@@ -111,6 +111,7 @@ void dealer::manage_state ()
           break;
        case WaitingForOthers:
           // time to start the game and deal some cards
+          m_G_pub.gstate = playing;
           //  two for the dealer
           m_G_pub.dealer_cards[0].valid = true;
           m_G_pub.dealer_cards[0].card = four;
@@ -148,7 +149,9 @@ void dealer::manage_state ()
           {
              // if there is room, need to accept the 
              // new player
-             if ( m_number_of_players<UberCasino::MAX_PLAYERS_IN_A_GAME )
+             if (  ( m_Player_recv ) && 
+                   ( m_P_sub.A == idle ) && 
+                   ( m_number_of_players<UberCasino::MAX_PLAYERS_IN_A_GAME ) )
              {
                  m_G_pub.gstate = waiting_to_join;
                  // the UID's don't change, so they can be copied again
@@ -171,7 +174,7 @@ void dealer::manage_state ()
                    m_G_pub.dealer_cards[i].valid = false;
                  }
                  m_number_of_players++;
-                 std::cout << m_number_of_players << " in game" << std::endl;
+                 std::cout << "There are " << m_number_of_players << " in the game." << std::endl;
                  g_io->publish ( m_G_pub );
              }
           }
