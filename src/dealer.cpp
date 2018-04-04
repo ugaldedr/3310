@@ -42,6 +42,12 @@ std::string dealer::print_state ( dealer_state_t d )
     case Dealing:
          retval = "Dealing";
          break;
+    case WaitingForPlayer:
+         retval = "WaitingForPlayer";
+         break;
+    case Done:
+         retval = "Done";
+         break;
    }
    return retval;
 }
@@ -88,7 +94,17 @@ void dealer::manage_state ()
             next_state = Dealing;
          }
          // need to check for exit here
+         if ( m_hands_dealt > 5 )
+         {
+            transition = true;
+            next_state = Done;
+         }
          break;
+      case WaitingForPlayer:
+         break;
+      case Done:
+         break;
+
    }
 
    // if there is a transition, then we have to run the exit 
@@ -110,8 +126,9 @@ void dealer::manage_state ()
           }
           break;
        case WaitingForOthers:
+#ifdef XXX
           // time to start the game and deal some cards
-          m_G_pub.gstate = playing;
+          m_G_pub.gstate = waiting;
           //  two for the dealer
           m_G_pub.dealer_cards[0].valid = true;
           m_G_pub.dealer_cards[0].card = four;
@@ -127,14 +144,14 @@ void dealer::manage_state ()
              m_G_pub.p[ i ].cards[ 0 ].card   = jack;
              m_G_pub.p[ i ].cards[ 0 ].suite  = diamonds;
           }
-          // and another card for the first player
-          m_G_pub.active_player = 0;
-          m_G_pub.p[ 0 ].cards[ 1 ].valid  = true;
-          m_G_pub.p[ 0 ].cards[ 1 ].card   = ten;
-          m_G_pub.p[ 0 ].cards[ 1 ].suite  = hearts;
           g_io->publish ( m_G_pub );
+#endif
           break;
        case Dealing:
+          break;
+       case WaitingForPlayer:
+          break;
+       case Done:
           break;
       }
 
@@ -180,6 +197,34 @@ void dealer::manage_state ()
           }
           break;
        case Dealing:
+#ifdef XXX
+          if (m_Player_recv)
+          {
+std::cout << "got something from a player " << std::endl;
+             if (m_P_sub.A == standing)
+             {
+                 // go to next player
+                 m_G_pub.active_player++;
+                 if ( (int) m_number_of_players >= (int) m_G_pub.active_player )
+                 {
+                     // do something
+                 }
+             }
+          }
+          // 
+          m_G_pub.gstate = playing;
+          m_G_pub.active_player = 0;
+          m_G_pub.p[ 0 ].cards[ 1 ].valid  = true;
+          m_G_pub.p[ 0 ].cards[ 1 ].card   = ten;
+          m_G_pub.p[ 0 ].cards[ 1 ].suite  = hearts;
+          g_io->publish ( m_G_pub );
+#endif
+          break;
+       case WaitingForPlayer:
+          break;
+       case Done:
+          std::cout << "Done." << std::endl;
+          exit( 0 );
           break;
       }
       // make the transition
@@ -196,6 +241,23 @@ void dealer::manage_state ()
    m_Player_recv = false;
    m_Game_recv = false;
    m_Dealer_recv = false;
+}
+
+void dealer::new_game ()
+{
+}
+
+void dealer::next_player ()
+{
+
+}
+
+void dealer::end_game ()
+{
+}
+
+void dealer::deal_to_dealer ()
+{
 }
 
 
@@ -258,6 +320,7 @@ dealer::dealer ()
    m_dealer_state = Init;
    m_user_event_mask = "start";  // this is the first event we will be looking for
    m_number_of_players = 0;
+   m_G_pub.active_player = 0;
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>
@@ -278,6 +341,7 @@ dealer::dealer ()
    m_Game_recv = false;
    m_Player_recv = false;
 
+   m_hands_dealt = 0;
 }
 
 dealer::~dealer ()

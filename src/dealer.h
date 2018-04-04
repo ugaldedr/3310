@@ -12,8 +12,12 @@
 class dealer
 {
    private:
+      void new_game ();
+      void next_player ();
+      void deal_to_dealer ();
+      void end_game ();
       // look at the state diagram to understand the states
-      enum dealer_state_t {Init,Waiting,WaitingForOthers,Dealing} m_dealer_state;
+      enum dealer_state_t {Init,Waiting,WaitingForOthers,Dealing,WaitingForPlayer,Done} m_dealer_state;
       void manage_state ();
       unsigned int m_number_of_players;
       bool m_timer_event;
@@ -23,7 +27,8 @@ class dealer
       bool m_Dealer_recv;
       // below are used to filter events
       std::string m_user_event_mask;
-      
+
+      int m_hands_dealt;      
       // misc methods 
       std::string print_state ( dealer_state_t );
       void lock ();

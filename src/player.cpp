@@ -211,6 +211,11 @@ void player::external_data (Game G)
    // key to figuring this out
    lock ();
 
+std::cout << "received a G" << std::endl;
+   if (G.active_player >= UberCasino::MAX_PLAYERS_IN_A_GAME) 
+   {
+      return;
+   }
    boost::uuids::uuid t;
    memcpy ( &t, G.game_uid, sizeof ( t ) );
    boost::uuids::uuid current_game; 
@@ -227,8 +232,9 @@ void player::external_data (Game G)
 
    //m_G_pub.gstate = waiting_to_join; 
    if ( 
-        (t == current_game && G.gstate != playing ) ||
-        (t == current_game && G.gstate == playing && my_uid==this_move_id  &&
+        //(t == current_game && G.gstate != playing ) ||
+        ( (G.active_player < UberCasino::MAX_PLAYERS_IN_A_GAME) && 
+        t == current_game && G.gstate == playing && my_uid==this_move_id  &&
         G.p[G.active_player].cards[0].valid   ) )
    {
      m_Game_recv = true;
