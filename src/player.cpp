@@ -12,6 +12,9 @@
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
    // given an array of cards, returns the point value
+   // this routine is ignorant of the different values
+   // for an ace, it is always 1.
+
    unsigned int total=0;
    for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
    {
@@ -46,14 +49,19 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
 
 void player::lock ()
 {
+  // if this code is being used as part of an FlTK program
+  // a lock may be needed.  The fltk lock or something
+  // like pthread_mutex() should work fine.
 }
 
 void player::unlock ()
 {
+  // see comments under the lock () method
 }
 
-std::string player::print_state ( player_state_t p )
+std::string player::to_string ( player_state_t p )
 {
+   // turn the player_state enumerant into a string
    std::string retval;
    switch ( p )
    {
@@ -124,37 +132,55 @@ void player::manage_state ()
          break;
      case Playing:
          {
+             if ( m_Game_recv )
+             {
+                 // the dealers cards are dealt
+                 transition = true;
+                 next_state = EndHand; 
+             }
              if ( m_Game_recv_idx )
              {
                  transition = true;
                  next_state = Playing;
              }
+#ifdef XXX
              if ( m_timer_event ) // really means I am done getting cards this hand
                                   // as this decision was made and a timer requested
              {
                  transition = true;
                  next_state = EndHand; 
              }
+#endif
          }
          break;
      case EndHand:
          {
-             if ( m_timer_event ) // really means I am done getting cards this hand
+#ifdef XXX
+             if ( 0 && m_timer_event ) // really means I am done getting cards this hand
                                   // as this decision was made and a timer requested
              {
                  transition = true;
                  next_state = StartHand; 
              }
+             if ( m_Game_recv )
+             {
+                 transition = true;
+                 next_state = StartHand; 
+             }
+#endif
          }
          break;
    }
 
+   if ( m_player_state != next_state )
+   {
+      std::cout << "State change from " << to_string (m_player_state)
+                << " to " << to_string ( next_state ) << std::endl;
+   }
    // if there is a transition, then we have to run the exit 
    // and entrance processing
    if (transition)
    {
-      std::cout << "State change from " << print_state (m_player_state)
-                << " to " << print_state ( next_state ) << std::endl;
       // on exit
       switch (m_player_state)
       {
@@ -254,7 +280,7 @@ std::cout << "I have decided to hit " << std::endl;
 std::cout << "EndHand: Entry " << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
-std::cout << "the dealer says the end of the hand has occured " << std::endl;
+              std::cout << "the dealer says the end of the hand has occured " << std::endl;
               // calculate win or lose
               int dealer_points = Hand_Value ( m_G.dealer_cards );
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
@@ -362,7 +388,6 @@ void player::external_data (Game G)
             {
                m_Game_recv_idx = true;
                m_Game_recv = false;
-               manage_state ();
             }
         }
    }
@@ -370,6 +395,8 @@ void player::external_data (Game G)
    {
       manage_state ();
    }
+   else
+      std::cout << "Game was ignored " << std::endl;
 
    unlock ();
 }

@@ -41,7 +41,7 @@ UberCasino::card_t Next_Card ()
    static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
    // this function returns the next card to be dealt
    UberCasino::card_t retval;
-   retval.card = jack;
+   retval.card = nine;
    count++;
    if (count>3)
      count = 0;
@@ -68,7 +68,7 @@ void dealer::unlock ()
    // see remarks under lock(), above
 }
 
-std::string dealer::print_state ( dealer_state_t d )
+std::string dealer::to_string ( dealer_state_t d )
 {
    std::string retval;
    switch ( d )
@@ -168,8 +168,8 @@ void dealer::manage_state ()
    // and entrance processing
    if (transition)
    {
-      std::cout << "State change from " << print_state ( m_dealer_state ) 
-                << " to " << print_state ( next_state ) << std::endl;
+      std::cout << "State change from " << to_string ( m_dealer_state ) 
+                << " to " << to_string ( next_state ) << std::endl;
       // on exit
       switch (m_dealer_state)
       {
@@ -290,15 +290,14 @@ std::cout << "The player is standing with "
                  // go to next player
                  if ( (int) m_G_pub.active_player+1 < (int) m_number_of_players )
                  {
-std::cout << "Going to the next player" << std::endl;
+                    std::cout << "Going to the next player" << std::endl;
                     m_G_pub.active_player++;
                     g_io->publish ( m_G_pub );
                  }
                  else
                  {
-std::cout << "the hand is over" << std::endl;
-                     // need to wait a bit to ensure all are really done
-                     boost::thread t( delay_thread , 4, std::bind ( &dealer::timer_expired , this ) );
+                     std::cout << "Next, the dealers cards." << std::endl;
+                     boost::thread t( delay_thread , 1, std::bind ( &dealer::timer_expired , this ) );
                  }
              }
              else if ( m_P_sub.A == hitting )
@@ -329,6 +328,7 @@ std::cout << "EndHand Entry" << std::endl;
             g_io->publish ( m_G_pub );
             // if you wanted to, the dealer could decide who wins
             // or loses here.
+            std::cout << "The players now decide if they win or lose" << std::endl;
           }
           break;
        case Done:

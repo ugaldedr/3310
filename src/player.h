@@ -41,7 +41,7 @@ class player
       dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
              GameDataWriter,GameDataReader_var,GameDataReader> *g_io;
 
-      std::string print_state ( player_state_t );
+      std::string to_string ( player_state_t );
 
    public:
       boost::uuids::uuid m_my_uid;

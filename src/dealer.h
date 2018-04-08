@@ -30,7 +30,7 @@ class dealer
 
       int m_hands_dealt;      
       // misc methods 
-      std::string print_state ( dealer_state_t );
+      std::string to_string ( dealer_state_t );
       void lock ();
       void unlock ();
       // these generics are complicated.  check the ctors of dealer for more info
