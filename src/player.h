@@ -16,7 +16,7 @@
 class player
 {
    private:
-      enum player_state_t {Init,Waiting,Playing} m_player_state;
+      enum player_state_t {Init,Waiting,StartHand,Playing,EndHand} m_player_state;
       std::string m_name;
       void manage_state ();
       void lock ();
@@ -26,12 +26,13 @@ class player
       std::vector<Dealer> m_dealer_list;
       std::string m_user_event_string;
       boost::uuids::uuid m_current_game_uuid;
-
-      bool m_timer_event; // timer has expired
-      bool m_user_event;  // user typed in something
-      bool m_Player_recv; // data recved
-      bool m_Game_recv;   // data recved
-      bool m_Dealer_recv; // data recved
+      float m_balance;
+      bool m_timer_event;   // timer has expired
+      bool m_user_event;    // user typed in something
+      bool m_Player_recv;   // data recved
+      bool m_Game_recv;     // data recved, the game UID matches
+      bool m_Game_recv_idx; // data recved, the player index matches
+      bool m_Dealer_recv;   // data recved
 
       dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
              PlayerDataWriter,PlayerDataReader_var,PlayerDataReader> *p_io;

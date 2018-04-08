@@ -54,7 +54,7 @@ module UberCasino {
     };
 #pragma keylist Player
 
-   enum game_state  { waiting_to_join, waiting, playing };
+   enum game_state  { waiting_to_join, waiting, playing, end_hand };
    // note when in 'playing', the dealer is waiting for a player
    // to do something
 

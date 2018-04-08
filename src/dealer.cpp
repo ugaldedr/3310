@@ -41,7 +41,7 @@ UberCasino::card_t Next_Card ()
    static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
    // this function returns the next card to be dealt
    UberCasino::card_t retval;
-   retval.card = three;
+   retval.card = jack;
    count++;
    if (count>3)
      count = 0;
@@ -73,7 +73,6 @@ std::string dealer::print_state ( dealer_state_t d )
    std::string retval;
    switch ( d )
    {
-//Init,Waiting,WaitingForOthers,StartHand,Deal,EndHand/
     case Init:
          retval = "Init";
          break; 
@@ -154,7 +153,7 @@ void dealer::manage_state ()
       case EndHand:
          if ( m_timer_event )
          {
-            next_state = StartHand;
+            next_state = Done;
             transition = true;
          }
          break;
@@ -169,6 +168,8 @@ void dealer::manage_state ()
    // and entrance processing
    if (transition)
    {
+      std::cout << "State change from " << print_state ( m_dealer_state ) 
+                << " to " << print_state ( next_state ) << std::endl;
       // on exit
       switch (m_dealer_state)
       {
@@ -287,16 +288,17 @@ std::cout << "The player is standing with "
           << Hand_Value ( m_G_pub.p[ m_G_pub.active_player ].cards)
           << std::endl;
                  // go to next player
-                 m_G_pub.active_player++;
-                 if ( (int) m_number_of_players >= (int) m_G_pub.active_player )
+                 if ( (int) m_G_pub.active_player+1 < (int) m_number_of_players )
                  {
-std::cout << "the hand is over" << std::endl;
-                     // do something
-                     g_io->publish ( m_G_pub );
+std::cout << "Going to the next player" << std::endl;
+                    m_G_pub.active_player++;
+                    g_io->publish ( m_G_pub );
                  }
                  else
                  {
-                    g_io->publish ( m_G_pub );
+std::cout << "the hand is over" << std::endl;
+                     // need to wait a bit to ensure all are really done
+                     boost::thread t( delay_thread , 4, std::bind ( &dealer::timer_expired , this ) );
                  }
              }
              else if ( m_P_sub.A == hitting )
@@ -307,23 +309,33 @@ std::cout << "the hand is over" << std::endl;
                    i++;
                 }
                 m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
+                g_io->publish ( m_G_pub );
              }
-             g_io->publish ( m_G_pub );
           }
           break;
        case EndHand:
+          {
 std::cout << "EndHand Entry" << std::endl;
+            // deal the dealers card
+            // note: except for purists, dealing a card face down or
+            // waiting to deal it now makes no difference.
+            unsigned int i=1;
+            while ( Hand_Value ( m_G_pub.dealer_cards ) < 17 )
+            {
+               m_G_pub.dealer_cards[i] = Next_Card ();
+               i++;
+            }
+            m_G_pub.gstate = end_hand;
+            g_io->publish ( m_G_pub );
+            // if you wanted to, the dealer could decide who wins
+            // or loses here.
+          }
           break;
        case Done:
 std::cout << "Done Entry" << std::endl;
           break;
       }
       // make the transition
-      if ( m_dealer_state != next_state )
-      {
-          std::cout << "State change from " << print_state ( m_dealer_state ) 
-                    << " to " << print_state ( next_state ) << std::endl;
-      }
       m_dealer_state = next_state;
    }
    // clear all event flags

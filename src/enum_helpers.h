@@ -21,6 +21,7 @@ std::string to_string ( UberCasino::game_state t )
       case waiting_to_join:retval = "waiting_to_joing";break;
       case waiting:retval = "waiting";break;
       case playing:retval = "playing";break;
+      case end_hand:retval = "end_hand";break;
    }
    return retval;
 }

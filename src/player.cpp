@@ -63,7 +63,13 @@ std::string player::print_state ( player_state_t p )
       case Waiting:
          retval = "Waiting";
          break;
+      case StartHand:
+         retval = "Waiting";
+         break;
       case Playing:
+         retval = "Playing";
+         break;
+      case EndHand:
          retval = "Playing";
          break;
    }
@@ -105,19 +111,39 @@ void player::manage_state ()
                  transition = true;
                  next_state = Init;
              }
-             if ( m_Game_recv )
+             if ( m_Game_recv_idx )
              {
                  transition = true;
                  next_state = Playing;
              }
          }
          break;
+     case StartHand:
+         {
+         }
+         break;
      case Playing:
          {
-             if ( m_Game_recv )
+             if ( m_Game_recv_idx )
              {
                  transition = true;
                  next_state = Playing;
+             }
+             if ( m_timer_event ) // really means I am done getting cards this hand
+                                  // as this decision was made and a timer requested
+             {
+                 transition = true;
+                 next_state = EndHand; 
+             }
+         }
+         break;
+     case EndHand:
+         {
+             if ( m_timer_event ) // really means I am done getting cards this hand
+                                  // as this decision was made and a timer requested
+             {
+                 transition = true;
+                 next_state = StartHand; 
              }
          }
          break;
@@ -127,19 +153,34 @@ void player::manage_state ()
    // and entrance processing
    if (transition)
    {
+      std::cout << "State change from " << print_state (m_player_state)
+                << " to " << print_state ( next_state ) << std::endl;
       // on exit
       switch (m_player_state)
       {
          case Init:
          {
+std::cout << "Init: Exit" << std::endl;
          }
          break;
          case Waiting:
          {
+std::cout << "Waiting: Exit " << std::endl;
+         }
+         break;
+         case StartHand:
+         {
+std::cout << "StartHand Exit" << std::endl;
          }
          break;
          case Playing:
          {
+std::cout << "Playing: Exit" << std::endl;
+         }
+         break;
+         case EndHand:
+         {
+std::cout << "EndHand: Exit" << std::endl;
          }
          break;
       }
@@ -149,6 +190,7 @@ void player::manage_state ()
       {
          case Init:
          {
+std::cout << "Init: Entry" << std::endl;
             if (m_Dealer_recv)
             {
                m_dealer_list.push_back ( m_D );
@@ -167,6 +209,7 @@ void player::manage_state ()
          break;
          case Waiting:
          {
+std::cout << "Waiting: Entry" << std::endl;
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
@@ -182,15 +225,21 @@ void player::manage_state ()
 
          }
          break;
+         case StartHand:
+         {
+std::cout << "StartHand: Entry" << std::endl;
+         }
+         break;
          case Playing:
          {
-
+std::cout << "Playing: Entry " << std::endl;
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
 std::cout << "The value of my hand is "<< value << std::endl;
             if ( value > 11 )
             {
 std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
+               boost::thread t( delay_thread , 1, std::bind ( &player::timer_expired , this ) );
             }
             else
             {
@@ -200,24 +249,53 @@ std::cout << "I have decided to hit " << std::endl;
             p_io->publish  ( m_P );
          }
          break;
+         case EndHand:
+         {
+std::cout << "EndHand: Entry " << std::endl;
+            if  ( m_G.gstate == end_hand ) 
+            {
+std::cout << "the dealer says the end of the hand has occured " << std::endl;
+              // calculate win or lose
+              int dealer_points = Hand_Value ( m_G.dealer_cards );
+              int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
+              std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
+              if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
+              {
+                 std::cout << "Player Wins" << std::endl;
+                 m_balance = m_balance + 10.0;
+              }
+              else
+              {
+                 std::cout << "Dealer Wins" << std::endl;
+                 m_balance = m_balance - 10.0;
+              }
+
+              if (m_balance > 10.0 )
+              {
+                 boost::thread t( delay_thread , 2, std::bind ( &player::timer_expired , this ) );
+              }
+              else
+              {
+                 std::cout << "Down to " << m_balance << " exiting from game " << std::endl;
+                 exit(0);
+              }
+            }
+         }
+         break;
       }
 
       // make the transition
-      if ( m_player_state != next_state )
-      {
-          std::cout << "State change from " << print_state (m_player_state)
-                    << " to " << print_state ( next_state ) << std::endl;
-      }
       m_player_state = next_state;
    }
 
    // clear all event flags
-   m_timer_event = false;
-   m_user_event  = false;
-   m_Player_recv = false;
-   m_Game_recv   = false;
-   m_Dealer_recv = false;
- 
+   m_timer_event   = false;
+   m_user_event    = false;
+   m_Player_recv   = false;
+   m_Game_recv_idx = false;
+   m_Game_recv     = false;
+   m_Dealer_recv   = false;
+
 }
 
 
@@ -255,6 +333,11 @@ void player::external_data (Game G)
 {
    // only care about games
    // we are in.
+   //
+   // this routine creates two possible eventsd
+   // they are mutually exclusive
+   //     m_Game_recv      when the game uids match
+   //     m_Game_recv_idx  when the game uids and the idx match
    lock ();
 
    // first, the game needs to match   
@@ -262,6 +345,9 @@ void player::external_data (Game G)
    memcpy ( &t, G.game_uid, sizeof ( t ) );
    if (t == m_current_game_uuid)
    {
+        m_G = G;  // it is the state of our game, so 
+                  // store it
+        m_Game_recv = true;
         // now to check if it is our turn
         unsigned int i = G.active_player;
         boost::uuids::uuid active_player_uuid;
@@ -274,12 +360,17 @@ void player::external_data (Game G)
             // 'playing' the game
             if ( G.gstate == playing )
             {
-               m_Game_recv = true;
-               m_G = G;
+               m_Game_recv_idx = true;
+               m_Game_recv = false;
                manage_state ();
             }
         }
    }
+   if (m_Game_recv || m_Game_recv_idx )
+   {
+      manage_state ();
+   }
+
    unlock ();
 }
 
@@ -303,7 +394,8 @@ player::player ()
 {
    // member variables
    m_player_state = Init;
-   m_P.balance = 1000.0;
+   m_balance = 1000.0;
+   m_P.balance = m_balance;
    m_dealer_list.clear ();
 
    // member objects
@@ -320,11 +412,12 @@ player::player ()
                 ( (char*) "game", false, true );
 
    // event flags
-   m_timer_event = false;
-   m_user_event  = false;
-   m_Player_recv = false;
-   m_Game_recv   = false;
-   m_Dealer_recv = false;
+   m_timer_event    = false;
+   m_user_event     = false;
+   m_Player_recv    = false;
+   m_Game_recv      = false;
+   m_Game_recv_idx  = false;
+   m_Dealer_recv    = false;
 }
 
 player::~player ()
