@@ -186,27 +186,27 @@ void player::manage_state ()
       {
          case Init:
          {
-std::cout << "Init: Exit" << std::endl;
+           std::cout << "Init: Exit" << std::endl;
          }
          break;
          case Waiting:
          {
-std::cout << "Waiting: Exit " << std::endl;
+           std::cout << "Waiting: Exit " << std::endl;
          }
          break;
          case StartHand:
          {
-std::cout << "StartHand Exit" << std::endl;
+           std::cout << "StartHand Exit" << std::endl;
          }
          break;
          case Playing:
          {
-std::cout << "Playing: Exit" << std::endl;
+           std::cout << "Playing: Exit" << std::endl;
          }
          break;
          case EndHand:
          {
-std::cout << "EndHand: Exit" << std::endl;
+           std::cout << "EndHand: Exit" << std::endl;
          }
          break;
       }
@@ -216,7 +216,7 @@ std::cout << "EndHand: Exit" << std::endl;
       {
          case Init:
          {
-std::cout << "Init: Entry" << std::endl;
+            std::cout << "Init: Entry" << std::endl;
             if (m_Dealer_recv)
             {
                m_dealer_list.push_back ( m_D );
@@ -224,18 +224,18 @@ std::cout << "Init: Entry" << std::endl;
             // print the list to stdout
             if (m_dealer_list.size () > 0 )
             {
-              std::cout << "Enter the Dealer # to join.." << std::endl;
               for (unsigned int i=0;i<m_dealer_list.size ();i++)
               {
                  std::cout << "Dealer # " << i 
                            << " name " << m_dealer_list[i].name << std::endl;
               }
+              std::cout << "Enter the Dealer # to join.." << std::endl;
             }
          }
          break;
          case Waiting:
          {
-std::cout << "Waiting: Entry" << std::endl;
+               std::cout << "Waiting: Entry" << std::endl;
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
@@ -253,23 +253,23 @@ std::cout << "Waiting: Entry" << std::endl;
          break;
          case StartHand:
          {
-std::cout << "StartHand: Entry" << std::endl;
+            std::cout << "StartHand: Entry" << std::endl;
          }
          break;
          case Playing:
          {
-std::cout << "Playing: Entry " << std::endl;
+            std::cout << "Playing: Entry " << std::endl;
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
-std::cout << "The value of my hand is "<< value << std::endl;
+            std::cout << "The value of my hand is "<< value << std::endl;
             if ( value > 11 )
             {
-std::cout << "I have decided to stand " << std::endl;
+               std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
                boost::thread t( delay_thread , 1, std::bind ( &player::timer_expired , this ) );
             }
             else
             {
-std::cout << "I have decided to hit " << std::endl;
+               std::cout << "I have decided to hit " << std::endl;
                m_P.A = hitting;
             }
             p_io->publish  ( m_P );
@@ -277,7 +277,7 @@ std::cout << "I have decided to hit " << std::endl;
          break;
          case EndHand:
          {
-std::cout << "EndHand: Entry " << std::endl;
+            std::cout << "EndHand: Entry " << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
               std::cout << "the dealer says the end of the hand has occured " << std::endl;
