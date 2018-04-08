@@ -66,7 +66,6 @@ void dealer::lock ()
 
 void dealer::unlock ()
 {
-  std::cout << "****************************************" << std::endl;
   // see remarks under lock(), above
 }
 

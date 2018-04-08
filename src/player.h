@@ -16,7 +16,7 @@
 class player
 {
    private:
-      enum player_state_t {Init,Waiting,StartHand,Playing,EndHand} m_player_state;
+      enum player_state_t {Init,StartHand,Playing,EndHand} m_player_state;
       std::string m_name;
       void manage_state ();
       void lock ();

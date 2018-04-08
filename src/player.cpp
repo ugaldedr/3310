@@ -49,7 +49,7 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
 
 void player::lock ()
 {
-  // if this code is being used as part of an FlTK program
+  // if this code is being used as part of an fltk program
   // a lock may be needed.  The fltk lock or something
   // like pthread_mutex() should work fine.
   std::cout << "****************************************" << std::endl;
@@ -58,7 +58,6 @@ void player::lock ()
 void player::unlock ()
 {
   // see comments under the lock () method
-  std::cout << "****************************************" << std::endl;
 }
 
 std::string player::to_string ( player_state_t p )
@@ -69,9 +68,6 @@ std::string player::to_string ( player_state_t p )
    {
       case Init:
          retval = "Init";
-         break;
-      case Waiting:
-         retval = "Waiting";
          break;
       case StartHand:
          retval = "StartHand";
@@ -104,17 +100,17 @@ void player::manage_state ()
             if ( m_user_event )
             {
                // you must enter in something that does not
-               // exception
+               // exception.  like a number
                m_dealer_idx = std::stoi ( m_user_event_string );
                if ( m_dealer_idx < m_dealer_list.size () )
                {
                   transition = true;
-                  next_state = Waiting;
+                  next_state = StartHand;
                }
             }
          }
          break;
-     case Waiting:
+     case StartHand:
          {
              if ( m_timer_event )
              {
@@ -126,10 +122,6 @@ void player::manage_state ()
                  transition = true;
                  next_state = Playing;
              }
-         }
-         break;
-     case StartHand:
-         {
          }
          break;
      case Playing:
@@ -168,11 +160,9 @@ void player::manage_state ()
          case Init:
          {
            std::cout << "Init: Exit" << std::endl;
-         }
-         break;
-         case Waiting:
-         {
-           std::cout << "Waiting: Exit " << std::endl;
+           // Wait 30 seconds for the dealer to act
+           // if he does not act, then he has not accepted us into the game
+           boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
          }
          break;
          case StartHand:
@@ -214,9 +204,9 @@ void player::manage_state ()
             }
          }
          break;
-         case Waiting:
+         case StartHand:
          {
-               std::cout << "Waiting: Entry" << std::endl;
+               std::cout << "Waiting: StartHand" << std::endl;
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
@@ -227,14 +217,6 @@ void player::manage_state ()
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
                p_io->publish  ( m_P );
-               // Wait 30 seconds for the dealer to act
-               boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
-
-         }
-         break;
-         case StartHand:
-         {
-            std::cout << "StartHand: Entry" << std::endl;
          }
          break;
          case Playing:
@@ -261,7 +243,7 @@ void player::manage_state ()
             std::cout << "EndHand: Entry " << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
-              std::cout << "the dealer says the end of the hand has occured " << std::endl;
+              std::cout << "The dealer says end of hand." << std::endl;
               // calculate win or lose
               int dealer_points = Hand_Value ( m_G.dealer_cards );
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
