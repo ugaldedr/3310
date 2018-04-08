@@ -17,7 +17,7 @@ class dealer
       void deal_to_dealer ();
       void end_game ();
       // look at the state diagram to understand the states
-      enum dealer_state_t {Init,Waiting,WaitingForOthers,Dealing,WaitingForPlayer,Done} m_dealer_state;
+      enum dealer_state_t {Init,Waiting,WaitingForOthers,StartHand,Deal,EndHand,Done} m_dealer_state;
       void manage_state ();
       unsigned int m_number_of_players;
       bool m_timer_event;

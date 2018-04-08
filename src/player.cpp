@@ -8,6 +8,35 @@
 
 #include "player.h"
 
+
+unsigned int Hand_Value ( UberCasino::card_t cards[] )
+{
+   // given an array of cards, returns the point value
+   unsigned int total=0;
+   for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
+   {
+      if ( cards[i].valid )
+      {
+         switch ( cards[i].card )
+         {
+            case ace: total=total+1;break;
+            case two: total=total+2;break;
+            case three: total=total+3;break;
+            case four: total=total+4;break;
+            case five: total=total+5;break;
+            case six: total=total+6;break;
+            case seven: total=total+7;break;
+            case eight: total=total+8;break;
+            case nine: total=total+9;break;
+            case ten: total=total+10;break;
+            case jack: total=total+10;break;
+            case queen: total=total+10;break;
+            case king: total=total+10;break;
+         }
+      }
+   }
+   return total;
+}
 void delay_thread ( int seconds, std::function <void(void)> callback)
 {
   // this routine is created as a posix thread.
@@ -37,9 +66,6 @@ std::string player::print_state ( player_state_t p )
       case Playing:
          retval = "Playing";
          break;
-      case Turn:
-         retval = "Turn";
-         break;
    }
    return retval;
 }
@@ -52,39 +78,48 @@ void player::manage_state ()
    switch ( m_player_state )
    {
      case Init:
-         if ( m_Dealer_recv )
          {
-            next_state = Init; // not really needed
-            transition = true;
-         }
-         if ( m_user_event )
-         {
-            // the user has entered a number, we hope
-            m_dealer_idx = std::stoi ( m_user_event_string );
-            if (m_dealer_idx < m_dealer_list.size () )
+            // a dealer is starting a game
+            if ( m_Dealer_recv )
             {
-               // this is the dealer we want to play with
-               next_state = Waiting;
-               transition = true;
+                transition = true;
+            }
+            // the player has entered a string
+            if ( m_user_event )
+            {
+               // you must enter in something that does not
+               // exception
+               m_dealer_idx = std::stoi ( m_user_event_string );
+               if ( m_dealer_idx < m_dealer_list.size () )
+               {
+                  transition = true;
+                  next_state = Waiting;
+               }
             }
          }
          break;
      case Waiting:
-         if ( m_timer_event )
          {
-               // the dealer did not 'accept' us
-               next_state = Init;
-               transition = true;
-         }
-         if ( m_Game_recv )
-         {
-               next_state = Playing;
-               transition = true;
+             if ( m_timer_event )
+             {
+                 transition = true;
+                 next_state = Init;
+             }
+             if ( m_Game_recv )
+             {
+                 transition = true;
+                 next_state = Playing;
+             }
          }
          break;
      case Playing:
-         break;
-     case Turn:
+         {
+             if ( m_Game_recv )
+             {
+                 transition = true;
+                 next_state = Playing;
+             }
+         }
          break;
    }
 
@@ -106,9 +141,6 @@ void player::manage_state ()
          case Playing:
          {
          }
-         case Turn:
-         {
-         }
          break;
       }
 
@@ -117,33 +149,57 @@ void player::manage_state ()
       {
          case Init:
          {
+            if (m_Dealer_recv)
+            {
+               m_dealer_list.push_back ( m_D );
+            }
+            // print the list to stdout
+            if (m_dealer_list.size () > 0 )
+            {
+              std::cout << "Enter the Dealer # to join.." << std::endl;
+              for (unsigned int i=0;i<m_dealer_list.size ();i++)
+              {
+                 std::cout << "Dealer # " << i 
+                           << " name " << m_dealer_list[i].name << std::endl;
+              }
+            }
          }
          break;
          case Waiting:
          {
-               // Send a Player , telling the dealer we
-               // would like to join
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
                m_P.A = idle;
+               // put the game_uuid in a member var a little 
+               // easier to find
+               memcpy ( &m_current_game_uuid,
+                        m_dealer_list[m_dealer_idx].game_uid,
+                        sizeof ( m_P.game_uid ) );
                p_io->publish  ( m_P );
                // Wait 30 seconds for the dealer to act
                boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
+
          }
          break;
          case Playing:
          {
-               // need to decide what to do and send it
+
+            unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
+std::cout << "The value of my hand is "<< value << std::endl;
+            if ( value > 11 )
+            {
+std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
-               p_io->publish  ( m_P );
+            }
+            else
+            {
+std::cout << "I have decided to hit " << std::endl;
+               m_P.A = hitting;
+            }
+            p_io->publish  ( m_P );
          }
          break;
-         case Turn:
-         {
-         }
-         default:
-            break;
       }
 
       // make the transition
@@ -191,15 +247,6 @@ void player::external_data (Dealer D)
    lock ();
    m_D = D;
    m_Dealer_recv = true;
-
-   m_dealer_list.push_back ( D );
-   std::cout << "The available dealers has changed:" << std::endl;
-   std::cout << "Enter the idx to join.." << std::endl;
-   for (unsigned int i=0;i<m_dealer_list.size ();i++)
-   {
-      std::cout << "Dealer # " << i 
-                << " name " << m_dealer_list[i].name << std::endl;
-   }
    manage_state ();
    unlock ();
 }
@@ -207,39 +254,31 @@ void player::external_data (Dealer D)
 void player::external_data (Game G)
 {
    // only care about games
-   // we are in. m_dealer_idx is the
-   // key to figuring this out
+   // we are in.
    lock ();
 
-std::cout << "received a G" << std::endl;
-   if (G.active_player >= UberCasino::MAX_PLAYERS_IN_A_GAME) 
-   {
-      return;
-   }
+   // first, the game needs to match   
    boost::uuids::uuid t;
    memcpy ( &t, G.game_uid, sizeof ( t ) );
-   boost::uuids::uuid current_game; 
-   //std::cout << "the index is " << m_dealer_idx << std::endl;
-   memcpy ( &current_game, 
-             m_dealer_list[m_dealer_idx].game_uid, 
-             sizeof ( current_game ) );
-   //std::cout << "Comparing " << t << " " << current_game << std::endl;
-
-   boost::uuids::uuid my_uid;
-   memcpy ( &my_uid, m_P.uid, sizeof ( my_uid ) );
-   boost::uuids::uuid this_move_id;
-   memcpy ( &this_move_id, G.p[G.active_player].uid, sizeof ( this_move_id ) );
-
-   //m_G_pub.gstate = waiting_to_join; 
-   if ( 
-        //(t == current_game && G.gstate != playing ) ||
-        ( (G.active_player < UberCasino::MAX_PLAYERS_IN_A_GAME) && 
-        t == current_game && G.gstate == playing && my_uid==this_move_id  &&
-        G.p[G.active_player].cards[0].valid   ) )
+   if (t == m_current_game_uuid)
    {
-     m_Game_recv = true;
-     m_G = G;
-     manage_state ();
+        // now to check if it is our turn
+        unsigned int i = G.active_player;
+        boost::uuids::uuid active_player_uuid;
+        memcpy ( &active_player_uuid,
+                 G.p[i].uid,
+                 sizeof ( active_player_uuid ) );
+        if ( m_my_uid == active_player_uuid )
+        {
+            // and last, need to be sure we are
+            // 'playing' the game
+            if ( G.gstate == playing )
+            {
+               m_Game_recv = true;
+               m_G = G;
+               manage_state ();
+            }
+        }
    }
    unlock ();
 }
@@ -251,7 +290,6 @@ void player::user_input (std::string I)
    lock ();
    m_user_event_string = I;
    m_user_event = true;
-   std::cout << "the input string is " << I << std::endl;
    manage_state ();
    unlock ();
 }
@@ -265,6 +303,8 @@ player::player ()
 {
    // member variables
    m_player_state = Init;
+   m_P.balance = 1000.0;
+   m_dealer_list.clear ();
 
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
@@ -278,10 +318,6 @@ player::player ()
    g_io = new dds_io<Game,GameSeq,GameTypeSupport_var,GameTypeSupport,GameDataWriter_var,
                      GameDataWriter,GameDataReader_var,GameDataReader>
                 ( (char*) "game", false, true );
-
-   m_dealer_list.clear ();
-
-   m_P.balance = 1000.0;
 
    // event flags
    m_timer_event = false;

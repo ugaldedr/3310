@@ -16,7 +16,7 @@
 class player
 {
    private:
-      enum player_state_t {Init,Waiting,Playing,Turn} m_player_state;
+      enum player_state_t {Init,Waiting,Playing} m_player_state;
       std::string m_name;
       void manage_state ();
       void lock ();
@@ -25,6 +25,7 @@ class player
       unsigned int m_dealer_idx;
       std::vector<Dealer> m_dealer_list;
       std::string m_user_event_string;
+      boost::uuids::uuid m_current_game_uuid;
 
       bool m_timer_event; // timer has expired
       bool m_user_event;  // user typed in something
@@ -42,6 +43,7 @@ class player
       std::string print_state ( player_state_t );
 
    public:
+      boost::uuids::uuid m_my_uid;
       Player m_P; // stores the last data
       Dealer m_D; 
       Game   m_G;

@@ -6,6 +6,49 @@
 #include <boost/thread.hpp>
 
 #include "dealer.h"
+unsigned int Hand_Value ( UberCasino::card_t cards[] )
+{
+   // given an array of cards, returns the point value
+   unsigned int total=0;
+   for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
+   {
+      if ( cards[i].valid )
+      {
+         switch ( cards[i].card )
+         {
+            case ace: total=total+1;break;
+            case two: total=total+2;break;
+            case three: total=total+3;break;
+            case four: total=total+4;break;
+            case five: total=total+5;break;
+            case six: total=total+6;break;
+            case seven: total=total+7;break;
+            case eight: total=total+8;break;
+            case nine: total=total+9;break;
+            case ten: total=total+10;break;
+            case jack: total=total+10;break;
+            case queen: total=total+10;break;
+            case king: total=total+10;break;
+         }
+      }
+   }
+   return total;
+}
+
+UberCasino::card_t Next_Card ()
+{
+   static int count=0;
+   static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
+   // this function returns the next card to be dealt
+   UberCasino::card_t retval;
+   retval.card = three;
+   count++;
+   if (count>3)
+     count = 0;
+   retval.suite = lut[count];
+   retval.valid = true;
+   return retval;
+}
 
 void delay_thread ( int seconds, std::function <void(void)> callback)
 {
@@ -30,6 +73,7 @@ std::string dealer::print_state ( dealer_state_t d )
    std::string retval;
    switch ( d )
    {
+//Init,Waiting,WaitingForOthers,StartHand,Deal,EndHand/
     case Init:
          retval = "Init";
          break; 
@@ -39,15 +83,17 @@ std::string dealer::print_state ( dealer_state_t d )
     case WaitingForOthers:
          retval = "WaitingForOthers";
          break;
-    case Dealing:
-         retval = "Dealing";
+    case StartHand:
+         retval = "StartHand";
          break;
-    case WaitingForPlayer:
-         retval = "WaitingForPlayer";
+    case Deal:
+         retval = "Deal";
+         break;
+    case EndHand:
+         retval = "EndHand";
          break;
     case Done:
          retval = "Done";
-         break;
    }
    return retval;
 }
@@ -63,48 +109,60 @@ void dealer::manage_state ()
       case Init:
          if ( m_user_event ) 
          {
-            transition = true;
             next_state = Waiting;
+            transition = true;
          }
          break;
       case Waiting:
          if ( m_Player_recv )
          {
-            transition = true;
             next_state = WaitingForOthers;
+            transition = true;
          }
          break;
       case WaitingForOthers:
          if ( m_Player_recv )
          {
-            transition = true;
             next_state = WaitingForOthers;
+            transition = true;
          }
          if ( m_timer_event )
          {
-            next_state = Dealing;
+            next_state = StartHand;
             transition = true;
          }
-
          break;
-      case Dealing:
+      case StartHand:
+         if ( m_timer_event )
+         {
+            next_state = Deal;
+            transition = true;
+         }
+         break;
+      case Deal:
+         if ( m_timer_event )
+         {
+            next_state = EndHand;
+            transition = true;
+         }
          if ( m_Player_recv )
          {
+            next_state = Deal;
             transition = true;
-            next_state = Dealing;
-         }
-         // need to check for exit here
-         if ( m_hands_dealt > 5 )
-         {
-            transition = true;
-            next_state = Done;
          }
          break;
-      case WaitingForPlayer:
+      case EndHand:
+         if ( m_timer_event )
+         {
+            next_state = StartHand;
+            transition = true;
+         }
          break;
       case Done:
-         break;
-
+         {
+           std::cout << "THE GAME IS OVER" << std::endl;
+           exit(0);
+         }
    }
 
    // if there is a transition, then we have to run the exit 
@@ -116,42 +174,43 @@ void dealer::manage_state ()
       {
        case Init:
           {
+std::cout << "Init Exit" << std::endl;
              // this tells everyone listening, "i am starting a game"
              d_io->publish ( m_D_pub );
           }
           break;
        case Waiting:
           {
+std::cout << "Waiting Exit" << std::endl;
+             // start a 10 second timer
              boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
           }
           break;
        case WaitingForOthers:
-#ifdef XXX
-          // time to start the game and deal some cards
+std::cout << "WaitingForOthers Exit" << std::endl;
+          // send out the game as it is
           m_G_pub.gstate = waiting;
-          //  two for the dealer
-          m_G_pub.dealer_cards[0].valid = true;
-          m_G_pub.dealer_cards[0].card = four;
-          m_G_pub.dealer_cards[0].suite = clubs;
-          m_G_pub.dealer_cards[1].valid = true;
-          m_G_pub.dealer_cards[1].card = six;
-          m_G_pub.dealer_cards[1].suite = spades;
-         
-          //  one for each player
-          for (unsigned int i=0;i<m_number_of_players;i++)
-          {
-             m_G_pub.p[ i ].cards[ 0 ].valid  = true;
-             m_G_pub.p[ i ].cards[ 0 ].card   = jack;
-             m_G_pub.p[ i ].cards[ 0 ].suite  = diamonds;
-          }
           g_io->publish ( m_G_pub );
-#endif
           break;
-       case Dealing:
+       case StartHand:
+          {
+std::cout << "StartHand Exit" << std::endl;
+          }
           break;
-       case WaitingForPlayer:
+       case Deal:
+          {
+std::cout << "Deal Exit" << std::endl;
+          }
+          break;
+       case EndHand:
+std::cout << "EndHand Exit" << std::endl;
+          {
+          }
           break;
        case Done:
+          {
+std::cout << "Done Exit" << std::endl;
+          }
           break;
       }
 
@@ -159,10 +218,13 @@ void dealer::manage_state ()
       switch (next_state)
       {
        case Init:
+std::cout << "Init Entry" << std::endl;
           break;
        case Waiting:
+std::cout << "Waiting Entry" << std::endl;
           break;
        case WaitingForOthers:
+std::cout << "WaitingForOther Entry" << std::endl;
           {
              // if there is room, need to accept the 
              // new player
@@ -196,35 +258,64 @@ void dealer::manage_state ()
              }
           }
           break;
-       case Dealing:
-#ifdef XXX
-          if (m_Player_recv)
+        case StartHand:
+std::cout << "StartHand Entry" << std::endl;
           {
-std::cout << "got something from a player " << std::endl;
-             if (m_P_sub.A == standing)
+             // start a 1 second timer
+             boost::thread t( delay_thread , 1, std::bind ( &dealer::timer_expired , this ) );
+             m_G_pub.gstate = playing;
+             //  one for the dealer
+             m_G_pub.dealer_cards[0] = Next_Card ();
+             //  one for each player
+             for (unsigned int i=0;i<m_number_of_players;i++)
              {
+               m_G_pub.p[ i ].cards[ 0 ] = Next_Card ();
+             }
+             // and the second card to the first player
+             m_G_pub.p [ 0 ]. cards [1] = Next_Card ();
+             // set to the player
+             m_G_pub.active_player = 0;
+             g_io->publish ( m_G_pub );
+          }
+          break;
+       case Deal:
+          {
+std::cout << "Deal Entry" << std::endl;
+             if ( m_P_sub.A == standing )
+             {
+std::cout << "The player is standing with " 
+          << Hand_Value ( m_G_pub.p[ m_G_pub.active_player ].cards)
+          << std::endl;
                  // go to next player
                  m_G_pub.active_player++;
                  if ( (int) m_number_of_players >= (int) m_G_pub.active_player )
                  {
+std::cout << "the hand is over" << std::endl;
                      // do something
+                     g_io->publish ( m_G_pub );
+                 }
+                 else
+                 {
+                    g_io->publish ( m_G_pub );
                  }
              }
+             else if ( m_P_sub.A == hitting )
+             {
+                unsigned int i=0;
+                while (m_G_pub.p[ m_G_pub.active_player ].cards[i].valid)
+                {
+                   i++;
+                }
+                m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
+             }
+             g_io->publish ( m_G_pub );
           }
-          // 
-          m_G_pub.gstate = playing;
-          m_G_pub.active_player = 0;
-          m_G_pub.p[ 0 ].cards[ 1 ].valid  = true;
-          m_G_pub.p[ 0 ].cards[ 1 ].card   = ten;
-          m_G_pub.p[ 0 ].cards[ 1 ].suite  = hearts;
-          g_io->publish ( m_G_pub );
-#endif
           break;
-       case WaitingForPlayer:
+       case EndHand:
+std::cout << "EndHand Entry" << std::endl;
           break;
        case Done:
-          std::cout << "Done." << std::endl;
-          exit( 0 );
+std::cout << "Done Entry" << std::endl;
           break;
       }
       // make the transition

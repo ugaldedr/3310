@@ -50,8 +50,8 @@ void _cb ( UberCasino::Game G )
   {
      if ( G.p[G.active_player].cards[i].valid )
      {
-        std::cout  << "    " << to_string ( G.p[G.active_player].cards[i].card  )
-                   << "    " << to_string ( G.p[G.active_player].cards[i].suite ) 
+        std::cout  << "      " << to_string ( G.p[G.active_player].cards[i].card  )
+                   << "      " << to_string ( G.p[G.active_player].cards[i].suite ) 
                   << std::endl;
      }
   }
@@ -60,8 +60,8 @@ void _cb ( UberCasino::Game G )
   {
      if ( G.dealer_cards[i].valid )
      {
-        std::cout  << "    " << to_string ( G.dealer_cards[i].card  )
-                   << "    " << to_string ( G.dealer_cards[i].suite ) 
+        std::cout  << "      " << to_string ( G.dealer_cards[i].card  )
+                   << "      " << to_string ( G.dealer_cards[i].suite ) 
                   << std::endl;
      }
   }
