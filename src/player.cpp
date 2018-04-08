@@ -52,11 +52,13 @@ void player::lock ()
   // if this code is being used as part of an FlTK program
   // a lock may be needed.  The fltk lock or something
   // like pthread_mutex() should work fine.
+  std::cout << "****************************************" << std::endl;
 }
 
 void player::unlock ()
 {
   // see comments under the lock () method
+  std::cout << "****************************************" << std::endl;
 }
 
 std::string player::to_string ( player_state_t p )
@@ -72,13 +74,13 @@ std::string player::to_string ( player_state_t p )
          retval = "Waiting";
          break;
       case StartHand:
-         retval = "Waiting";
+         retval = "StartHand";
          break;
       case Playing:
          retval = "Playing";
          break;
       case EndHand:
-         retval = "Playing";
+         retval = "EndHand";
          break;
    }
    return retval;
@@ -143,31 +145,10 @@ void player::manage_state ()
                  transition = true;
                  next_state = Playing;
              }
-#ifdef XXX
-             if ( m_timer_event ) // really means I am done getting cards this hand
-                                  // as this decision was made and a timer requested
-             {
-                 transition = true;
-                 next_state = EndHand; 
-             }
-#endif
          }
          break;
      case EndHand:
          {
-#ifdef XXX
-             if ( 0 && m_timer_event ) // really means I am done getting cards this hand
-                                  // as this decision was made and a timer requested
-             {
-                 transition = true;
-                 next_state = StartHand; 
-             }
-             if ( m_Game_recv )
-             {
-                 transition = true;
-                 next_state = StartHand; 
-             }
-#endif
          }
          break;
    }
@@ -331,6 +312,7 @@ void player::timer_expired ()
    // note: only one timer can be active at a time
    lock ();
    m_timer_event = true;
+   std::cout << "Timer event has been received" << std::endl;
    manage_state ();
    unlock ();
 }
@@ -341,6 +323,7 @@ void player::external_data (Player P)
    lock ();
    m_P = P;
    m_Player_recv = true;
+   std::cout << "Player data has been received" << std::endl;
    manage_state ();
    unlock ();
 }
@@ -351,6 +334,7 @@ void player::external_data (Dealer D)
    lock ();
    m_D = D;
    m_Dealer_recv = true;
+   std::cout << "Dealer data has been received" << std::endl;
    manage_state ();
    unlock ();
 }
@@ -393,10 +377,19 @@ void player::external_data (Game G)
    }
    if (m_Game_recv || m_Game_recv_idx )
    {
+      if ( m_Game_recv )
+      {
+        std::cout << "Game (uid matched) received" << std::endl;
+      }
+      else if ( m_Game_recv_idx )
+      {
+        std::cout << "Game (uid matched and idx ) received" << std::endl;
+      }
       manage_state ();
    }
    else
-      std::cout << "Game was ignored " << std::endl;
+      // single player, this is a problem.  otherwise it is OK
+      // std::cout << "Game was ignored " << std::endl;
 
    unlock ();
 }
@@ -408,6 +401,7 @@ void player::user_input (std::string I)
    lock ();
    m_user_event_string = I;
    m_user_event = true;
+   std::cout << "User input received" << std::endl;
    manage_state ();
    unlock ();
 }
