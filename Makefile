@@ -3,7 +3,7 @@
 OSPL_LIBS = -lpthread -lddskernel -ldcpssacpp
 LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread
 
-CFLAGS = -DDEBUG_PRINT -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys
+CFLAGS = -DDEBUG_PRINT -DDEBUG_STATES -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys
 CXXFLAGS = -std=c++11
 
 all: PitBoss Dealer Player

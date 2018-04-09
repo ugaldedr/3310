@@ -153,8 +153,10 @@ void player::manage_state ()
 
    if ( m_player_state != next_state )
    {
+#ifdef DEBUG_STATES
       std::cout << "State change from " << to_string (m_player_state)
                 << " to " << to_string ( next_state ) << std::endl;
+#endif
    }
    // if there is a transition, then we have to run the exit 
    // and entrance processing
@@ -165,7 +167,9 @@ void player::manage_state ()
       {
          case Init:
          {
+#ifdef DEBUG_STATES
            std::cout << "Init: Exit" << std::endl;
+#endif
            // Wait 30 seconds for the dealer to act
            // if he does not act, then he has not accepted us into the game
            TIMER(30);
@@ -173,17 +177,23 @@ void player::manage_state ()
          break;
          case StartHand:
          {
+#ifdef DEBUG_STATES
            std::cout << "StartHand Exit" << std::endl;
+#endif
          }
          break;
          case Playing:
          {
+#ifdef DEBUG_STATES
            std::cout << "Playing: Exit" << std::endl;
+#endif
          }
          break;
          case EndHand:
          {
+#ifdef DEBUG_STATES
            std::cout << "EndHand: Exit" << std::endl;
+#endif
          }
          break;
       }
@@ -193,7 +203,9 @@ void player::manage_state ()
       {
          case Init:
          {
+#ifdef DEBUG_STATES
             std::cout << "Init: Entry" << std::endl;
+#endif
             if (m_Dealer_recv)
             {
                m_dealer_list.push_back ( m_D );
@@ -212,7 +224,9 @@ void player::manage_state ()
          break;
          case StartHand:
          {
+#ifdef DEBUG_STATES
                std::cout << "Waiting: StartHand" << std::endl;
+#endif
                memcpy ( m_P.game_uid, 
                         m_dealer_list[m_dealer_idx].game_uid,
                         sizeof ( m_P.game_uid ) );
@@ -227,7 +241,9 @@ void player::manage_state ()
          break;
          case Playing:
          {
+#ifdef DEBUG_STATES
             std::cout << "Playing: Entry " << std::endl;
+#endif
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
             std::cout << "The value of my hand is "<< value << std::endl;
             if ( value > 11 )
@@ -246,7 +262,9 @@ void player::manage_state ()
          break;
          case EndHand:
          {
+#ifdef DEBUG_STATES
             std::cout << "EndHand: Entry " << std::endl;
+#endif
             if  ( m_G.gstate == end_hand ) 
             {
               std::cout << "The dealer says end of hand." << std::endl;
