@@ -6,6 +6,18 @@
 #include <boost/thread.hpp>
 
 #include "dealer.h"
+
+#define TIMER(SECS) \
+    if ( m_timer_thread )\
+    {\
+       m_timer_thread->interrupt ();\
+       delete ( m_timer_thread );\
+       m_timer_thread = NULL;\
+    }\
+    m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &dealer::timer_expired , this ) );\
+
+
+
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
    // given an array of cards, returns the point value
@@ -53,7 +65,7 @@ UberCasino::card_t Next_Card ()
 void delay_thread ( int seconds, std::function <void(void)> callback)
 {
   // this routine is created as a posix thread.
-  sleep (seconds);
+  boost::this_thread::sleep_for(boost::chrono::seconds(seconds));
   callback ();
 }
 
@@ -169,28 +181,36 @@ void dealer::manage_state ()
    // and entrance processing
    if (transition)
    {
+#ifdef DEBUG_STATES
       std::cout << "State change from " << to_string ( m_dealer_state ) 
                 << " to " << to_string ( next_state ) << std::endl;
+#endif
       // on exit
       switch (m_dealer_state)
       {
        case Init:
           {
+#ifdef DEBUG_STATES
              std::cout << "Init: Exit" << std::endl;
+#endif
              // this tells everyone listening, "i am starting a game"
              d_io->publish ( m_D_pub );
           }
           break;
        case Waiting:
           {
+#ifdef DEBUG_STATES
              std::cout << "Waiting: Exit" << std::endl;
+#endif
              // start a 10 second timer
-             boost::thread t( delay_thread , 10, std::bind ( &dealer::timer_expired , this ) );
+             TIMER(10);
           }
           break;
        case WaitingForOthers:
           {
+#ifdef DEBUG_STATES
             std::cout << "WaitingForOthers: Exit" << std::endl;
+#endif
             // send out the game as it is
             m_G_pub.gstate = waiting;
             g_io->publish ( m_G_pub );
@@ -198,22 +218,30 @@ void dealer::manage_state ()
           break;
        case StartHand:
           {
+#ifdef DEBUG_STATES
             std::cout << "StartHand: Exit" << std::endl;
+#endif
           }
           break;
        case Deal:
           {
+#ifdef DEBUG_STATES
             std::cout << "Deal: Exit" << std::endl;
+#endif
           }
           break;
        case EndHand:
           {
+#ifdef DEBUG_STATES
             std::cout << "EndHand: Exit" << std::endl;
+#endif
           }
           break;
        case Done:
           {
+#ifdef DEBUG_STATES
             std::cout << "Done: Exit" << std::endl;
+#endif
           }
           break;
       }
@@ -223,17 +251,23 @@ void dealer::manage_state ()
       {
        case Init:
           {
+#ifdef DEBUG_STATES
             std::cout << "Init: Entry" << std::endl;
+#endif
           }
           break;
        case Waiting:
           {
+#ifdef DEBUG_STATES
             std::cout << "Waiting: Entry" << std::endl;
+#endif
           }
           break;
        case WaitingForOthers:
           {
+#ifdef DEBUG_STATES
              std::cout << "WaitingForOther: Entry" << std::endl;
+#endif
              // if there is room, need to accept the 
              // new player
              if (  ( m_Player_recv ) && 
@@ -268,9 +302,11 @@ void dealer::manage_state ()
           break;
         case StartHand:
           {
+#ifdef DEBUG_STATES
              std::cout << "StartHand: Entry" << std::endl;
+#endif
              // start a 1 second timer
-             boost::thread t( delay_thread , 1, std::bind ( &dealer::timer_expired , this ) );
+             TIMER(1);
              m_G_pub.gstate = playing;
              //  one for the dealer
              m_G_pub.dealer_cards[0] = Next_Card ();
@@ -288,7 +324,9 @@ void dealer::manage_state ()
           break;
        case Deal:
           {
+#ifdef DEBUG_STATES
              std::cout << "Deal: Entry" << std::endl;
+#endif
              if ( m_P_sub.A == standing )
              {
                  std::cout << "The player is standing with " 
@@ -304,7 +342,7 @@ void dealer::manage_state ()
                  else
                  {
                      std::cout << "Next, the dealers cards." << std::endl;
-                     boost::thread t( delay_thread , 1, std::bind ( &dealer::timer_expired , this ) );
+                     TIMER(1);
                  }
              }
              else if ( m_P_sub.A == hitting )
@@ -321,7 +359,9 @@ void dealer::manage_state ()
           break;
        case EndHand:
           {
+#ifdef DEBUG_STATES
             std::cout << "EndHand: Entry" << std::endl;
+#endif
             // deal the dealers card
             // note: except for purists, dealing a card face down or
             // waiting to deal it now makes no difference.
@@ -340,7 +380,9 @@ void dealer::manage_state ()
           break;
        case Done:
           {
+#ifdef DEBUG_STATES
             std::cout << "Done: Entry" << std::endl;
+#endif
           }
           break;
       }
@@ -429,6 +471,7 @@ void dealer::user_input (std::string I)
 dealer::dealer ()
 {
    // member variables
+   m_timer_thread = NULL;
    m_dealer_state = Init;
    m_user_event_mask = "start";  // this is the first event we will be looking for
    m_number_of_players = 0;

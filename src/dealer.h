@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include <boost/thread.hpp>
 #include <boost/uuid/uuid.hpp>            // uuid class
 
 #include "io.h"
@@ -28,6 +29,7 @@ class dealer
       // below are used to filter events
       std::string m_user_event_mask;
 
+      boost::thread *m_timer_thread;
       int m_hands_dealt;      
       // misc methods 
       std::string to_string ( dealer_state_t );

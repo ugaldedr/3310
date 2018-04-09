@@ -46,6 +46,7 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
    }
    return total;
 }
+
 void delay_thread ( int seconds, std::function <void(void)> callback)
 {
   // this routine is created as a posix thread.
