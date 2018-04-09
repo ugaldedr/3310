@@ -4,10 +4,16 @@
 
 
 #include <boost/thread.hpp>
-
+#define TIMER(SECS) \
+    if ( m_timer_thread )\
+    {\
+       m_timer_thread->interrupt ();\
+       delete ( m_timer_thread );\
+       m_timer_thread = NULL;\
+    }\
+    m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &player::timer_expired , this ) );\
 
 #include "player.h"
-
 
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
@@ -43,7 +49,7 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
 void delay_thread ( int seconds, std::function <void(void)> callback)
 {
   // this routine is created as a posix thread.
-  sleep (seconds);
+  boost::this_thread::sleep_for(boost::chrono::seconds(seconds));
   callback ();
 }
 
@@ -162,7 +168,7 @@ void player::manage_state ()
            std::cout << "Init: Exit" << std::endl;
            // Wait 30 seconds for the dealer to act
            // if he does not act, then he has not accepted us into the game
-           boost::thread t( delay_thread , 30, std::bind ( &player::timer_expired , this ) );
+           TIMER(30);
          }
          break;
          case StartHand:
@@ -228,7 +234,7 @@ void player::manage_state ()
             {
                std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
-               boost::thread t( delay_thread , 1, std::bind ( &player::timer_expired , this ) );
+               TIMER(1);
             }
             else
             {
@@ -261,7 +267,7 @@ void player::manage_state ()
 
               if (m_balance > 10.0 )
               {
-                 boost::thread t( delay_thread , 2, std::bind ( &player::timer_expired , this ) );
+                 TIMER(2);
               }
               else
               {
@@ -288,13 +294,13 @@ void player::manage_state ()
 }
 
 
-void player::timer_expired ()
+void player::timer_expired ( )
 {
    // this is called by the timer thread callback when the delay has expired
    // note: only one timer can be active at a time
    lock ();
    m_timer_event = true;
-   std::cout << "Timer event has been received" << std::endl;
+   std::cout << "Timer event has been received " << std::endl;
    manage_state ();
    unlock ();
 }
@@ -400,7 +406,7 @@ player::player ()
    m_balance = 1000.0;
    m_P.balance = m_balance;
    m_dealer_list.clear ();
-
+   m_timer_thread = NULL;
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>

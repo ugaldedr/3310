@@ -5,6 +5,8 @@
 #include <vector>
 
 
+#include <boost/thread.hpp>
+
 #include <boost/uuid/uuid.hpp>            // uuid class
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
@@ -21,11 +23,11 @@ class player
       void manage_state ();
       void lock ();
       void unlock ();
-
       unsigned int m_dealer_idx;
       std::vector<Dealer> m_dealer_list;
       std::string m_user_event_string;
       boost::uuids::uuid m_current_game_uuid;
+      boost::thread *m_timer_thread;
       float m_balance;
       bool m_timer_event;   // timer has expired
       bool m_user_event;    // user typed in something
