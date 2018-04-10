@@ -1,9 +1,8 @@
 #include <iostream>
 #include <functional>
 #include <vector>
-
-
-#include <boost/thread.hpp>
+#include <cstdlib>
+#include <time.h>
 
 #include "dealer.h"
 
@@ -16,7 +15,7 @@
     }\
     m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &dealer::timer_expired , this ) );\
 
-
+int eight_deck[13] = {32,32,32,32,32,32,32,32,32,32,32,32,32};
 
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
@@ -49,15 +48,50 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
 
 UberCasino::card_t Next_Card ()
 {
-   static int count=0;
    static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
    // this function returns the next card to be dealt
    UberCasino::card_t retval;
-   retval.card = ten;
-   count++;
-   if (count>3)
-     count = 0;
-   retval.suite = lut[count];
+   srand(time(NULL));
+int value = rand() % 13;
+   int suit = rand() % 4;
+bool found = false;
+do
+{   
+value = rand() %13;
+   switch(value)
+   {
+	case 0: if(eight_deck[value] != 0){retval.card = king; eight_deck[value]+=-1; found = true;} break;
+	case 1: if(eight_deck[value] != 0){retval.card = ace; eight_deck[value]+=-1; found = true;} break;
+	case 2: if(eight_deck[value] != 0){retval.card = two; eight_deck[value]+=-1; found = true;} break;
+	case 3: if(eight_deck[value] != 0){retval.card = three; eight_deck[value]+=-1; found = true;} break;
+	case 4: if(eight_deck[value] != 0){retval.card = four; eight_deck[value]+=-1; found = true;} break;
+	case 5: if(eight_deck[value] != 0){retval.card = five; eight_deck[value]+=-1; found = true;} break;
+	case 6: if(eight_deck[value] != 0){retval.card = six; eight_deck[value]+=-1; found = true;} break;
+	case 7: if(eight_deck[value] != 0){retval.card = seven; eight_deck[value]+=-1; found = true;} break;
+	case 8: if(eight_deck[value] != 0){retval.card = eight; eight_deck[value]+=-1; found = true;} break;
+	case 9: if(eight_deck[value] != 0){retval.card = nine; eight_deck[value]+=-1; found = true;} break;
+	case 10: if(eight_deck[value] != 0){retval.card = ten; eight_deck[value]+=-1; found = true;} break;
+	case 11: if(eight_deck[value] != 0){retval.card = jack; eight_deck[value]+=-1; found = true;} break;
+	case 12: if(eight_deck[value] != 0){retval.card = queen; eight_deck[value]+=-1; found = true;} break;
+   }
+}while(!found);
+  /* switch(value)
+   {
+	case 0: retval.card = king; break;
+	case 1: retval.card = ace; break;
+	case 2: retval.card = two; break;
+	case 3: retval.card = three; break;
+	case 4: retval.card = four; break;
+	case 5: retval.card = five; break;
+	case 6: retval.card = six; break;
+	case 7: retval.card = seven; break;
+	case 8: retval.card = eight; break;
+	case 9: retval.card = nine; break;
+	case 10: retval.card = ten; break;
+	case 11: retval.card = jack; break;
+	case 12: retval.card = queen; break;
+   }*/
+   retval.suite = lut[suit];
    retval.valid = true;
    return retval;
 }
@@ -167,7 +201,7 @@ std::cout << "got a player event " << std::endl;
       case EndHand:
          if ( m_timer_event )
          {
-            next_state = Done;
+            next_state = StartHand;
             transition = true;
          }
          break;
@@ -374,9 +408,17 @@ std::cout << "got a player event " << std::endl;
             }
             m_G_pub.gstate = end_hand;
             g_io->publish ( m_G_pub );
+		 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+                 {
+                   m_G_pub.p[ m_number_of_players ].cards[ i ].valid  = false;
+                 }
+                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+                 {
+                   m_G_pub.dealer_cards[i].valid = false;
+                 }
             // if you wanted to, the dealer could decide who wins
             // or loses here.
-            std::cout << "The players now decide if they win or lose" << std::endl;
+            std::cout << "The players now decide if they win or lose" << std::endl;TIMER(5);
           }
           break;
        case Done:

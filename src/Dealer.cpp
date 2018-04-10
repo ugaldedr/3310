@@ -20,7 +20,7 @@ int main ( int argc, char* argv[] )
    // dealer unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
    memcpy ( D.m_D_pub.uid, &uuid, sizeof ( D.m_D_pub.uid ) );
-   strncpy ( D.m_D_pub.name,"Bud",sizeof ( D.m_D_pub.name ) );
+   strncpy ( D.m_D_pub.name,"Budmeister",sizeof ( D.m_D_pub.name ) );
    // should this be entered by the user. probably!
 
    // game unique ID

@@ -28,19 +28,19 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
       {
          switch ( cards[i].card )
          {
-            case ace: total=total+1;break;
-            case two: total=total+2;break;
-            case three: total=total+3;break;
-            case four: total=total+4;break;
-            case five: total=total+5;break;
-            case six: total=total+6;break;
-            case seven: total=total+7;break;
-            case eight: total=total+8;break;
-            case nine: total=total+9;break;
-            case ten: total=total+10;break;
-            case jack: total=total+10;break;
-            case queen: total=total+10;break;
-            case king: total=total+10;break;
+            case ace: total=total+1;cout<<"ace\n";break;
+            case two: total=total+2;cout<<"two\n";break;
+            case three: total=total+3;cout<<"three\n";break;
+            case four: total=total+4;cout<<"four\n";break;
+            case five: total=total+5;cout<<"five\n";break;
+            case six: total=total+6;cout<<"six\n";break;
+            case seven: total=total+7;cout<<"seven\n";break;
+            case eight: total=total+8;cout<<"eight\n";break;
+            case nine: total=total+9;cout<<"nine\n";break;
+            case ten: total=total+10;cout<<"ten\n";break;
+            case jack: total=total+10;cout<<"jack\n";break;
+            case queen: total=total+10;cout<<"queen\n";break;
+            case king: total=total+10;cout<<"king\n";break;
          }
       }
    }
@@ -278,7 +278,8 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
             {
               std::cout << "The dealer says end of hand." << std::endl;
               // calculate win or lose
-              int dealer_points = Hand_Value ( m_G.dealer_cards );
+cout<< "Dealer's Hand:\n";
+              int dealer_points = Hand_Value ( m_G.dealer_cards ); cout<< "Player's cards: \n";
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
               if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
