@@ -5,7 +5,8 @@
 
 void _cb ( UberCasino::Player P )
 {
-#ifdef DEBUG_PRINT
+std::cout << "Player: from " << P.name << " Action is " << to_string ( P.A ) << std::endl;
+#ifdef XDEBUG_PRINT
   std::cout << "\nRECEIVED -- Player" << std::endl;
   boost::uuids::uuid u;
   memcpy(&u, P.uid, 16);
@@ -22,7 +23,8 @@ void _cb ( UberCasino::Player P )
 }
 void _cb ( UberCasino::Dealer D )
 {
-#ifdef DEBUG_PRINT
+std::cout << "Dealer: " << D.name << std::endl;
+#ifdef XDEBUG_PRINT
   std::cout << "RECEIVED -- Dealer" << std::endl;
   boost::uuids::uuid u;
   memcpy(&u, D.uid, 16);
@@ -37,7 +39,8 @@ void _cb ( UberCasino::Dealer D )
 }
 void _cb ( UberCasino::Game G )
 {
-#ifdef DEBUG_PRINT
+std::cout << "Game: " << to_string ( G.gstate ) << " idx = " << G.active_player << std::endl;
+#ifdef XDEBUG_PRINT
   std::cout << "RECEIVED -- Game" << std::endl;
   std::cout << "         gstate " << to_string ( G.gstate ) << std::endl;
   boost::uuids::uuid u;

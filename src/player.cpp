@@ -133,8 +133,9 @@ void player::manage_state ()
          break;
      case Playing:
          {
-             if ( m_Game_recv )
+             if ( m_Game_recv  && m_G.gstate == end_hand )
              {
+std::cout << "I did recieve the dealers cards being dealt " << std::endl;
                  // the dealers cards are dealt
                  transition = true;
                  next_state = EndHand; 
@@ -148,6 +149,11 @@ void player::manage_state ()
          break;
      case EndHand:
          {
+             if ( m_timer_event )
+             {
+                 transition = true;
+                 next_state = StartHand;
+             }
          }
          break;
    }
@@ -195,6 +201,7 @@ void player::manage_state ()
 #ifdef DEBUG_STATES
            std::cout << "EndHand: Exit" << std::endl;
 #endif
+           std::cout << "set up all the variables to play another" << std::endl;
          }
          break;
       }
@@ -266,6 +273,7 @@ void player::manage_state ()
 #ifdef DEBUG_STATES
             std::cout << "EndHand: Entry " << std::endl;
 #endif
+std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
               std::cout << "The dealer says end of hand." << std::endl;
@@ -278,6 +286,10 @@ void player::manage_state ()
                  std::cout << "Player Wins" << std::endl;
                  m_balance = m_balance + 10.0;
               }
+              else if ( player_points ==  dealer_points )
+              {
+                 std::cout << "Push" << std::endl;
+              }
               else
               {
                  std::cout << "Dealer Wins" << std::endl;
@@ -286,6 +298,7 @@ void player::manage_state ()
 
               if (m_balance > 10.0 )
               {
+                 // this is just a way to start the next hand
                  TIMER(2);
               }
               else

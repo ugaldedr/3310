@@ -53,7 +53,7 @@ UberCasino::card_t Next_Card ()
    static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
    // this function returns the next card to be dealt
    UberCasino::card_t retval;
-   retval.card = two;
+   retval.card = ten;
    count++;
    if (count>3)
      count = 0;
@@ -159,6 +159,7 @@ void dealer::manage_state ()
          }
          if ( m_Player_recv )
          {
+std::cout << "got a player event " << std::endl;
             next_state = Deal;
             transition = true;
          }
@@ -388,6 +389,7 @@ void dealer::manage_state ()
       }
       // make the transition
       m_dealer_state = next_state;
+      sleep(1);
    }
    // clear all event flags
    m_timer_event = false;
@@ -417,6 +419,7 @@ void dealer::deal_to_dealer ()
 
 void dealer::timer_expired ()
 {
+std::cout << "TIMER EXPIRED" << std::endl;
    // this is called by the timer thread callback when the delay has expired
    // note: only one timer can be active at a time
    lock ();
@@ -427,6 +430,7 @@ void dealer::timer_expired ()
 
 void dealer::external_data (Player P)
 {
+std::cout << "PLAYER" << std::endl;
    lock ();
    // this is called when data is received
    m_P_sub = P;
@@ -437,6 +441,7 @@ void dealer::external_data (Player P)
 
 void dealer::external_data (Dealer D)
 {
+std::cout << "DEALER" << std::endl;
    lock ();
    // this is called when data is received
    m_D_sub = D;
@@ -447,6 +452,7 @@ void dealer::external_data (Dealer D)
 
 void dealer::external_data (Game G)
 {
+std::cout << "GAME" << std::endl;
    lock ();
    // this is called when data is received
    m_G_sub = G;
