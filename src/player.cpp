@@ -15,6 +15,8 @@
 
 #include "player.h"
 
+int player_mode = 1; int decision=0;
+
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
    // given an array of cards, returns the point value
@@ -28,7 +30,7 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
       {
          switch ( cards[i].card )
          {
-            case ace: total=total+1;cout<<"ace\n";break;
+            case ace: if(total >=11){total=total+1;cout<<"ace(1)\n";}else{total=total+11;cout<<"ace(11)\n";}break;
             case two: total=total+2;cout<<"two\n";break;
             case three: total=total+3;cout<<"three\n";break;
             case four: total=total+4;cout<<"four\n";break;
@@ -119,6 +121,7 @@ void player::manage_state ()
          break;
      case StartHand:
          {
+if(m_user_event){decision = std::stoi(m_user_event_string); cout << "I MADE A CHOICE";}
              if ( m_timer_event )
              {
                  transition = true;
@@ -254,7 +257,17 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
 #endif
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
             std::cout << "The value of my hand is "<< value << std::endl;
-            if ( value > 11 )
+      //manual mode 
+       if(player_mode == 1){
+cout << "1: Hit\n2:Stand\n";while(decision==0);
+if(decision == 1){std::cout << "I have decided to hit " << std::endl;
+               m_P.A = hitting;/*decision = 0;*/} else if (decision==2){  std::cout << "I have decided to stand" << std::endl;
+               m_P.A = standing;TIMER(1);}
+p_io->publish(m_P);
+       }
+//conservative mode  
+       else if(player_mode == 2){
+	   if ( value > 11 )
             {
                std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
@@ -266,6 +279,7 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
                m_P.A = hitting;
             }
             p_io->publish  ( m_P );
+            }
          }
          break;
          case EndHand:
@@ -276,7 +290,7 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
 std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
-              std::cout << "The dealer says end of hand." << std::endl;
+              std::cout << "The dealer says end of hand." << std::endl; decision =0;
               // calculate win or lose
 cout<< "Dealer's Hand:\n";
               int dealer_points = Hand_Value ( m_G.dealer_cards ); cout<< "Player's cards: \n";
