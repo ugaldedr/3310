@@ -51,13 +51,14 @@ UberCasino::card_t Next_Card ()
    static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
    // this function returns the next card to be dealt
    UberCasino::card_t retval;
-   srand(time(NULL));
-int value = rand() % 13;
+   int value = 0;
    int suit = rand() % 4;
-bool found = false;
+   bool found = false;
+
+//Loop and switch statment for eight shoe deck
 do
 {   
-value = rand() %13;
+   value = rand() %13; cout << "Random = " << value << endl;
    switch(value)
    {
 	case 0: if(eight_deck[value] != 0){retval.card = king; eight_deck[value]+=-1; found = true;} break;
@@ -75,7 +76,10 @@ value = rand() %13;
 	case 12: if(eight_deck[value] != 0){retval.card = queen; eight_deck[value]+=-1; found = true;} break;
    }
 }while(!found);
-  /* switch(value)
+
+//switch statement infinite shoe
+/* value = rand()%13;
+ switch(value)
    {
 	case 0: retval.card = king; break;
 	case 1: retval.card = ace; break;
@@ -349,9 +353,10 @@ std::cout << "got a player event " << std::endl;
              for (unsigned int i=0;i<m_number_of_players;i++)
              {
                m_G_pub.p[ i ].cards[ 0 ] = Next_Card ();
+               m_G_pub.p [ i ]. cards [1] = Next_Card ();
              }
              // and the second card to the first player
-             m_G_pub.p [ 0 ]. cards [1] = Next_Card ();
+             
              // set to the player
              m_G_pub.active_player = 0;
              g_io->publish ( m_G_pub );
@@ -408,14 +413,20 @@ std::cout << "got a player event " << std::endl;
             }
             m_G_pub.gstate = end_hand;
             g_io->publish ( m_G_pub );
+
+//**************** LOOP to clear last set of cards*************************
 		 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
                  {
-                   m_G_pub.p[ m_number_of_players ].cards[ i ].valid  = false;
+			for(int j = 0; j < UberCasino::MAX_PLAYERS_IN_A_GAME;j++)
+			{
+				m_G_pub.p[ j ].cards[ i ].valid  = false;
+			}
                  }
                  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
                  {
                    m_G_pub.dealer_cards[i].valid = false;
                  }
+
             // if you wanted to, the dealer could decide who wins
             // or loses here.
             std::cout << "The players now decide if they win or lose" << std::endl;TIMER(5);
