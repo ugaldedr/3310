@@ -43,7 +43,7 @@ PitBoss: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/PitBoss.cpp
 Dealer: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/Dealer.cpp ${DEALER_FILES} ${DEALER_H_FILES}  ${COMMON_H} ${COMMON_CPP}
 	g++ -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
-Player: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} $(fltk-config --cxxflags) src/Player.cpp ${PLAYER_FILES} ${PLAYER_H_FILES} ${COMMON_H} ${COMMON_CPP}
+Player: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} $(shell fltk-config --cxxflags) src/Player.cpp ${PLAYER_FILES} ${PLAYER_H_FILES} ${COMMON_H} ${COMMON_CPP}
 	g++ -lfltk -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
 clean:
