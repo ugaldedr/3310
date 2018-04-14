@@ -22,89 +22,6 @@
 static player* PTR;
 #include "callback.h" // uses PTR as a global
 
-string const ace_table[10][10] ={
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //A + 10
-	{"Hit","Hit","Hit","Hit","Stand","Stand","Stand","Hit","Hit","Hit"},//A+A
-	{"Hit","Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+2
-	{"Hit","Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+3
-	{"Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+4
-	{"Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+5
-	{"Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+6
-	{"Hit","Hit","Stand","DoubleDown","DoubleDown","DoubleDown","DoubleDown","Stand","Stand","Hit"},//A+7
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"},//A+8
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}//A+9
-	};
-string const total_table[20][10] = {
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //20
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //1
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //2
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //3
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //4
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //5
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //6
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //7
-	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //8
-	{"Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"}, //9
-	{"Hit","Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown"}, //10
-	{"Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown"}, //10
-	{"Hit","Hit","Hit","Hit","Stand","Stand","Stand","Hit","Hit","Hit"}, //12
-	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //13
-	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //14
-	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //15
-	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //16
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //17
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //18
-	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"} //19
-	};
-
-//AUTOMATED PLAYER BEHAVIOR FUNCTIONS
-
-string reckless_mode(int total)
-{
-	if(total == 10 || total == 11)
-	{
-		return "DoubleDown";
-	}
-	if(total < 21)
-	{
-		return "Hit";
-	}
-	else //total == 21
-	{
-		return "Stand";
-	}
-}
-
-string conservative_mode(int total)
-{
-	if(total <= 11)
-	{
-		return "Hit";
-	}
-	else
-	{
-		return "Stand";
-	}
-}
-
-string basic_strategy(int card1, int card2, int hand_size, int total, int dealer_card)
-{
-	if(hand_size == 2)
-	{
-		if(card1 == 1)
-		{
-			return ace_table[card2][dealer_card];
-		}
-		else if(card2 == 1)
-		{
-			return ace_table[card1][dealer_card];
-		}
-	}
-	else
-	{
-		return total_table[total][dealer_card];
-	}
-}
 
 Fl_Double_Window* main_window() {
   Fl_Double_Window* w;
@@ -358,10 +275,11 @@ text += id;
 const char* text1 = text.c_str();*/
 
    //Main window for UberCasino
+/*
    Fl_Double_Window* win = main_window();
    win->show();
    return Fl::run();
-
+*/
    // a buffer to accept input
    char line[100];
    // the main loop

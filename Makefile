@@ -1,9 +1,9 @@
 
 
 OSPL_LIBS = -lpthread -lddskernel -ldcpssacpp
-LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread
+LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread #'fltk-config --ldflags
 
-CFLAGS = -DDEBUG_PRINT -DDEBUG_STATES -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys
+CFLAGS = -DDEBUG_PRINT -DDEBUG_STATES -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys #'fltk-config --cxxflags'
 CXXFLAGS = -std=c++11
 
 all: PitBoss Dealer Player
@@ -37,13 +37,13 @@ DEALER_H_FILES = src/dealer.h
 PLAYER_FILES = src/player.cpp
 PLAYER_H_FILES = src/player.h
 
-PitBoss: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/PitBoss.cpp
-	g++ -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
+PitBoss: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP}  src/PitBoss.cpp
+	g++  -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
 Dealer: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} src/Dealer.cpp ${DEALER_FILES} ${DEALER_H_FILES}  ${COMMON_H} ${COMMON_CPP}
 	g++ -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
-Player: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} $(shell fltk-config --cxxflags) src/Player.cpp ${PLAYER_FILES} ${PLAYER_H_FILES} ${COMMON_H} ${COMMON_CPP}
+Player: ${IDL_GENERATED_H} ${IDL_GENERATED_CPP} $( fltk-config --cxxflags) src/Player.cpp ${PLAYER_FILES} ${PLAYER_H_FILES} ${COMMON_H} ${COMMON_CPP}
 	g++ -lfltk -o $@ ${CFLAGS} ${CXXFLAGS} $^ ${LIBS}
 
 clean:

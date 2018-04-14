@@ -16,10 +16,47 @@
 #include "player.h"
 
 //global variables
-//player mode, 1 = manual mode, 2 = conservative mode
+//player mode, 1 = manual mode, 2 = conservative mode, 3 =Reckless mode, 4 = Basi Strategy Mode
 int player_mode = 2; 
 //decision is a variable holding the player's action
 int decision=0;
+
+//tables for basic strategy, must value of card %10 to get the proper decision
+string const ace_table[10][10] ={
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //A + 10
+	{"Hit","Hit","Hit","Hit","Stand","Stand","Stand","Hit","Hit","Hit"},//A+A
+	{"Hit","Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+2
+	{"Hit","Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+3
+	{"Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+4
+	{"Hit","Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+5
+	{"Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"},//A+6
+	{"Hit","Hit","Stand","DoubleDown","DoubleDown","DoubleDown","DoubleDown","Stand","Stand","Hit"},//A+7
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"},//A+8
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}//A+9
+	};
+string const total_table[20][10] = {
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //20
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //1
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //2
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //3
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //4
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //5
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //6
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //7
+	{"Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit","Hit"}, //8
+	{"Hit","Hit","Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","Hit","Hit","Hit"}, //9
+	{"Hit","Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown"}, //10
+	{"Hit","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown","DoubleDown"}, //10
+	{"Hit","Hit","Hit","Hit","Stand","Stand","Stand","Hit","Hit","Hit"}, //12
+	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //13
+	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //14
+	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //15
+	{"Hit","Hit","Stand","Stand","Stand","Stand","Stand","Hit","Hit","Hit"}, //16
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //17
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"}, //18
+	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"} //19
+	};
+
 
 
 //function for counting hand total given an array of cards
@@ -274,21 +311,98 @@ void player::manage_state () //function for transitioning player between states
 			}
 			p_io->publish(m_P); //why is it publishing multiple times?
 		       }
-//conservative mode  
+//conservative mode(automatic)
        else if(player_mode == 2){
-	   if ( value > 11) //dont hit above 11 because you may lose
+	   cout << "Running in Conservative Mode\n";
+	   if (( value > 11)) //dont hit above 11 because you may lose
             {
                std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
                TIMER(1);
             }
-            else //only hit when you're below 11
+            else if ((value < 11))//only hit when you're below 11
             {
                std::cout << "I have decided to hit " << std::endl;
                m_P.A = hitting;
             }
             p_io->publish  ( m_P ); //publish to dealer
             }
+//reckless mode (automatic)
+	else if(player_mode == 3)
+	{
+	  cout << "Running in Reckless Mode\n";
+	  if((value  == 10 || value == 11))
+	   {
+		std::cout << "Double it!" <<std::endl;
+		m_P.A = doubling;
+	   }
+	  if(value < 21)
+	   {
+		std::cout << "I want to hit" <<std::endl;
+	        m_P.A = hitting;
+	   }
+	  else
+	   {
+		std::cout << "I want to stand" <<std::endl;
+		m_P.A = standing;
+		TIMER(1);
+	   }
+	p_io->publish (m_P); //publish to dealer
+	}
+//basic strategy mode (automatic)
+	else if(player_mode == 4)
+	{
+	  cout << "Running in Basic Strategy mode\n";
+	int hand_size = 0;
+	string choice;
+	 for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the possible cards
+   		{
+      	 	if ( m_G.p[m_G.active_player].cards[i].valid) //check only valid cards
+      		{
+			hand_size+=1;
+		}
+		}
+	  if(value == 21)
+		{
+			cout << "I want to stand\n";
+			m_P.A = standing;
+			TIMER(1);
+		}
+	  else if(value > 21)
+		{
+			cout << "I have busted\n";
+			m_P.A = standing;
+			TIMER(1);
+		}
+	if(hand_size == 2){
+		if(m_G.p[m_G.active_player].cards[0].card == ace) //if either of the first two cards are an ace
+		{
+				choice = ace_table[m_G.p[m_G.active_player].cards[1].card%10][m_G.dealer_cards[0].card%10];
+		}
+		else if(m_G.p[m_G.active_player].cards[1].card == ace) //if either of the first two cards are an ace
+		{
+				choice = ace_table[m_G.p[m_G.active_player].cards[0].card%10][m_G.dealer_cards[0].card%10];
+		}
+	}
+	else{
+		choice = total_table[value%20][m_G.dealer_cards[0].card%10];
+	}
+
+	if(choice == "DoubleDown"){
+		cout << "Doubling Down!\n";
+		m_P.A = doubling;
+	}
+	else if(choice == "Hit"){
+		cout << "I want to hit.\n";
+		m_P.A = hitting;
+	}
+	else{
+		cout << "I want to stand\n";
+		m_P.A = standing;
+		TIMER(1);
+	}
+	p_io->publish (m_P); //publish to dealer
+	}
          }
          break;
          case EndHand:
@@ -308,7 +422,12 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
               cout<< "Player's cards: \n";
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
-              if(player_points > 21) //if Player busts, Dealer wins no matter what
+              if(player_points > 21)
+	      {
+		 cout << "Dealer Wins" << endl;
+		 m_balance = m_balance - 10.0;
+	      }
+	      else if(player_points > 21) //if Player busts, Dealer wins no matter what
 	      {
 		 cout << "Dealer Wins" << endl;
 		 m_balance = m_balance - 10.0;
