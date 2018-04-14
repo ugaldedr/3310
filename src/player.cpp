@@ -15,22 +15,24 @@
 
 #include "player.h"
 
-int player_mode = 2; int decision=0;
+//global variables
+//player mode, 1 = manual mode, 2 = conservative mode
+int player_mode = 2; 
+//decision is a variable holding the player's action
+int decision=0;
 
+
+//function for counting hand total given an array of cards
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
-   // given an array of cards, returns the point value
-   // this routine is ignorant of the different values
-   // for an ace, it is always 1.
-
    unsigned int total=0;
-   for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
+   for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the possible cards
    {
-      if ( cards[i].valid )
+      if ( cards[i].valid ) //check only valid cards
       {
-         switch ( cards[i].card )
+         switch ( cards[i].card ) //switch case to increase total based on face value of card
          {
-            case ace: if(total >=11){total=total+1;cout<<"ace(1)\n";}else{total=total+11;cout<<"ace(11)\n";}break;
+            case ace: if(total >=11){total=total+1;cout<<"ace(1)\n";}else{total=total+11;cout<<"ace(11)\n";}break; //ace is 1 only when hand is > 11, otherwise ace = 11
             case two: total=total+2;cout<<"two\n";break;
             case three: total=total+3;cout<<"three\n";break;
             case four: total=total+4;cout<<"four\n";break;
@@ -46,7 +48,7 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
          }
       }
    }
-   return total;
+   return total; //return the calculated hand total
 }
 
 void delay_thread ( int seconds, std::function <void(void)> callback)
@@ -69,7 +71,7 @@ void player::unlock ()
   // see comments under the lock () method
 }
 
-std::string player::to_string ( player_state_t p )
+std::string player::to_string ( player_state_t p ) //helper function to convert player state to string
 {
    // turn the player_state enumerant into a string
    std::string retval;
@@ -91,11 +93,11 @@ std::string player::to_string ( player_state_t p )
    return retval;
 }
 
-void player::manage_state ()
+void player::manage_state () //function for transitioning player between states
 {
    // determine if we have a state transition
    bool transition = false;
-   player_state_t next_state = m_player_state;
+   player_state_t next_state = m_player_state; //default next state is the current state
    switch ( m_player_state )
    {
      case Init:
@@ -110,24 +112,24 @@ void player::manage_state ()
             {
                // you must enter in something that does not
                // exception.  like a number
-               m_dealer_idx = std::stoi ( m_user_event_string );
-               if ( m_dealer_idx < m_dealer_list.size () )
+               m_dealer_idx = std::stoi ( m_user_event_string ); //convert the player entry into an int which is the index of the dealer
+               if ( m_dealer_idx < m_dealer_list.size () ) //only do this if player has chosen from his list of dealers
                {
                   transition = true;
-                  next_state = StartHand;
+                  next_state = StartHand; //move state to start hand state
                }
             }
          }
          break;
      case StartHand:
          {
-if(m_user_event){decision = std::stoi(m_user_event_string); cout << "I MADE A CHOICE";}
-             if ( m_timer_event )
+ 		if(m_user_event){decision = std::stoi(m_user_event_string); cout << "I MADE A CHOICE";}//store player entry as his action decision in this state
+             if ( m_timer_event ) //if player times out, return to initial state
              {
                  transition = true;
                  next_state = Init;
              }
-             if ( m_Game_recv_idx )
+             if ( m_Game_recv_idx ) // if he is in a game
              {
                  transition = true;
                  next_state = Playing;
@@ -136,14 +138,14 @@ if(m_user_event){decision = std::stoi(m_user_event_string); cout << "I MADE A CH
          break;
      case Playing:
          {
-             if ( m_Game_recv  && m_G.gstate == end_hand )
+             if ( m_Game_recv  && m_G.gstate == end_hand ) //if you are in a game, and the game state is in end hand
              {
-std::cout << "I did recieve the dealers cards being dealt " << std::endl;
+             std::cout << "The dealer is showing his cards" << std::endl;
                  // the dealers cards are dealt
                  transition = true;
-                 next_state = EndHand; 
+                 next_state = EndHand; //move to endhand state
              }
-             if ( m_Game_recv_idx )
+             if ( m_Game_recv_idx ) //else stay in this state
              {
                  transition = true;
                  next_state = Playing;
@@ -152,7 +154,7 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
          break;
      case EndHand:
          {
-             if ( m_timer_event )
+             if ( m_timer_event ) //if timer expired, transition back to start hand
              {
                  transition = true;
                  next_state = StartHand;
@@ -161,7 +163,7 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
          break;
    }
 
-   if ( m_player_state != next_state )
+   if ( m_player_state != next_state ) //if the current state is not the same as the next state
    {
 #ifdef DEBUG_STATES
       std::cout << "State change from " << to_string (m_player_state)
@@ -219,9 +221,9 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
 #endif
             if (m_Dealer_recv)
             {
-               m_dealer_list.push_back ( m_D );
+               m_dealer_list.push_back ( m_D ); //add the found dealer to list of dealers
             }
-            // print the list to stdout
+            // print the list to stdout, should change to a FLTK window
             if (m_dealer_list.size () > 0 )
             {
               for (unsigned int i=0;i<m_dealer_list.size ();i++)
@@ -255,30 +257,37 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
 #ifdef DEBUG_STATES
             std::cout << "Playing: Entry " << std::endl;
 #endif
-            unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards );
+            unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards ); //calculate the value of your hand
             std::cout << "The value of my hand is "<< value << std::endl;
-      //manual mode 
-       if(player_mode == 1){
-cout << "1: Hit\n2:Stand\n";while(decision==0);
-if(decision == 1){std::cout << "I have decided to hit " << std::endl;
-               m_P.A = hitting;/*decision = 0;*/} else if (decision==2){std::cout << "I have decided to stand" << std::endl;
-               m_P.A = standing;TIMER(1);}
-p_io->publish(m_P); //why is it publishing multiple times?
-       }
+//manual mode 
+       if(player_mode == 1)
+	{
+		cout << "1: Hit\n2:Stand\n";
+		while(decision==0); //wait here while decision is still 0
+		if(decision == 1){
+			std::cout << "I have decided to hit " << std::endl;
+              		 m_P.A = hitting;/*decision = 0;*/
+					} 
+		else if (decision==2){
+			std::cout << "I have decided to stand" << std::endl;
+               		m_P.A = standing;TIMER(1);
+			}
+			p_io->publish(m_P); //why is it publishing multiple times?
+		       }
 //conservative mode  
        else if(player_mode == 2){
-	   if ( value > 16)
+	   if ( value > 11) //dont hit above 11 because you may lose
             {
                std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
                TIMER(1);
             }
-            else
+            else //only hit when you're below 11
             {
                std::cout << "I have decided to hit " << std::endl;
                m_P.A = hitting;
             }
-            p_io->publish  ( m_P );
+            p_io->publish  ( m_P ); //publish to dealer
             }
          }
          break;
@@ -290,35 +299,42 @@ p_io->publish(m_P); //why is it publishing multiple times?
 std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
-              std::cout << "The dealer says end of hand." << std::endl; decision =0;
+              std::cout << "The dealer says end of hand." << std::endl; 
+              decision =0; //change the decision to 0 so ensure that it will wait for the player decision when we go back to play
               // calculate win or lose
-cout<< "Dealer's Hand:\n";
-              int dealer_points = Hand_Value ( m_G.dealer_cards ); cout<< "Player's cards: \n";
+	      cout<< "Dealer's Hand:\n";
+              int dealer_points = Hand_Value ( m_G.dealer_cards );
+              // calculate the hand value
+              cout<< "Player's cards: \n";
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
-              if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) )
+              if(player_points > 21) //if Player busts, Dealer wins no matter what
+	      {
+		 cout << "Dealer Wins" << endl;
+		 m_balance = m_balance - 10.0;
+              }
+              else if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) ) //if dealer has busted but player has not, player wins
               {
                  std::cout << "Player Wins" << std::endl;
                  m_balance = m_balance + 10.0;
               }
-              else if ( player_points ==  dealer_points )
+              else if ( player_points ==  dealer_points ) //if they have the same value, it is a push
               {
                  std::cout << "Push" << std::endl;
               }
-              else
+              else //else if dealer has a higher value than player but neither have busted
               {
                  std::cout << "Dealer Wins" << std::endl;
                  m_balance = m_balance - 10.0;
               }
 
-              if (m_balance > 10.0 )
-              {
+              if (m_balance > 10.0 )              {
                  // this is just a way to start the next hand
                  TIMER(2);
               }
               else
               {
-                 std::cout << "Down to " << m_balance << " exiting from game " << std::endl;
+                 std::cout << "Down to " << m_balance << " exiting from game " << std::endl; //player has run out of money
                  exit(0);
               }
             }
