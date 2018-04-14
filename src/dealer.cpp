@@ -367,7 +367,27 @@ std::cout << "got a player event " << std::endl;
 #ifdef DEBUG_STATES
              std::cout << "Deal: Entry" << std::endl;
 #endif
-             if ( m_P_sub.A == standing )
+	     if(m_P_sub.A == doubling)
+             {
+                unsigned int i = 0; cout <<"THE PLAYER IS DOUBLING DOWN" <<endl;
+                while (m_G_pub.p[ m_G_pub.active_player ].cards[i].valid)
+                {
+                   i++;
+                }
+                m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
+                if ( (int) m_G_pub.active_player+1 < (int) m_number_of_players )
+                 {
+                    std::cout << "Going to the next player" << std::endl;
+                    m_G_pub.active_player++;
+                    g_io->publish ( m_G_pub );
+                 }
+                 else
+                 {
+                     std::cout << "Next, the dealers cards." << std::endl;
+                     TIMER(1);
+                 }
+             }
+             else if ( m_P_sub.A == standing )
              {
                  std::cout << "The player is standing with " 
                            << Hand_Value ( m_G_pub.p[ m_G_pub.active_player ].cards)
@@ -385,6 +405,7 @@ std::cout << "got a player event " << std::endl;
                      TIMER(1);
                  }
              }
+
              else if ( m_P_sub.A == hitting )
              {
                 unsigned int i=0;

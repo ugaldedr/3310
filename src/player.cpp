@@ -15,7 +15,7 @@
 
 #include "player.h"
 
-int player_mode = 1; int decision=0;
+int player_mode = 2; int decision=0;
 
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
 {
@@ -261,13 +261,13 @@ std::cout << "I did recieve the dealers cards being dealt " << std::endl;
        if(player_mode == 1){
 cout << "1: Hit\n2:Stand\n";while(decision==0);
 if(decision == 1){std::cout << "I have decided to hit " << std::endl;
-               m_P.A = hitting;/*decision = 0;*/} else if (decision==2){  std::cout << "I have decided to stand" << std::endl;
+               m_P.A = hitting;/*decision = 0;*/} else if (decision==2){std::cout << "I have decided to stand" << std::endl;
                m_P.A = standing;TIMER(1);}
-p_io->publish(m_P);
+p_io->publish(m_P); //why is it publishing multiple times?
        }
 //conservative mode  
        else if(player_mode == 2){
-	   if ( value > 11 )
+	   if ( value > 16)
             {
                std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
