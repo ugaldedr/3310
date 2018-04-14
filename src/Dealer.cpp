@@ -14,6 +14,7 @@ static dealer* PTR;
 
 int main ( int argc, char* argv[] )
 {
+    char name[100];
    //seed the random number generator
    srand(time(NULL));
    // create the dealer object
@@ -22,9 +23,11 @@ int main ( int argc, char* argv[] )
    // dealer unique ID
    boost::uuids::uuid uuid = boost::uuids::random_generator()();
    memcpy ( D.m_D_pub.uid, &uuid, sizeof ( D.m_D_pub.uid ) );
-   strncpy ( D.m_D_pub.name,"Budmeister",sizeof ( D.m_D_pub.name ) );
+   std::cout << "Please enter your name!" << std::endl;
+   std::cin.getline(name, 100);
+   D.user_input(std::string(name) );
+   strncpy ( D.m_D_pub.name,name,sizeof ( D.m_D_pub.name ) );
    // should this be entered by the user. probably!
-
    // game unique ID
    boost::uuids::uuid game_uuid = boost::uuids::random_generator()();
    memcpy ( D.m_D_pub.game_uid, &game_uuid, sizeof ( D.m_D_pub.game_uid ) );
@@ -32,7 +35,7 @@ int main ( int argc, char* argv[] )
    std::cout << "Welcome to UberCasino.  The fast paced, command line BlackJack system." << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
 
-   std::cout << "The dealers name is \"Bud\"." << std::endl;
+   std::cout << "The dealers name is" << D.m_D_pub.name << std::endl;
    std::cout <<  "With a UUID of " << uuid << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
 
