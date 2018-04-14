@@ -308,7 +308,12 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
               cout<< "Player's cards: \n";
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
-              if(player_points > 21) //if Player busts, Dealer wins no matter what
+              if(player_points > 21)
+	      {
+		 cout << "Dealer Wins" << endl;
+		 m_balance = m_balance - 10.0;
+	      }
+	      else if(player_points > 21) //if Player busts, Dealer wins no matter what
 	      {
 		 cout << "Dealer Wins" << endl;
 		 m_balance = m_balance - 10.0;

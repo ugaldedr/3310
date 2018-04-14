@@ -4,11 +4,7 @@
 //  
 //  File name: UberCasinoDcps.cpp
 //  Source: UberCasinoDcps.idl
-<<<<<<< HEAD
-//  Generated: Fri Apr 13 19:54:14 2018
-=======
-//  Generated: Sat Apr 14 10:50:19 2018
->>>>>>> 5fd7e7296222f6c78fbc7343490952ec4cfa386d
+//  Generated: Sat Apr 14 14:41:09 2018
 //  OpenSplice V6.4.140320OSS
 //  
 //******************************************************************
