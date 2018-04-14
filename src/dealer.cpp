@@ -15,17 +15,17 @@
     }\
     m_timer_thread = new boost::thread ( delay_thread , SECS , std::bind ( &dealer::timer_expired , this ) );\
 
-int eight_deck[13] = {32,32,32,32,32,32,32,32,32,32,32,32,32};
+int eight_deck[13] = {32,32,32,32,32,32,32,32,32,32,32,32,32}; //global variable of eight shoe deck, 32 of each card available
 
-unsigned int Hand_Value ( UberCasino::card_t cards[] )
+unsigned int Hand_Value ( UberCasino::card_t cards[] ) //function for determining hand value given an array of cards
 {
    // given an array of cards, returns the point value
    unsigned int total=0;
-   for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++)
+   for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //check all of the card slots
    {
-      if ( cards[i].valid )
+      if ( cards[i].valid ) //only do this if the card is valid
       {
-         switch ( cards[i].card )
+         switch ( cards[i].card ) //switch statement to calculate total based on card value
          {
             case ace: total=total+1;break;
             case two: total=total+2;break;
@@ -43,23 +43,24 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
          }
       }
    }
-   return total;
+   return total; //return total value of all the cards in the player's hand
 }
 
-UberCasino::card_t Next_Card ()
+UberCasino::card_t Next_Card () //this function deals the next card, can be to player's hand or dealer's hand
 {
-   static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades };
+   static UberCasino::suite_t lut[] = { hearts,diamonds,clubs,spades }; //enum for card suit
    // this function returns the next card to be dealt
-   UberCasino::card_t retval;
-   int value = 0;
-   int suit = rand() % 4;
-   bool found = false;
+   UberCasino::card_t retval; //variable for card to return
+   int value = 0; //initialize variable for card value
+   int suit = rand() % 4; //generate a random number from 0-3
+   bool found = false; //initialize boolean for a card found variable
 
 //Loop and switch statment for eight shoe deck
-do
+do //do  while loop that executes until a valid card value is found
 {   
-   value = rand() %13; cout << "Random = " << value << endl;
-   switch(value)
+   value = rand() %13; cout << "Random = " << value << endl; //generate a random number from 0-12
+   switch(value) //switch to set correct card value, if card is available, decrement its slot in the eight_deck array and found == true
+		// if deck is out of that card, break, found is still false so generate a random number and try again
    {
 	case 0: if(eight_deck[value] != 0){retval.card = king; eight_deck[value]+=-1; found = true;} break;
 	case 1: if(eight_deck[value] != 0){retval.card = ace; eight_deck[value]+=-1; found = true;} break;
@@ -78,8 +79,8 @@ do
 }while(!found);
 
 //switch statement infinite shoe
-/* value = rand()%13;
- switch(value)
+/* value = rand()%13; //generate a random number from 0-12
+ switch(value) //switch statement that returns the card value from king to queen (0 to 12)
    {
 	case 0: retval.card = king; break;
 	case 1: retval.card = ace; break;
@@ -95,9 +96,9 @@ do
 	case 11: retval.card = jack; break;
 	case 12: retval.card = queen; break;
    }*/
-   retval.suite = lut[suit];
-   retval.valid = true;
-   return retval;
+   retval.suite = lut[suit]; //set the suit of the card to a random value
+   retval.valid = true; // set the card to be valid
+   return retval; //return the card
 }
 
 void delay_thread ( int seconds, std::function <void(void)> callback)
@@ -119,7 +120,7 @@ void dealer::unlock ()
   // see remarks under lock(), above
 }
 
-std::string dealer::to_string ( dealer_state_t d )
+std::string dealer::to_string ( dealer_state_t d )//helper function to convert the enum of dealer state to the appropriate string
 {
    std::string retval;
    switch ( d )
@@ -148,68 +149,68 @@ std::string dealer::to_string ( dealer_state_t d )
    return retval;
 }
 
-void dealer::manage_state ()
+void dealer::manage_state () //function that will move dealer from state to state
 {
-   bool transition = false;
-   dealer_state_t next_state = m_dealer_state;
+   bool transition = false; //set transition variable to off
+   dealer_state_t next_state = m_dealer_state; //determine what the next state is supposed to be, keep dealer in same state if nothing happens
 
    // determine if we have a state transition
-   switch (m_dealer_state)
+   switch (m_dealer_state) //switch depending on what state the dealer is in
    {
       case Init:
-         if ( m_user_event ) 
+         if ( m_user_event ) //receive the start command from the user
          {
-            next_state = Waiting;
+            next_state = Waiting; //next state is waiting state
             transition = true;
          }
          break;
       case Waiting:
-         if ( m_Player_recv )
+         if ( m_Player_recv ) //if you receive request from pplayer
          {
-            next_state = WaitingForOthers;
+            next_state = WaitingForOthers; //next state wait for more players
             transition = true;
          }
          break;
-      case WaitingForOthers:
-         if ( m_Player_recv )
+      case WaitingForOthers: //while waiting for more players
+         if ( m_Player_recv ) //if another player is received
          {
-            next_state = WaitingForOthers;
+            next_state = WaitingForOthers; //loop back to this state
             transition = true;
          }
-         if ( m_timer_event )
+         if ( m_timer_event ) //if time runs out
          {
-            next_state = StartHand;
+            next_state = StartHand; //go to the beginning of the game
             transition = true;
          }
          break;
       case StartHand:
-         if ( m_timer_event )
+         if ( m_timer_event ) //after time runs out
          {
-            next_state = Deal;
+            next_state = Deal; //go to state for dealing a hand
             transition = true;
          }
          break;
       case Deal:
-         if ( m_timer_event )
+         if ( m_timer_event ) //if player times out
          {
-            next_state = EndHand;
+            next_state = EndHand; //end the hand
             transition = true;
          }
-         if ( m_Player_recv )
+         if ( m_Player_recv ) //if you receive an action from the player
          {
-std::cout << "got a player event " << std::endl;
+            std::cout << "got a player event " << std::endl;
             next_state = Deal;
             transition = true;
          }
          break;
       case EndHand:
-         if ( m_timer_event )
+         if ( m_timer_event ) //timer runs out after the hand has ended
          {
-            next_state = StartHand;
+            next_state = StartHand; //begin a new hand
             transition = true;
          }
          break;
-      case Done:
+      case Done: //if game is over
          {
            std::cout << "THE GAME IS OVER" << std::endl;
            exit(0);
@@ -325,17 +326,18 @@ std::cout << "got a player event " << std::endl;
                           m_P_sub.uid, 
                           sizeof ( m_G_pub.p[m_number_of_players].uid ) );
 
-                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+		//for loops for setting up the table before the game begins
+                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++) //make sure all of the cards for the players are invalid
                  {
                    m_G_pub.p[ m_number_of_players ].cards[ i ].valid  = false;
                  }
-                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
+                 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++) //make sure all of the cards for the dealer are invalid
                  {
                    m_G_pub.dealer_cards[i].valid = false;
                  }
-                 m_number_of_players++;
+                 m_number_of_players++; //increment number of players, NOTE: this should always be 1 higher than the index value of each player
                  std::cout << "There are " << m_number_of_players << " in the game." << std::endl;
-                 g_io->publish ( m_G_pub );
+                 g_io->publish ( m_G_pub ); //publish the game to the players
              }
           }
           break;
@@ -347,19 +349,16 @@ std::cout << "got a player event " << std::endl;
              // start a 1 second timer
              TIMER(1);
              m_G_pub.gstate = playing;
-             //  one for the dealer
-             m_G_pub.dealer_cards[0] = Next_Card ();
-             //  one for each player
+             m_G_pub.dealer_cards[0] = Next_Card (); //Deal the dealer's hole card
+
+		//for loop to deal the first two cards to each player
              for (unsigned int i=0;i<m_number_of_players;i++)
              {
                m_G_pub.p[ i ].cards[ 0 ] = Next_Card ();
                m_G_pub.p [ i ]. cards [1] = Next_Card ();
              }
-             // and the second card to the first player
-             
-             // set to the player
-             m_G_pub.active_player = 0;
-             g_io->publish ( m_G_pub );
+             m_G_pub.active_player = 0; //set the first player as the active player
+             g_io->publish ( m_G_pub ); //publish the game
           }
           break;
        case Deal:
@@ -367,27 +366,27 @@ std::cout << "got a player event " << std::endl;
 #ifdef DEBUG_STATES
              std::cout << "Deal: Entry" << std::endl;
 #endif
-	     if(m_P_sub.A == doubling)
+	     if(m_P_sub.A == doubling) //if player return Doubling Down as his action
              {
                 unsigned int i = 0; cout <<"THE PLAYER IS DOUBLING DOWN" <<endl;
-                while (m_G_pub.p[ m_G_pub.active_player ].cards[i].valid)
+                while (m_G_pub.p[ m_G_pub.active_player ].cards[i].valid) //iterate through the player's cards until you found a slot that is not valid
                 {
                    i++;
                 }
-                m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card ();
-                if ( (int) m_G_pub.active_player+1 < (int) m_number_of_players )
+                m_G_pub.p[ m_G_pub.active_player ].cards[ i ] = Next_Card (); //deal a card to the available slot
+                if ( (int) m_G_pub.active_player+1 < (int) m_number_of_players ) //if there is still a player left to act
                  {
                     std::cout << "Going to the next player" << std::endl;
-                    m_G_pub.active_player++;
-                    g_io->publish ( m_G_pub );
+                    m_G_pub.active_player++; //increase index for active player
+                    g_io->publish ( m_G_pub ); //republish game
                  }
-                 else
+                 else //no more players need to take their turn
                  {
                      std::cout << "Next, the dealers cards." << std::endl;
-                     TIMER(1);
+                     TIMER(1); //1 sec timer which will transition dealer to the next state
                  }
              }
-             else if ( m_P_sub.A == standing )
+             else if ( m_P_sub.A == standing ) //if player is standing, see 2nd half "Doubling Down" above for explanations
              {
                  std::cout << "The player is standing with " 
                            << Hand_Value ( m_G_pub.p[ m_G_pub.active_player ].cards)
@@ -406,7 +405,7 @@ std::cout << "got a player event " << std::endl;
                  }
              }
 
-             else if ( m_P_sub.A == hitting )
+             else if ( m_P_sub.A == hitting ) //player indicates that they are hitting, see 1st half of "Doubling Down" for dealing another card 
              {
                 unsigned int i=0;
                 while (m_G_pub.p[ m_G_pub.active_player ].cards[i].valid)
@@ -427,30 +426,28 @@ std::cout << "got a player event " << std::endl;
             // note: except for purists, dealing a card face down or
             // waiting to deal it now makes no difference.
             unsigned int i=1;
-            while ( Hand_Value ( m_G_pub.dealer_cards ) < 17 )
+            while ( Hand_Value ( m_G_pub.dealer_cards ) < 17 ) //dealer should always hit until dealer has at least 17
             {
                m_G_pub.dealer_cards[i] = Next_Card ();
                i++;
             }
-            m_G_pub.gstate = end_hand;
-            g_io->publish ( m_G_pub );
+            m_G_pub.gstate = end_hand; //set the game state to end of hand
+            g_io->publish ( m_G_pub ); //publish so that the players know it is the end of the hand
 
 //**************** LOOP to clear last set of cards*************************
-		 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
-                 {
-			for(int j = 0; j < UberCasino::MAX_PLAYERS_IN_A_GAME;j++)
+		 for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the cards in one plyaers hands
+                 { //this loop may need to be reverse, right now it is invalidating all of the 1st cards, then all of the 2nd cards etc, in reality should probably loop through per valid player
+			for(int j = 0; j < UberCasino::MAX_PLAYERS_IN_A_GAME;j++) //iterate through all of the players in the game
 			{
-				m_G_pub.p[ j ].cards[ i ].valid  = false;
+				m_G_pub.p[ j ].cards[ i ].valid  = false; //set the cards to false
 			}
                  }
                  for (unsigned int i=0;i<UberCasino::MAX_CARDS_PER_PLAYER;i++)
                  {
-                   m_G_pub.dealer_cards[i].valid = false;
+                   m_G_pub.dealer_cards[i].valid = false; // set all of dealer cards to false
                  }
-
-            // if you wanted to, the dealer could decide who wins
-            // or loses here.
-            std::cout << "The players now decide if they win or lose" << std::endl;TIMER(5);
+            std::cout << "The players now decide if they win or lose" << std::endl;
+            TIMER(5); //give players 5 seconds before beginning next hand
           }
           break;
        case Done:
@@ -548,7 +545,7 @@ void dealer::user_input (std::string I)
    unlock ();
 }
 
-dealer::dealer ()
+dealer::dealer () //initialize the dealer class
 {
    // member variables
    m_timer_thread = NULL;
