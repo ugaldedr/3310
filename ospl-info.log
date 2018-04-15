@@ -1,14 +1,14 @@
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:30 CDT 2018
+Date        : Sun Apr 15 02:07:32 CDT 2018
 Description : u_domainNew:Database allocated on heap
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : spliced b73bab40
-Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523734950.527751617
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : spliced 7f128c171700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776052.933438699
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:30 CDT 2018
+Date        : Sun Apr 15 02:07:32 CDT 2018
 Description : ---------------------------------------------------------------
               -- The service is using the following configuration settings --
               ---------------------------------------------------------------
@@ -20,67 +20,67 @@ Description : ---------------------------------------------------------------
               Memory mode          : Heap memory
               Builtin topics       : true
               Priority inheritance : false
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : spliced b73bab40
-Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523734950.530902819
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : spliced 7f128c171700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776052.975463909
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:30 CDT 2018
+Date        : Sun Apr 15 02:07:32 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'splicedaemon' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : spliced b73bab40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734950.531260355
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : spliced 7f128c171700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776052.976468292
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:30 CDT 2018
-Description : ++++++++++++++++++++++++++++++++++++++++++++++++
-              ++ The service 'ddsi2' is now operational. 
-              ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : ddsi2 b6aa6b40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734950.535422768
+Date        : Sun Apr 15 02:07:33 CDT 2018
+Description : SOAP service is reachable via port 41209
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : cmsoap 7f128969d700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776053.031660772
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:30 CDT 2018
-Description : SOAP service is reachable via port 43233
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : cmsoap b6d7db40
-Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523734950.536380231
-========================================================================================
-Report      : INFO
-Date        : Sat Apr 14 14:42:30 CDT 2018
+Date        : Sun Apr 15 02:07:33 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'cmsoap' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : cmsoap b6d7db40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734950.536514080
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : cmsoap 7f128969d700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776053.059588250
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:31 CDT 2018
-Description : The durability service can by identified by ID: 1013521668
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : durability b6c18b40
-Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523734951.344048900
+Date        : Sun Apr 15 02:07:33 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : ddsi2 7f1288f35700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776053.084867491
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:34 CDT 2018
+Date        : Sun Apr 15 02:07:33 CDT 2018
+Description : The durability service can by identified by ID: 1312062301
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : durability 7f12892f9700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776053.285581243
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:07:37 CDT 2018
 Description : u_domainNew:Database allocated on heap
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : spliced b6f5ab40
-Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523734954.697827826
+Node        : rabab
+Process     : Player <27748>
+Thread      : spliced 7ffbcf708700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776057.245437158
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:34 CDT 2018
+Date        : Sun Apr 15 02:07:37 CDT 2018
 Description : ---------------------------------------------------------------
               -- The service is using the following configuration settings --
               ---------------------------------------------------------------
@@ -92,81 +92,753 @@ Description : ---------------------------------------------------------------
               Memory mode          : Heap memory
               Builtin topics       : true
               Priority inheritance : false
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : spliced b6f5ab40
-Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523734954.701079598
+Node        : rabab
+Process     : Player <27748>
+Thread      : spliced 7ffbcf708700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776057.250031387
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:34 CDT 2018
+Date        : Sun Apr 15 02:07:37 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'splicedaemon' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : spliced b6f5ab40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734954.701379133
+Node        : rabab
+Process     : Player <27748>
+Thread      : spliced 7ffbcf708700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776057.250707796
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:34 CDT 2018
-Description : SOAP service is reachable via port 39841
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : cmsoap b696db40
-Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523734954.703436528
+Date        : Sun Apr 15 02:07:37 CDT 2018
+Description : SOAP service is reachable via port 33550
+Node        : rabab
+Process     : Player <27748>
+Thread      : cmsoap 7ffbccc34700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776057.255871688
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:34 CDT 2018
+Date        : Sun Apr 15 02:07:37 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'cmsoap' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : cmsoap b696db40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734954.703585760
+Node        : rabab
+Process     : Player <27748>
+Thread      : cmsoap 7ffbccc34700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776057.255996381
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:34 CDT 2018
+Date        : Sun Apr 15 02:07:37 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'ddsi2' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : ddsi2 b6696b40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734954.707260359
+Node        : rabab
+Process     : Player <27748>
+Thread      : ddsi2 7ffbcc565700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776057.284411237
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:35 CDT 2018
-Description : The durability service can by identified by ID: 1106171595
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : durability b6808b40
-Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523734955.415264122
+Date        : Sun Apr 15 02:07:37 CDT 2018
+Description : The durability service can by identified by ID: 1372832655
+Node        : rabab
+Process     : Player <27748>
+Thread      : durability 7ffbcc8d4700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776057.301552266
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:42 CDT 2018
+Date        : Sun Apr 15 02:07:44 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'durability' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Dealer <22224>
-Thread      : durability b6c18b40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734962.935682843
+Node        : rabab
+Process     : Dealer <27687>
+Thread      : durability 7f12892f9700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776064.716472912
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:42:45 CDT 2018
+Date        : Sun Apr 15 02:07:47 CDT 2018
 Description : ++++++++++++++++++++++++++++++++++++++++++++++++
               ++ The service 'durability' is now operational. 
               ++++++++++++++++++++++++++++++++++++++++++++++++
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : durability b6808b40
-Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523734965.478374658
+Node        : rabab
+Process     : Player <27748>
+Thread      : durability 7ffbcc8d4700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776067.330519142
 ========================================================================================
 Report      : INFO
-Date        : Sat Apr 14 14:47:23 CDT 2018
-Description : Termination request (signal 2) received from PID 22285 (self), UID 1000
-Node        : localhost.localdomain
-Process     : Player <22285>
-Thread      : signalHandler b735bb40
-Internals   : V6.4.140320OSS/24b1387/24b1387/signalHandlerThread/os_signalHandler.c/503/0/1523735243.214360591
+Date        : Sun Apr 15 02:15:34 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : spliced 7f0799313700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776534.467633931
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:34 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : spliced 7f0799313700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776534.479609867
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:34 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : spliced 7f0799313700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776534.480237359
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:34 CDT 2018
+Description : SOAP service is reachable via port 39598
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : cmsoap 7f079683f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776534.488965416
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:34 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : cmsoap 7f079683f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776534.489135251
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:34 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : ddsi2 7f07960f9700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776534.516735323
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:35 CDT 2018
+Description : The durability service can by identified by ID: 42184458
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : durability 7f079649b700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776535.324569739
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:42 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : durability 7f079649b700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776542.349393922
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Player <27993>
+Thread      : spliced 7ff44e010700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776544.228768234
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Player <27993>
+Thread      : spliced 7ff44e010700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776544.233284549
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <27993>
+Thread      : spliced 7ff44e010700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776544.233796162
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : SOAP service is reachable via port 42295
+Node        : rabab
+Process     : Player <27993>
+Thread      : cmsoap 7ff44b53c700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776544.236476589
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <27993>
+Thread      : cmsoap 7ff44b53c700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776544.236624806
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <27993>
+Thread      : ddsi2 7ff44ae6d700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776544.264552230
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:44 CDT 2018
+Description : The durability service can by identified by ID: 1198860838
+Node        : rabab
+Process     : Player <27993>
+Thread      : durability 7ff44b1dc700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776544.302086549
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:15:51 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <27993>
+Thread      : durability 7ff44b1dc700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776551.826051810
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Player <28076>
+Thread      : spliced 7fbf2851f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776649.753297850
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Player <28076>
+Thread      : spliced 7fbf2851f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776649.767318593
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28076>
+Thread      : spliced 7fbf2851f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776649.772074923
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : SOAP service is reachable via port 43956
+Node        : rabab
+Process     : Player <28076>
+Thread      : cmsoap 7fbf25a4b700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776649.780457437
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28076>
+Thread      : cmsoap 7fbf25a4b700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776649.780703511
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28076>
+Thread      : ddsi2 7fbf2537c700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776649.807232675
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:29 CDT 2018
+Description : The durability service can by identified by ID: 1588874076
+Node        : rabab
+Process     : Player <28076>
+Thread      : durability 7fbf256eb700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776649.833671351
+========================================================================================
+Report      : WARNING
+Date        : Sun Apr 15 02:17:34 CDT 2018
+Description : Missed heartbeat for node - heartbeat id : 1198860838. (DCPSPublication state 1)
+Node        : rabab
+Process     : Dealer <27932>
+Thread      : OSPL Garbage Collector 7f0796d48700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_spliced/v_spliced.c/2439/0/1523776654.521677374
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:17:37 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28076>
+Thread      : durability 7fbf256eb700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776657.359877274
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : spliced 7f0cdba56700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776683.143045733
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : spliced 7f0cdba56700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776683.151729646
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : spliced 7f0cdba56700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776683.156762494
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : SOAP service is reachable via port 36322
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : cmsoap 7f0cd8f82700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776683.166919939
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : cmsoap 7f0cd8f82700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776683.167053638
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : ddsi2 7f0cd88b3700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776683.175987426
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:03 CDT 2018
+Description : The durability service can by identified by ID: 1519464535
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : durability 7f0cd8c22700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776683.507905161
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:11 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : durability 7f0cd8c22700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776691.030256308
+========================================================================================
+Report      : WARNING
+Date        : Sun Apr 15 02:18:11 CDT 2018
+Description : Missed heartbeat for node - heartbeat id : 42184458. (DCPSPublication state 1)
+Node        : rabab
+Process     : Player <28076>
+Thread      : OSPL Garbage Collector 7fbf25f54700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_spliced/v_spliced.c/2439/0/1523776691.781734285
+========================================================================================
+Report      : WARNING
+Date        : Sun Apr 15 02:18:21 CDT 2018
+Description : Missed heartbeat for node - heartbeat id : 42184458. (DCPSPublication state 1)
+Node        : rabab
+Process     : Dealer <28140>
+Thread      : OSPL Garbage Collector 7f0cd948b700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_spliced/v_spliced.c/2439/0/1523776701.166808800
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : spliced 7fcf5c4e3700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776723.403911205
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : spliced 7fcf5c4e3700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776723.413183543
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : spliced 7fcf5c4e3700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776723.413734415
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : SOAP service is reachable via port 41655
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : cmsoap 7fcf59a0f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776723.436101761
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : cmsoap 7fcf59a0f700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776723.436233622
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : ddsi2 7fcf59340700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776723.449882478
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:43 CDT 2018
+Description : The durability service can by identified by ID: 1883018354
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : durability 7fcf596af700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776723.461361290
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:50 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28220>
+Thread      : durability 7fcf596af700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776730.477600662
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Player <28282>
+Thread      : spliced 7fbc0bcca700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523776735.050818155
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Player <28282>
+Thread      : spliced 7fbc0bcca700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523776735.067413322
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28282>
+Thread      : spliced 7fbc0bcca700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776735.068070820
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : SOAP service is reachable via port 44561
+Node        : rabab
+Process     : Player <28282>
+Thread      : cmsoap 7fbc091f6700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523776735.078331931
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28282>
+Thread      : cmsoap 7fbc091f6700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776735.078549026
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28282>
+Thread      : ddsi2 7fbc08b27700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776735.105205718
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:18:55 CDT 2018
+Description : The durability service can by identified by ID: 442696274
+Node        : rabab
+Process     : Player <28282>
+Thread      : durability 7fbc08e96700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523776735.122346856
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:19:02 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28282>
+Thread      : durability 7fbc08e96700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523776742.644245889
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : spliced 7f7a241a2700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523777082.837065395
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : spliced 7f7a241a2700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523777082.849888838
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : spliced 7f7a241a2700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777082.850466157
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : SOAP service is reachable via port 45706
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : cmsoap 7f7a216ce700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523777082.863382626
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : cmsoap 7f7a216ce700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777082.863516456
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : ddsi2 7f7a20fff700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777082.867799470
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:42 CDT 2018
+Description : The durability service can by identified by ID: 582685468
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : durability 7f7a2136e700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523777082.872572645
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:49 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Dealer <28484>
+Thread      : durability 7f7a2136e700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777089.893467090
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : u_domainNew:Database allocated on heap
+Node        : rabab
+Process     : Player <28545>
+Thread      : spliced 7f3debd8a700
+Internals   : V6.4.140320OSS/24b1387/24b1387/user::u_domain::u_domainNew/u_domain.c/706/0/1523777090.457353387
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : ---------------------------------------------------------------
+              -- The service is using the following configuration settings --
+              ---------------------------------------------------------------
+              Domain (id)          : ospl_sp_ddsi (0)
+              Storage              : 10240 Kbytes
+              Storage threshold    : 1024 Kbytes
+              Storage address      : Not available
+              Locking              : default
+              Memory mode          : Heap memory
+              Builtin topics       : true
+              Priority inheritance : false
+Node        : rabab
+Process     : Player <28545>
+Thread      : spliced 7f3debd8a700
+Internals   : V6.4.140320OSS/24b1387/24b1387/The OpenSplice domain service/u_domain.c/827/0/1523777090.462006851
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'splicedaemon' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28545>
+Thread      : spliced 7f3debd8a700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777090.462560472
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : SOAP service is reachable via port 38265
+Node        : rabab
+Process     : Player <28545>
+Thread      : cmsoap 7f3de92b6700
+Internals   : V6.4.140320OSS/24b1387/24b1387/CM SOAP Service/cms_service.c/410/0/1523777090.467822952
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'cmsoap' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28545>
+Thread      : cmsoap 7f3de92b6700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777090.467962381
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'ddsi2' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28545>
+Thread      : ddsi2 7f3de8be7700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777090.491395879
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:50 CDT 2018
+Description : The durability service can by identified by ID: 1880141715
+Node        : rabab
+Process     : Player <28545>
+Thread      : durability 7f3de8f56700
+Internals   : V6.4.140320OSS/24b1387/24b1387/DurabilityService/d_durability.c/476/0/1523777090.525798548
+========================================================================================
+Report      : INFO
+Date        : Sun Apr 15 02:24:58 CDT 2018
+Description : ++++++++++++++++++++++++++++++++++++++++++++++++
+              ++ The service 'durability' is now operational. 
+              ++++++++++++++++++++++++++++++++++++++++++++++++
+Node        : rabab
+Process     : Player <28545>
+Thread      : durability 7f3de8f56700
+Internals   : V6.4.140320OSS/24b1387/24b1387/v_serviceChangeState/v_service.c/329/0/1523777098.044300850

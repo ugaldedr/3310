@@ -128,8 +128,8 @@ string text = "The Player ID is: ";
 text += id;
 const char* text1 = text.c_str();
 
- /*  //Main window for UberCasino
-   Fl_Window win(1600,900,"UberCasino"); 
+   //Main window for UberCasino
+ /*  Fl_Window win(1600,900,"UberCasino"); 
 Fl_Text_Display display(150,150,450,125,text1);
    win.show();
    return Fl::run();*/

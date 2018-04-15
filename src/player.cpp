@@ -16,7 +16,7 @@
 #include "player.h"
 
 //global variables
-//player mode, 1 = manual mode, 2 = conservative mode
+//player mode, 1 = manual mode, 2 = conservative mode, 3 =Reckless mode
 int player_mode = 2; 
 //decision is a variable holding the player's action
 int decision=0;
@@ -276,19 +276,43 @@ void player::manage_state () //function for transitioning player between states
 		       }
 //conservative mode  
        else if(player_mode == 2){
-	   if ( value > 11) //dont hit above 11 because you may lose
+	   cout << "1: Hit\n2:Stand\n";
+	   while(decision==0); //wait here while decision is still 0
+	   if (( value > 11) && decision == 2) //dont hit above 11 because you may lose
             {
                std::cout << "I have decided to stand " << std::endl;
                m_P.A = standing;
                TIMER(1);
             }
-            else //only hit when you're below 11
+            else if ((value < 11) && decision == 1)//only hit when you're below 11
             {
                std::cout << "I have decided to hit " << std::endl;
                m_P.A = hitting;
             }
             p_io->publish  ( m_P ); //publish to dealer
             }
+//reckless mode 
+	else if(player_mode == 3)
+	{
+	  cout << "1: Hit\n2:Stand\n3:Double\n";
+	  while(decision==0); //wait here while decision is still 0
+	  if((value  == 10 || value == 11) && decision == 3)
+	   {
+		std::cout << "Double it!" <<std::endl;
+		m_P.A = doubling;
+	   }
+	  if((value < 21) && decision == 1)
+	   {
+		std::cout << "I want to hit" <<std::endl;
+	        m_P.A = hitting;
+	   }
+	   else if (decision == 2){
+		std::cout << "I want to stand" <<std::endl;
+		m_P.A = standing;
+		TIMER(1);
+	   }
+	p_io->publish (m_P); //publish to dealer
+	}
          }
          break;
          case EndHand:
