@@ -23,6 +23,45 @@
 static player* PTR;
 #include "callback.h" // uses PTR as a global
 
+// function run when exit is selected in menu
+void exitCB(Fl_Widget* w, void* p)
+{
+	/*int selection = 1;
+	//Display popup choice box
+	selection = Fl_Choice("Are you sure you want to exit the game?", "Yes", "No");
+
+	//Yes
+	if(selection == 1) */
+	   exit(0);
+
+	// Else do nothing (No);
+}
+
+void HitCB(Fl_Widget* w, void* p)
+{
+	
+    
+}
+
+void StandCB(Fl_Widget*w, void* p)
+{
+
+}
+
+void DoubleCB(Fl_Widget *w, void* p)
+{
+
+}
+
+void PlayerCB(Fl_Widget *w, void* p)
+{
+	
+}
+
+void GameTypeCB(Fl_Widget* w, void* p)
+{
+
+}
 
 Fl_Double_Window* main_window() {
   Fl_Double_Window* w;
@@ -48,10 +87,12 @@ Fl_Double_Window* main_window() {
       o->textfont(10);
       o->textcolor((Fl_Color)128);
     } // Fl_Choice* o
-    { new Fl_Button(5, 305, 70, 25, "EXIT");
+    { Fl_Button *ExitBut = new Fl_Button(5, 305, 70, 25, "EXIT");
+	ExitBut->callback(exitCB);
     } // Fl_Button* o
     o->end();
   } // Fl_Double_Window* o
+
   { Fl_Double_Window* o = new Fl_Double_Window(1295, 635);
     w = o; if (w) {/* empty */}
     o->box(FL_OSHADOW_BOX);
@@ -64,9 +105,9 @@ Fl_Double_Window* main_window() {
       o->textfont(8);
       o->textcolor(FL_GRAY0);
     } // Fl_Menu_Bar* o
-    { Fl_Box* o = new Fl_Box(0, -4, 75, 24, "Exit");
-      o->labelfont(5);
-    } // Fl_Box* o
+    { Fl_Button* exitbut = new Fl_Button(0, -4, 75, 24, "Exit");
+      exitbut->callback(exitCB);
+    } // Fl_Button* exitbut
     { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
       o->box(FL_OVAL_BOX);
     } // Fl_Value_Output* o
@@ -84,6 +125,7 @@ Fl_Double_Window* main_window() {
     { Fl_Repeat_Button* o = new Fl_Repeat_Button(5, 260, 50, 40, "Hit");
       o->box(FL_OSHADOW_BOX);
       o->color((Fl_Color)160);
+      o->callback(HitCB);
     } // Fl_Repeat_Button* o
     { Fl_Repeat_Button* o = new Fl_Repeat_Button(30, 215, 50, 40, "Double");
       o->box(FL_OSHADOW_BOX);
@@ -247,6 +289,9 @@ Fl_Double_Window* main_window() {
   return w;
 }
 
+
+
+
 int main ( int argc, char* argv[] )
 {
    // create the dealer object
@@ -276,11 +321,14 @@ text += id;
 const char* text1 = text.c_str();*/
 
    //Main window for UberCasino
-/*
-   Fl_Double_Window* win = main_window();
-   win->show();
+  
+    Fl_Window* win = main_window();
+    
+    win->show();
+ 
    return Fl::run();
-*/
+
+
    // a buffer to accept input
    char line[100];
    // the main loop
