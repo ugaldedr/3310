@@ -1,9 +1,9 @@
 
 
 OSPL_LIBS = -lpthread -lddskernel -ldcpssacpp
-LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread #'fltk-config --ldflags
+LIBS=-L${OSPL_HOME}/lib ${OSPL_LIBS} -lboost_system -lboost_thread `fltk-config --ldflags`
 
-CFLAGS = -DDEBUG_PRINT -DDEBUG_STATES -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys #'fltk-config --cxxflags'
+CFLAGS = -DDEBUG_PRINT -DDEBUG_STATES -Wall -O0 -g -I. -I./include -I${OSPL_HOME}/include/dcps/C++/SACPP -I${OSPL_HOME}/include/sys `fltk-config --cxxflags`
 CXXFLAGS = -std=c++11
 
 all: PitBoss Dealer Player

@@ -17,6 +17,7 @@
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_Repeat_Button.H>
 #include <FL/Fl_Slider.H>
+
 #include "player.h"
 
 static player* PTR;
