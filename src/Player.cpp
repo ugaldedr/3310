@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
+
 //FLTK headers
 #include <FL/Fl.H>
 #include <FL/Fl_Double_Window.H>
@@ -17,6 +18,7 @@
 #include <FL/Fl_Counter.H>
 #include <FL/Fl_Repeat_Button.H>
 #include <FL/Fl_Slider.H>
+#include <FL/Fl_Input_Choice.H>
 
 #include "player.h"
 
@@ -35,6 +37,38 @@ void exitCB(Fl_Widget* w, void* p)
 	   exit(0);
 
 	// Else do nothing (No);
+}
+
+void choiceCB(Fl_Widget* w, void* p)
+{
+    Fl_Choice *choice = (Fl_Choice*) w;
+  
+    int type = choice->value();
+    
+    //Gma etype selection
+     if(type == 0)	//manual mode
+	{
+	  //player_mode = 1;
+	}
+     else if (type == 1) //Conservative mode
+	{
+	  //player_mode = 2;
+	}
+
+     else if( type == 2)  //Reckless mode
+	{
+	    //player_mode = 3;
+	}
+	
+     else if(type == 3)	 //Basic Strategy mode
+       {
+	 //player_mode = 4;
+       }
+}
+
+void startCB(Fl_Widget* w, void* p)
+{
+	 
 }
 
 void HitCB(Fl_Widget* w, void* p)
@@ -74,27 +108,34 @@ Fl_Double_Window* main_window() {
     { Fl_Button* o = new Fl_Button(325, 265, 70, 20, "Start");
       o->box(FL_PLASTIC_ROUND_DOWN_BOX);
       o->labelcolor((Fl_Color)1);
+      o->callback(choiceCB);
     } // Fl_Button* o
     { Fl_Text_Display* o = new Fl_Text_Display(335, 135, 50, 30, "UberCasino");
       o->box(FL_NO_BOX);
       o->labeltype(FL_EMBOSSED_LABEL);
       o->labelfont(8);
-      o->labelsize(91);
+      o->labelsize(200);
       o->labelcolor((Fl_Color)96);
     } // Fl_Text_Display* o
     { Fl_Choice* o = new Fl_Choice(275, 180, 225, 15, "Select Game Type");
       o->down_box(FL_BORDER_BOX);
       o->textfont(10);
       o->textcolor((Fl_Color)128);
+      o->callback(choiceCB, 0);
+      o->add("Manual");
+      o->add("Conservative");
+      o->add("Reckless");
+      o->add("Basic Strategy");
+      //o->value("Manual");
     } // Fl_Choice* o
     { Fl_Button *ExitBut = new Fl_Button(5, 305, 70, 25, "EXIT");
 	ExitBut->callback(exitCB);
     } // Fl_Button* o
     o->end();
   } // Fl_Double_Window* o
-
+/*
   { Fl_Double_Window* o = new Fl_Double_Window(1295, 635);
-    w = o; if (w) {/* empty */}
+    w = o; if (w) { empty }
     o->box(FL_OSHADOW_BOX);
     o->color(FL_DARK_GREEN);
     o->align(Fl_Align(133));
@@ -286,7 +327,7 @@ Fl_Double_Window* main_window() {
     o->end();
     o->resizable(o);
   } // Fl_Double_Window* o
-  return w;
+ */ return w;
 }
 
 

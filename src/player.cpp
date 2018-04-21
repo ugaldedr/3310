@@ -16,8 +16,8 @@
 #include "player.h"
 
 //global variables
-//player mode, 1 = manual mode, 2 = conservative mode, 3 =Reckless mode, 4 = Basi Strategy Mode
-int player_mode = 2; 
+//player mode, 1 = manual mode, 2 = conservative mode, 3 =Reckless mode, 4 = Basic Strategy Mode
+//int player_mode; 
 //decision is a variable holding the player's action
 int decision=0;
 
