@@ -24,7 +24,7 @@
 
 static player* PTR;
 #include "callback.h" // uses PTR as a global
-
+int player_mode;
 // function run when exit is selected in menu
 void exitCB(Fl_Widget* w, void* p)
 {
@@ -45,32 +45,27 @@ void choiceCB(Fl_Widget* w, void* p)
   
     int type = choice->value();
     
-    //Gma etype selection
+    //Game type selection
      if(type == 0)	//manual mode
 	{
-	  //player_mode = 1;
+	  player_mode = 1;
+	  exit(0);
 	}
      else if (type == 1) //Conservative mode
 	{
-	  //player_mode = 2;
+	  player_mode = 2;
 	}
 
      else if( type == 2)  //Reckless mode
 	{
-	    //player_mode = 3;
+	    player_mode = 3;
 	}
 	
      else if(type == 3)	 //Basic Strategy mode
        {
-	 //player_mode = 4;
+	 player_mode = 4;
        }
 }
-
-void startCB(Fl_Widget* w, void* p)
-{
-	 
-}
-
 void HitCB(Fl_Widget* w, void* p)
 {
 	
@@ -96,46 +91,14 @@ void GameTypeCB(Fl_Widget* w, void* p)
 {
 
 }
+void startCB(Fl_Widget* w, void* p)
+{
 
-Fl_Double_Window* main_window() {
-  Fl_Double_Window* w;
-  { Fl_Double_Window* o = new Fl_Double_Window(700, 340);
-    w = o; if (w) {/* empty */}
-    o->box(FL_OFLAT_BOX);
-    o->color((Fl_Color)100);
-    o->labelfont(10);
-    o->labelcolor((Fl_Color)33);
-    { Fl_Button* o = new Fl_Button(325, 265, 70, 20, "Start");
-      o->box(FL_PLASTIC_ROUND_DOWN_BOX);
-      o->labelcolor((Fl_Color)1);
-      o->callback(choiceCB);
-    } // Fl_Button* o
-    { Fl_Text_Display* o = new Fl_Text_Display(335, 135, 50, 30, "UberCasino");
-      o->box(FL_NO_BOX);
-      o->labeltype(FL_EMBOSSED_LABEL);
-      o->labelfont(8);
-      o->labelsize(200);
-      o->labelcolor((Fl_Color)96);
-    } // Fl_Text_Display* o
-    { Fl_Choice* o = new Fl_Choice(275, 180, 225, 15, "Select Game Type");
-      o->down_box(FL_BORDER_BOX);
-      o->textfont(10);
-      o->textcolor((Fl_Color)128);
-      o->callback(choiceCB, 0);
-      o->add("Manual");
-      o->add("Conservative");
-      o->add("Reckless");
-      o->add("Basic Strategy");
-      //o->value("Manual");
-    } // Fl_Choice* o
-    { Fl_Button *ExitBut = new Fl_Button(5, 305, 70, 25, "EXIT");
-	ExitBut->callback(exitCB);
-    } // Fl_Button* o
-    o->end();
-  } // Fl_Double_Window* o
-/*
+//Fl_Double_Window* game_win() {
+ // Fl_Double_Window* s;
   { Fl_Double_Window* o = new Fl_Double_Window(1295, 635);
-    w = o; if (w) { empty }
+    //s = o; 
+	if (o) {/* empty*/ }
     o->box(FL_OSHADOW_BOX);
     o->color(FL_DARK_GREEN);
     o->align(Fl_Align(133));
@@ -149,7 +112,7 @@ Fl_Double_Window* main_window() {
     { Fl_Button* exitbut = new Fl_Button(0, -4, 75, 24, "Exit");
       exitbut->callback(exitCB);
     } // Fl_Button* exitbut
-    { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
+ /*   { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
       o->box(FL_OVAL_BOX);
     } // Fl_Value_Output* o
     { Fl_Value_Output* o = new Fl_Value_Output(275, 256, 30, 24, "PointVal:");
@@ -175,7 +138,7 @@ Fl_Double_Window* main_window() {
     { Fl_Repeat_Button* o = new Fl_Repeat_Button(80, 180, 50, 40, "Stand");
       o->box(FL_OSHADOW_BOX);
       o->color((Fl_Color)160);
-    } // Fl_Repeat_Button* o
+    } // Fl_Repeat_Button* o*/
     { Fl_Box* o = new Fl_Box(410, 276, 440, 74, "BlackJack");
       o->box(FL_GLEAM_UP_BOX);
       o->color((Fl_Color)108);
@@ -184,7 +147,7 @@ Fl_Double_Window* main_window() {
       o->labelsize(84);
       o->labelcolor((Fl_Color)57);
     } // Fl_Box* o
-    { Fl_Slider* o = new Fl_Slider(55, 245, 135, 95, "P1 Cards");
+ /*   { Fl_Slider* o = new Fl_Slider(55, 245, 135, 95, "P1 Cards");
       o->box(FL_ROUND_UP_BOX);
       o->color((Fl_Color)24);
       o->labelfont(5);
@@ -208,14 +171,6 @@ Fl_Double_Window* main_window() {
       o->labelfont(5);
       o->align(Fl_Align(514));
     } // Fl_Slider* o
-    { Fl_Box* o = new Fl_Box(870, 419, 120, 61, "Discard Tray");
-      o->box(FL_DIAMOND_DOWN_BOX);
-      o->color((Fl_Color)44);
-    } // Fl_Box* o
-    { Fl_Box* o = new Fl_Box(250, 428, 120, 67, "Dealing Shoe");
-      o->box(FL_GLEAM_ROUND_DOWN_BOX);
-      o->color((Fl_Color)25);
-    } // Fl_Box* o
     { Fl_Slider* o = new Fl_Slider(535, 415, 185, 120, "Dealer\'s Cards");
       o->box(FL_ROUND_DOWN_BOX);
       o->align(Fl_Align(514));
@@ -318,17 +273,62 @@ Fl_Double_Window* main_window() {
     } // Fl_Value_Output* o
     { Fl_Value_Output* o = new Fl_Value_Output(865, 206, 30, 24, "PointVal:");
       o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
+    } // Fl_Value_Output* o*/
     { Fl_Counter* o = new Fl_Counter(1175, 0, 87, 20, "No of Players Playing:");
       o->color((Fl_Color)128);
       o->labelfont(5);
       o->align(Fl_Align(FL_ALIGN_LEFT));
     } // Fl_Counter* o
+    o->show();
     o->end();
     o->resizable(o);
   } // Fl_Double_Window* o
- */ return w;
+  
+  //return s;
+ //}
 }
+
+
+
+Fl_Double_Window* main_window() {
+  Fl_Double_Window* w;
+  { Fl_Double_Window* o = new Fl_Double_Window(700, 340);
+    w = o; if (w) {/* empty */}
+    o->box(FL_OFLAT_BOX);
+    o->color((Fl_Color)100);
+    o->labelfont(10);
+    o->labelcolor((Fl_Color)33);
+    { Fl_Button* o = new Fl_Button(325, 265, 70, 20, "Start");
+      o->box(FL_PLASTIC_ROUND_DOWN_BOX);
+      o->labelcolor((Fl_Color)1);
+      o->callback(startCB);
+    } // Fl_Button* o
+    { Fl_Text_Display* o = new Fl_Text_Display(335, 135, 50, 30, "UberCasino");
+      o->box(FL_NO_BOX);
+      o->labeltype(FL_EMBOSSED_LABEL);
+      o->labelfont(8);
+      o->labelsize(200);
+      o->labelcolor((Fl_Color)96);
+    } // Fl_Text_Display* o
+    { Fl_Choice* o = new Fl_Choice(275, 180, 225, 15, "Select Game Type");
+      o->down_box(FL_BORDER_BOX);
+      o->textfont(10);
+      o->textcolor((Fl_Color)128);
+      o->callback(choiceCB, 0);
+      o->add("Manual");
+      o->add("Conservative");
+      o->add("Reckless");
+      o->add("Basic Strategy");
+      //o->value("Manual");
+    } // Fl_Choice* o
+    { Fl_Button *ExitBut = new Fl_Button(5, 305, 70, 25, "EXIT");
+	ExitBut->callback(exitCB);
+    } // Fl_Button* o
+    o->end();
+  } // Fl_Double_Window* o
+ return w;
+}
+
 
 
 
@@ -369,6 +369,25 @@ const char* text1 = text.c_str();*/
  
    return Fl::run();
 
+   //create player group
+ /*  
+    Players = new FL_Group(150, 50, 800, 450);
+    {
+	Players->begin();
+	Fl_Pack *inputBoxes = new Fl_Pack(150, 50, 200, 400);
+	{
+		inputBoxes->begin();
+		Fl_Input *name = new Fl_Input(200, 200, 250, 25, "Player Name");
+
+		inputBoxes->end();
+	}
+	Fl_Button *NewPlayer = new Fl_Button(725, 400, 60, 30, "Join");
+	NewPlayer->callback(PlayerCB);
+
+
+    }
+    
+*/
 
    // a buffer to accept input
    char line[100];

@@ -14,7 +14,7 @@
 
 
 #include "io.h"
-
+extern int player_mode;
 class player
 {
    private:
@@ -35,7 +35,7 @@ class player
       bool m_Game_recv;     // data recved, the game UID matches
       bool m_Game_recv_idx; // data recved, the player index matches
       bool m_Dealer_recv;   // data recved
-      unsigned int player_mode;
+      //unsigned int player_mode;
 
       dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
              PlayerDataWriter,PlayerDataReader_var,PlayerDataReader> *p_io;
