@@ -20,6 +20,7 @@
 //int player_mode; 
 //decision is a variable holding the player's action
 int decision=0;
+int dealer_id = 99;
 
 //tables for basic strategy, must value of card %10 to get the proper decision
 string const ace_table[10][10] ={
@@ -57,7 +58,249 @@ string const total_table[20][10] = {
 	{"Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand","Stand"} //19
 	};
 
+//FLTK FUNCTIONS
 
+void exitCB(Fl_Widget* w, void* p)
+{
+	/*int selection = 1;
+	//Display popup choice box
+	selection = Fl_Choice("Are you sure you want to exit the game?", "Yes", "No");
+
+	//Yes
+	if(selection == 1) */
+	   exit(0);
+
+	// Else do nothing (No);
+}
+
+void choiceCB(Fl_Widget* w, void* p)
+{
+    Fl_Choice *choice = (Fl_Choice*) w;
+  
+    int type = choice->value();
+    
+    //Game type selection
+     if(type == 0)	//manual mode
+	{
+	  player_mode = 1;
+	  exit(0);
+	}
+     else if (type == 1) //Conservative mode
+	{
+	  player_mode = 2;
+	}
+
+     else if( type == 2)  //Reckless mode
+	{
+	    player_mode = 3;
+	}
+	
+     else if(type == 3)	 //Basic Strategy mode
+       {
+	 player_mode = 4;
+       }
+}
+
+void player::startCB(Fl_Widget* w, void *p){
+	player* o = (player*)p;
+	o->startCB2(w);
+}
+
+void player::startCB2(Fl_Widget* w)
+{this->user_input(string(1,'0'));
+//Fl_Double_Window* game_win() {
+ // Fl_Double_Window* s;
+  { Fl_Double_Window* o = new Fl_Double_Window(1295, 635);
+    //s = o; 
+	if (o) {/* empty*/ }
+    o->box(FL_OSHADOW_BOX);
+    o->color(FL_DARK_GREEN);
+    o->align(Fl_Align(133));
+    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 1295, 20, "This is the menu");
+      o->labeltype(FL_SHADOW_LABEL);
+      o->labelfont(10);
+      o->labelcolor(FL_GRAY0);
+      o->textfont(8);
+      o->textcolor(FL_GRAY0);
+    } // Fl_Menu_Bar* o
+    { Fl_Button* exitbut = new Fl_Button(0, -4, 75, 24, "Exit");
+      exitbut->callback(exitCB);
+    } // Fl_Button* exitbut
+ /*   { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o
+    { Fl_Value_Output* o = new Fl_Value_Output(275, 256, 30, 24, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o
+    { Fl_Value_Output* o = new Fl_Value_Output(455, 201, 25, 24, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o
+    { Fl_Value_Output* o = new Fl_Value_Output(645, 196, 30, 24, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o
+    { new Fl_Counter(1095, 455, 64, 20, "counter:");
+    } // Fl_Counter* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(5, 260, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)160);
+      o->callback(HitCB);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(30, 215, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)160);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(80, 180, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)160);
+    } // Fl_Repeat_Button* o*/
+    { Fl_Box* o = new Fl_Box(410, 276, 440, 74, "BlackJack");
+      o->box(FL_GLEAM_UP_BOX);
+      o->color((Fl_Color)108);
+      o->labeltype(FL_EMBOSSED_LABEL);
+      o->labelfont(10);
+      o->labelsize(84);
+      o->labelcolor((Fl_Color)57);
+    } // Fl_Box* o
+ /*   { Fl_Slider* o = new Fl_Slider(55, 245, 135, 95, "P1 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Slider* o = new Fl_Slider(185, 140, 140, 105, "P2 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Slider* o = new Fl_Slider(350, 80, 145, 105, "P3 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Slider* o = new Fl_Slider(560, 75, 155, 105, "P4 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Slider* o = new Fl_Slider(535, 415, 185, 120, "Dealer\'s Cards");
+      o->box(FL_ROUND_DOWN_BOX);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(150, 120, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)158);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(335, 45, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)174);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(530, 35, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)145);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(200, 95, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)158);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(390, 30, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)174);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(590, 30, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)145);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(255, 80, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)158);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(440, 25, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)174);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(655, 30, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)145);
+    } // Fl_Repeat_Button* o
+    { Fl_Slider* o = new Fl_Slider(780, 80, 145, 110, "P5 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Slider* o = new Fl_Slider(970, 130, 140, 100, "P6 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Slider* o = new Fl_Slider(1090, 255, 140, 95, "P7 Cards");
+      o->box(FL_ROUND_UP_BOX);
+      o->color((Fl_Color)24);
+      o->labelfont(5);
+      o->align(Fl_Align(514));
+    } // Fl_Slider* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1200, 215, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)114);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1000, 80, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)243);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(780, 35, 50, 40, "Hit");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)3);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1235, 250, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)114);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1055, 90, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)243);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(840, 35, 50, 40, "Double");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)3);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1235, 300, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)114);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1100, 115, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)243);
+    } // Fl_Repeat_Button* o
+    { Fl_Repeat_Button* o = new Fl_Repeat_Button(895, 45, 50, 40, "Stand");
+      o->box(FL_OSHADOW_BOX);
+      o->color((Fl_Color)3);
+    } // Fl_Repeat_Button* o
+    { Fl_Value_Output* o = new Fl_Value_Output(1180, 361, 30, 24, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o
+    { Fl_Value_Output* o = new Fl_Value_Output(1050, 246, 30, 24, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o
+    { Fl_Value_Output* o = new Fl_Value_Output(865, 206, 30, 24, "PointVal:");
+      o->box(FL_OVAL_BOX);
+    } // Fl_Value_Output* o*/
+    { Fl_Counter* o = new Fl_Counter(1175, 0, 87, 20, "No of Players Playing:");
+      o->color((Fl_Color)128);
+      o->labelfont(5);
+      o->align(Fl_Align(FL_ALIGN_LEFT));
+    } // Fl_Counter* o
+    o->show();
+    o->end();
+    o->resizable(o);
+  } // Fl_Double_Window* o
+  
+  //return s;
+ //}
+}
 
 //function for counting hand total given an array of cards
 unsigned int Hand_Value ( UberCasino::card_t cards[] )
@@ -589,6 +832,42 @@ player::player ()
    m_P.balance = m_balance;
    m_dealer_list.clear ();
    m_timer_thread = NULL;
+
+   //FLTK variables
+   start_window = new Fl_Double_Window(700,500);
+   start_window->box(FL_OFLAT_BOX);
+   start_window->color((Fl_Color)100);
+   start_window->labelfont(10);
+   start_window->labelcolor((Fl_Color)33);
+
+   start_window->begin();
+   Fl_Button* start_button = new Fl_Button(325,265,70,20,"Start");
+   Fl_Text_Display* background = new Fl_Text_Display(335,135,50,30,"UberCasino");
+   Fl_Choice* choice = new Fl_Choice(275,180,225,15,"Select Game Type");
+   Fl_Button* ExitBut = new Fl_Button(5,400,70,25,"EXIT");
+
+   start_button->box(FL_PLASTIC_ROUND_DOWN_BOX);
+   start_button->labelcolor((Fl_Color)1);
+   start_button->callback(startCB,this);
+
+   background->box(FL_NO_BOX);
+   background->labeltype(FL_EMBOSSED_LABEL);
+   background->labelfont(8);
+   background->labelsize(100);
+   background->labelcolor((Fl_Color)96);
+
+   choice->down_box(FL_BORDER_BOX);
+   choice->textfont(10);
+   choice->textcolor((Fl_Color)128);
+   choice->callback(choiceCB, 0);
+   choice->add("Manual");
+   choice->add("Conservative");
+   choice->add("Reckless");
+   choice->add("Basic Strategy");
+
+   ExitBut->callback(exitCB);
+
+   start_window->end();
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>

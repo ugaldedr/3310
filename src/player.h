@@ -11,10 +11,26 @@
 #include <boost/uuid/uuid_generators.hpp> // generators
 #include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
 
-
+//FLTK headers
+#include <FL/Fl.H>
+#include <FL/Fl_Double_Window.H>
+#include <FL/Fl_Button.H>
+#include <FL/Fl_Text_Display.H>
+#include <FL/Fl_Choice.H>
+#include <FL/Fl_Menu_Bar.H>
+#include <FL/Fl_Box.H>
+#include <FL/Fl_Value_Output.H>
+#include <FL/Fl_Counter.H>
+#include <FL/Fl_Repeat_Button.H>
+#include <FL/Fl_Slider.H>
+#include <FL/Fl_Input_Choice.H>
+#include <Fl/Fl_Int_Input.H>
 
 #include "io.h"
 extern int player_mode;
+
+Fl_Double_Window* main_window();
+
 class player
 {
    private:
@@ -46,11 +62,13 @@ class player
 
       std::string to_string ( player_state_t );
 
+
    public:
       boost::uuids::uuid m_my_uid;
       Player m_P; // stores the last data
       Dealer m_D; 
       Game   m_G;
+      Fl_Window* start_window;
 
       void setName (std::string);
       // There are 3 possible inputs to the dealer
@@ -62,6 +80,13 @@ class player
       void external_data (Dealer D);
       void external_data (Game G);
       void user_input (std::string);
+
+
+      static void startCB(Fl_Widget* w, void* p);
+      void startCB2(Fl_Widget* w);
+      Fl_Double_Window* main_window();
+
+
       player ();
       ~player ();
 
