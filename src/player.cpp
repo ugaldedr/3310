@@ -20,7 +20,6 @@
 //int player_mode; 
 //decision is a variable holding the player's action
 int decision=0;
-int dealer_id = 99;
 
 //tables for basic strategy, must value of card %10 to get the proper decision
 string const ace_table[10][10] ={
@@ -60,6 +59,7 @@ string const total_table[20][10] = {
 
 //FLTK FUNCTIONS
 
+//Callback Function for Exit Button
 void exitCB(Fl_Widget* w, void* p)
 {
 	/*int selection = 1;
@@ -73,6 +73,8 @@ void exitCB(Fl_Widget* w, void* p)
 	// Else do nothing (No);
 }
 
+
+//Drop Down Selection for Player Mode
 void choiceCB(Fl_Widget* w, void* p)
 {
     Fl_Choice *choice = (Fl_Choice*) w;
@@ -83,7 +85,6 @@ void choiceCB(Fl_Widget* w, void* p)
      if(type == 0)	//manual mode
 	{
 	  player_mode = 1;
-	  exit(0);
 	}
      else if (type == 1) //Conservative mode
 	{
@@ -101,22 +102,28 @@ void choiceCB(Fl_Widget* w, void* p)
        }
 }
 
-void player::startCB(Fl_Widget* w, void *p){
+//static function to pass class access to start button callback
+void player::startCB(Fl_Widget* w, void *p)
+{
 	player* o = (player*)p;
 	o->startCB2(w);
 }
 
+//actual start button callback
 void player::startCB2(Fl_Widget* w)
-{this->user_input(string(1,'0'));
-//Fl_Double_Window* game_win() {
+{
+	this->user_input(string(1,'0'));
+	this->start_window->hide();
+	this->play_window->show();
+/*Fl_Double_Window* game_win() {
  // Fl_Double_Window* s;
   { Fl_Double_Window* o = new Fl_Double_Window(1295, 635);
     //s = o; 
-	if (o) {/* empty*/ }
+	if (o) {empty }
     o->box(FL_OSHADOW_BOX);
     o->color(FL_DARK_GREEN);
     o->align(Fl_Align(133));
-    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 1295, 20, "This is the menu");
+    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 1295, 20, "UberCasino");
       o->labeltype(FL_SHADOW_LABEL);
       o->labelfont(10);
       o->labelcolor(FL_GRAY0);
@@ -126,7 +133,7 @@ void player::startCB2(Fl_Widget* w)
     { Fl_Button* exitbut = new Fl_Button(0, -4, 75, 24, "Exit");
       exitbut->callback(exitCB);
     } // Fl_Button* exitbut
- /*   { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
+    { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
       o->box(FL_OVAL_BOX);
     } // Fl_Value_Output* o
     { Fl_Value_Output* o = new Fl_Value_Output(275, 256, 30, 24, "PointVal:");
@@ -152,7 +159,7 @@ void player::startCB2(Fl_Widget* w)
     { Fl_Repeat_Button* o = new Fl_Repeat_Button(80, 180, 50, 40, "Stand");
       o->box(FL_OSHADOW_BOX);
       o->color((Fl_Color)160);
-    } // Fl_Repeat_Button* o*/
+    } // Fl_Repeat_Button* o
     { Fl_Box* o = new Fl_Box(410, 276, 440, 74, "BlackJack");
       o->box(FL_GLEAM_UP_BOX);
       o->color((Fl_Color)108);
@@ -161,7 +168,7 @@ void player::startCB2(Fl_Widget* w)
       o->labelsize(84);
       o->labelcolor((Fl_Color)57);
     } // Fl_Box* o
- /*   { Fl_Slider* o = new Fl_Slider(55, 245, 135, 95, "P1 Cards");
+    { Fl_Slider* o = new Fl_Slider(55, 245, 135, 95, "P1 Cards");
       o->box(FL_ROUND_UP_BOX);
       o->color((Fl_Color)24);
       o->labelfont(5);
@@ -287,7 +294,7 @@ void player::startCB2(Fl_Widget* w)
     } // Fl_Value_Output* o
     { Fl_Value_Output* o = new Fl_Value_Output(865, 206, 30, 24, "PointVal:");
       o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o*/
+    } // Fl_Value_Output* o
     { Fl_Counter* o = new Fl_Counter(1175, 0, 87, 20, "No of Players Playing:");
       o->color((Fl_Color)128);
       o->labelfont(5);
@@ -299,7 +306,7 @@ void player::startCB2(Fl_Widget* w)
   } // Fl_Double_Window* o
   
   //return s;
- //}
+ //}*/
 }
 
 //function for counting hand total given an array of cards
@@ -404,11 +411,11 @@ void player::manage_state () //function for transitioning player between states
      case StartHand:
          {
  		if(m_user_event){decision = std::stoi(m_user_event_string); cout << "I MADE A CHOICE";}//store player entry as his action decision in this state
-             if ( m_timer_event ) //if player times out, return to initial state
+             /*if ( m_timer_event ) //if player times out, return to initial state
              {
                  transition = true;
                  next_state = Init;
-             }
+             }*/
              if ( m_Game_recv_idx ) // if he is in a game
              {
                  transition = true;
@@ -555,7 +562,8 @@ void player::manage_state () //function for transitioning player between states
 			p_io->publish(m_P); //why is it publishing multiple times?
 		       }
 //conservative mode(automatic)
-       else if(player_mode == 2){
+       else if(player_mode == 2)
+	{
 	   cout << "Running in Conservative Mode\n";
 	   if (( value > 11)) //dont hit above 11 because you may lose
             {
@@ -569,7 +577,7 @@ void player::manage_state () //function for transitioning player between states
                m_P.A = hitting;
             }
             p_io->publish  ( m_P ); //publish to dealer
-            }
+         }
 //reckless mode (automatic)
 	else if(player_mode == 3)
 	{
@@ -828,7 +836,7 @@ player::player ()
 {
    // member variables
    m_player_state = Init;
-   m_balance = 1000.0;
+   m_balance = 200.0;
    m_P.balance = m_balance;
    m_dealer_list.clear ();
    m_timer_thread = NULL;
@@ -840,6 +848,7 @@ player::player ()
    start_window->labelfont(10);
    start_window->labelcolor((Fl_Color)33);
 
+ //FLTK start window initialization
    start_window->begin();
    Fl_Button* start_button = new Fl_Button(325,265,70,20,"Start");
    Fl_Text_Display* background = new Fl_Text_Display(335,135,50,30,"UberCasino");
@@ -868,6 +877,28 @@ player::player ()
    ExitBut->callback(exitCB);
 
    start_window->end();
+
+  //Intialization of the play_window
+   play_window = new Fl_Double_Window(1295, 635);
+   play_window->box(FL_OSHADOW_BOX);
+   play_window->color(FL_DARK_GREEN);
+   play_window->align(Fl_Align(133));
+
+   play_window->begin();
+   Fl_Button* exitbut = new Fl_Button(0,-4,75,24,"Exit");
+   exitbut->callback(exitCB);
+
+   Fl_Box* back2 = new Fl_Box(410, 276, 440, 74, "BlackJack");
+   back2->box(FL_GLEAM_UP_BOX);
+   back2->color((Fl_Color)108);
+   back2->labeltype(FL_EMBOSSED_LABEL);
+   back2->labelfont(10);
+   back2->labelsize(84);
+   back2->labelcolor((Fl_Color)57);
+
+   play_window->end();
+   play_window->resizable(play_window);
+   
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
                      PlayerDataWriter,PlayerDataReader_var,PlayerDataReader>

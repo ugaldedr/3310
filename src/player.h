@@ -69,6 +69,7 @@ class player
       Dealer m_D; 
       Game   m_G;
       Fl_Window* start_window;
+      Fl_Window* play_window;
 
       void setName (std::string);
       // There are 3 possible inputs to the dealer
