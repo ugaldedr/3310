@@ -115,198 +115,14 @@ void player::startCB2(Fl_Widget* w)
 	this->user_input(string(1,'0'));
 	this->start_window->hide();
 	this->play_window->show();
-/*Fl_Double_Window* game_win() {
- // Fl_Double_Window* s;
-  { Fl_Double_Window* o = new Fl_Double_Window(1295, 635);
-    //s = o; 
-	if (o) {empty }
-    o->box(FL_OSHADOW_BOX);
-    o->color(FL_DARK_GREEN);
-    o->align(Fl_Align(133));
-    { Fl_Menu_Bar* o = new Fl_Menu_Bar(0, 0, 1295, 20, "UberCasino");
-      o->labeltype(FL_SHADOW_LABEL);
-      o->labelfont(10);
-      o->labelcolor(FL_GRAY0);
-      o->textfont(8);
-      o->textcolor(FL_GRAY0);
-    } // Fl_Menu_Bar* o
-    { Fl_Button* exitbut = new Fl_Button(0, -4, 75, 24, "Exit");
-      exitbut->callback(exitCB);
-    } // Fl_Button* exitbut
-    { Fl_Value_Output* o = new Fl_Value_Output(140, 353, 30, 22, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { Fl_Value_Output* o = new Fl_Value_Output(275, 256, 30, 24, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { Fl_Value_Output* o = new Fl_Value_Output(455, 201, 25, 24, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { Fl_Value_Output* o = new Fl_Value_Output(645, 196, 30, 24, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { new Fl_Counter(1095, 455, 64, 20, "counter:");
-    } // Fl_Counter* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(5, 260, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)160);
-      o->callback(HitCB);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(30, 215, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)160);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(80, 180, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)160);
-    } // Fl_Repeat_Button* o
-    { Fl_Box* o = new Fl_Box(410, 276, 440, 74, "BlackJack");
-      o->box(FL_GLEAM_UP_BOX);
-      o->color((Fl_Color)108);
-      o->labeltype(FL_EMBOSSED_LABEL);
-      o->labelfont(10);
-      o->labelsize(84);
-      o->labelcolor((Fl_Color)57);
-    } // Fl_Box* o
-    { Fl_Slider* o = new Fl_Slider(55, 245, 135, 95, "P1 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Slider* o = new Fl_Slider(185, 140, 140, 105, "P2 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Slider* o = new Fl_Slider(350, 80, 145, 105, "P3 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Slider* o = new Fl_Slider(560, 75, 155, 105, "P4 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Slider* o = new Fl_Slider(535, 415, 185, 120, "Dealer\'s Cards");
-      o->box(FL_ROUND_DOWN_BOX);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(150, 120, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)158);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(335, 45, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)174);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(530, 35, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)145);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(200, 95, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)158);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(390, 30, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)174);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(590, 30, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)145);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(255, 80, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)158);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(440, 25, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)174);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(655, 30, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)145);
-    } // Fl_Repeat_Button* o
-    { Fl_Slider* o = new Fl_Slider(780, 80, 145, 110, "P5 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Slider* o = new Fl_Slider(970, 130, 140, 100, "P6 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Slider* o = new Fl_Slider(1090, 255, 140, 95, "P7 Cards");
-      o->box(FL_ROUND_UP_BOX);
-      o->color((Fl_Color)24);
-      o->labelfont(5);
-      o->align(Fl_Align(514));
-    } // Fl_Slider* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1200, 215, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)114);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1000, 80, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)243);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(780, 35, 50, 40, "Hit");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)3);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1235, 250, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)114);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1055, 90, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)243);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(840, 35, 50, 40, "Double");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)3);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1235, 300, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)114);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(1100, 115, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)243);
-    } // Fl_Repeat_Button* o
-    { Fl_Repeat_Button* o = new Fl_Repeat_Button(895, 45, 50, 40, "Stand");
-      o->box(FL_OSHADOW_BOX);
-      o->color((Fl_Color)3);
-    } // Fl_Repeat_Button* o
-    { Fl_Value_Output* o = new Fl_Value_Output(1180, 361, 30, 24, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { Fl_Value_Output* o = new Fl_Value_Output(1050, 246, 30, 24, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { Fl_Value_Output* o = new Fl_Value_Output(865, 206, 30, 24, "PointVal:");
-      o->box(FL_OVAL_BOX);
-    } // Fl_Value_Output* o
-    { Fl_Counter* o = new Fl_Counter(1175, 0, 87, 20, "No of Players Playing:");
-      o->color((Fl_Color)128);
-      o->labelfont(5);
-      o->align(Fl_Align(FL_ALIGN_LEFT));
-    } // Fl_Counter* o
-    o->show();
-    o->end();
-    o->resizable(o);
-  } // Fl_Double_Window* o
-  
-  //return s;
- //}*/
+}
+
+//function for updating card values in the GUI
+void player::update_cards(UberCasino::card_t cards[], void* o)
+{
+	player* p = (player*)o;
+	p->play_window->child(2)->hide(); //test code will replace
+	p->play_window->child(5)->label("Test");
 }
 
 //function for counting hand total given an array of cards
@@ -545,6 +361,7 @@ void player::manage_state () //function for transitioning player between states
             std::cout << "Playing: Entry " << std::endl;
 #endif
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards ); //calculate the value of your hand
+	update_cards(m_G.p[m_G.active_player].cards,this);
             std::cout << "The value of my hand is "<< value << std::endl;
 //manual mode 
        if(player_mode == 1)
@@ -879,22 +696,57 @@ player::player ()
    start_window->end();
 
   //Intialization of the play_window
-   play_window = new Fl_Double_Window(1295, 635);
+   play_window = new Fl_Double_Window(1600, 900);
    play_window->box(FL_OSHADOW_BOX);
    play_window->color(FL_DARK_GREEN);
    play_window->align(Fl_Align(133));
 
    play_window->begin();
-   Fl_Button* exitbut = new Fl_Button(0,-4,75,24,"Exit");
-   exitbut->callback(exitCB);
 
-   Fl_Box* back2 = new Fl_Box(410, 276, 440, 74, "BlackJack");
-   back2->box(FL_GLEAM_UP_BOX);
-   back2->color((Fl_Color)108);
-   back2->labeltype(FL_EMBOSSED_LABEL);
-   back2->labelfont(10);
-   back2->labelsize(84);
-   back2->labelcolor((Fl_Color)57);
+   Fl_Box* card1 = new Fl_Box(600,100,50,75,"Card1"); //child 0
+   card1->box(FL_PLASTIC_DOWN_BOX);
+   card1->color(FL_WHITE);
+   Fl_Box* card2 = new Fl_Box(675,100,50,75,"Card2"); //child 1
+   card2->box(FL_PLASTIC_DOWN_BOX);
+   card2->color(FL_WHITE);
+   Fl_Box* card3 = new Fl_Box(750,100,50,75,"Card3"); //child 2
+   card3->box(FL_PLASTIC_DOWN_BOX);
+   card3->color(FL_WHITE);
+   Fl_Box* card4 = new Fl_Box(825,100,50,75,"Card4"); //child 3
+   card4->box(FL_PLASTIC_DOWN_BOX);
+   card4->color(FL_WHITE);
+   Fl_Box* card5 = new Fl_Box(900,100,50,75,"Card5"); //child 4
+   card5->box(FL_PLASTIC_DOWN_BOX);
+   card5->color(FL_WHITE);
+   Fl_Box* card6 = new Fl_Box(600,200,50,75,"Card6"); //child 5
+   card6->box(FL_PLASTIC_DOWN_BOX);
+   card6->color(FL_WHITE);
+   Fl_Box* card7 = new Fl_Box(675,200,50,75,"Card7"); //child 6
+   card7->box(FL_PLASTIC_DOWN_BOX);
+   card7->color(FL_WHITE);
+   Fl_Box* card8 = new Fl_Box(750,200,50,75,"Card8"); //child 7
+   card8->box(FL_PLASTIC_DOWN_BOX);
+   card8->color(FL_WHITE);
+   Fl_Box* card9 = new Fl_Box(825,200,50,75,"Card9"); //child 8
+   card9->box(FL_PLASTIC_DOWN_BOX);
+   card9->color(FL_WHITE);
+   Fl_Box* card10 = new Fl_Box(900,200,50,75,"Card10"); //child 9
+   card10->box(FL_PLASTIC_DOWN_BOX);
+   card10->color(FL_WHITE);
+
+   Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
+   hit_button->box(FL_OSHADOW_BOX);
+   hit_button->color((Fl_Color)160);
+   Fl_Button* stand_button = new Fl_Button(750,300,60,40,"Stand");
+   stand_button->box(FL_OSHADOW_BOX);
+   stand_button->color((Fl_Color)160);
+   Fl_Button*double_button = new Fl_Button(850,300,60,40,"Double");
+   double_button->box(FL_OSHADOW_BOX);
+   double_button->color((Fl_Color)160);
+
+
+   Fl_Button* exitbut = new Fl_Button(0,0,75,25,"Exit");
+   exitbut->callback(exitCB);
 
    play_window->end();
    play_window->resizable(play_window);

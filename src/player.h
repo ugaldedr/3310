@@ -85,7 +85,7 @@ class player
 
       static void startCB(Fl_Widget* w, void* p);
       void startCB2(Fl_Widget* w);
-      Fl_Double_Window* main_window();
+      void update_cards(UberCasino::card_t cards[], void* o);
 
 
       player ();
