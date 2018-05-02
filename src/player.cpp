@@ -117,12 +117,110 @@ void player::startCB2(Fl_Widget* w)
 	this->play_window->show();
 }
 
+void hitCB(Fl_Widget* w, void* p)
+{
+	decision = 1;
+}
+
+void standCB(Fl_Widget* w, void* p)
+{
+	decision = 2;
+}
+
+void doubleCB(Fl_Widget* w, void* p)
+{
+	decision = 3;
+}
+
 //function for updating card values in the GUI
 void player::update_cards(UberCasino::card_t cards[], void* o)
 {
 	player* p = (player*)o;
-	p->play_window->child(2)->hide(); //test code will replace
-	p->play_window->child(5)->label("Test");
+
+	for(unsigned int i = 0; i < UberCasino::MAX_CARDS_PER_PLAYER;i++)
+	{
+		string display = "";
+		if(cards[i].valid)
+		{
+			p->play_window->child(i)->show();
+			switch(cards[i].card)
+			{
+				case ace: display+="A"; break;
+				case two: display+="2"; break;
+				case three: display+="3"; break;
+				case four: display+="4"; break;
+				case five: display+="5"; break;
+				case six: display+="6"; break;
+				case seven: display+="7"; break;
+				case eight: display+="8"; break;
+				case nine: display+="9"; break;
+				case ten: display+="10"; break;
+				case jack: display+="J"; break;
+				case queen: display+="Q"; break;
+				case king: display+="K"; break;
+			}
+			switch(cards[i].suite)
+			{
+				case hearts: display+=" H"; break;
+				case diamonds: display+=" D"; break;
+				case clubs: display+=" C"; break;
+				case spades: display+=" S"; break;
+			}
+			char copy[display.length()+1];
+			strcpy(copy,display.c_str());	
+			cout << copy;
+			p->play_window->child(i)->copy_label(copy);
+		}
+		else
+		{
+			p->play_window->child(i)->hide();
+		}
+	}
+}
+
+//function for updating card values in the GUI
+void player::update_dealer(UberCasino::card_t cards[], void* o)
+{
+	player* p = (player*)o;
+
+	for(unsigned int i = 0; i < UberCasino::MAX_CARDS_PER_PLAYER;i++)
+	{
+		string display = "";
+		if(cards[i].valid)
+		{
+			p->play_window->child(i+10)->show();
+			switch(cards[i].card)
+			{
+				case ace: display+="A"; break;
+				case two: display+="2"; break;
+				case three: display+="3"; break;
+				case four: display+="4"; break;
+				case five: display+="5"; break;
+				case six: display+="6"; break;
+				case seven: display+="7"; break;
+				case eight: display+="8"; break;
+				case nine: display+="9"; break;
+				case ten: display+="10"; break;
+				case jack: display+="J"; break;
+				case queen: display+="Q"; break;
+				case king: display+="K"; break;
+			}
+			switch(cards[i].suite)
+			{
+				case hearts: display+=" H"; break;
+				case diamonds: display+=" D"; break;
+				case clubs: display+=" C"; break;
+				case spades: display+=" S"; break;
+			}
+			char copy[display.length()+1];
+			strcpy(copy,display.c_str());	
+			p->play_window->child(i+10)->copy_label(copy);
+		}
+		else
+		{
+			p->play_window->child(i+10)->hide();
+		}
+	}
 }
 
 //function for counting hand total given an array of cards
@@ -361,116 +459,140 @@ void player::manage_state () //function for transitioning player between states
             std::cout << "Playing: Entry " << std::endl;
 #endif
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards ); //calculate the value of your hand
-	update_cards(m_G.p[m_G.active_player].cards,this);
+	    update_cards(m_G.p[m_G.active_player].cards,this);
+	    update_dealer(m_G.dealer_cards,this);
             std::cout << "The value of my hand is "<< value << std::endl;
+
+//if hand value is 21 or above
+	if(value >= 21)
+	{
+		m_P.A = standing;
+		decision = 0;
+		p_io->publish(m_P);
+	}
 //manual mode 
-       if(player_mode == 1)
+        else if(player_mode == 1)
 	{
 		cout << "1: Hit\n2:Stand\n";
 		while(decision==0); //wait here while decision is still 0
-		if(decision == 1){
+		if(decision == 1)
+		{
 			std::cout << "I have decided to hit " << std::endl;
-              		 m_P.A = hitting;/*decision = 0;*/
-					} 
-		else if (decision==2){
+              		m_P.A = hitting;
+			decision = 0;
+		} 
+		else if (decision==2)
+		{
 			std::cout << "I have decided to stand" << std::endl;
-               		m_P.A = standing;TIMER(1);
-			}
-			p_io->publish(m_P); //why is it publishing multiple times?
-		       }
+               		m_P.A = standing;
+			decision = 0;
+		}
+		else if (decision == 3)
+		{
+			cout << "I am doubling down" << endl;
+			m_P.A = doubling;
+			decision = 0;
+		}
+		p_io->publish(m_P);
+	}
 //conservative mode(automatic)
-       else if(player_mode == 2)
+        else if(player_mode == 2)
 	{
-	   cout << "Running in Conservative Mode\n";
-	   if (( value > 11)) //dont hit above 11 because you may lose
-            {
-               std::cout << "I have decided to stand " << std::endl;
-               m_P.A = standing;
-               TIMER(1);
-            }
-            else if ((value < 11))//only hit when you're below 11
-            {
-               std::cout << "I have decided to hit " << std::endl;
-               m_P.A = hitting;
-            }
-            p_io->publish  ( m_P ); //publish to dealer
+		cout << "Running in Conservative Mode\n";
+	   	if (( value > 11)) //dont hit above 11 because you may lose
+           	{
+           		std::cout << "I have decided to stand " << std::endl;
+           	    	m_P.A = standing;
+           	    	TIMER(1);
+            	}
+            	else if ((value < 11))//only hit when you're below 11
+            	{
+               		std::cout << "I have decided to hit " << std::endl;
+               		m_P.A = hitting;
+            	}
+            	p_io->publish  ( m_P ); //publish to dealer
          }
 //reckless mode (automatic)
 	else if(player_mode == 3)
 	{
-	  cout << "Running in Reckless Mode\n";
-	  if((value  == 10 || value == 11))
-	   {
-		std::cout << "Double it!" <<std::endl;
-		m_P.A = doubling;
-	   }
-	  if(value < 21)
-	   {
-		std::cout << "I want to hit" <<std::endl;
-	        m_P.A = hitting;
-	   }
-	  else
-	   {
-		std::cout << "I want to stand" <<std::endl;
-		m_P.A = standing;
-		TIMER(1);
-	   }
-	p_io->publish (m_P); //publish to dealer
+		cout << "Running in Reckless Mode\n";
+		if((value  == 10 || value == 11))
+		{
+			std::cout << "Double it!" <<std::endl;
+			m_P.A = doubling;
+	 	}
+		if(value < 21)
+	 	{
+			std::cout << "I want to hit" <<std::endl;
+	 	       m_P.A = hitting;
+	 	}
+	 	else
+	   	{
+			std::cout << "I want to stand" <<std::endl;
+			m_P.A = standing;
+	   	}
+		p_io->publish (m_P); //publish to dealer
 	}
 //basic strategy mode (automatic)
 	else if(player_mode == 4)
 	{
-	  cout << "Running in Basic Strategy mode\n";
-	int hand_size = 0;
-	string choice;
-	 for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the possible cards
+		cout << "Running in Basic Strategy mode\n";
+		int hand_size = 0;
+		string choice;
+		for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the possible cards
    		{
-      	 	if ( m_G.p[m_G.active_player].cards[i].valid) //check only valid cards
-      		{
-			hand_size+=1;
+      	 		if ( m_G.p[m_G.active_player].cards[i].valid) //check only valid cards
+      			{
+				hand_size+=1;
+			}
 		}
-		}
-	  if(value == 21)
+		
+		if(value == 21)
 		{
 			cout << "I want to stand\n";
 			m_P.A = standing;
 			TIMER(1);
 		}
-	  else if(value > 21)
+		else if(value > 21)
 		{
 			cout << "I have busted\n";
 			m_P.A = standing;
 			TIMER(1);
 		}
-	if(hand_size == 2){
-		if(m_G.p[m_G.active_player].cards[0].card == ace) //if either of the first two cards are an ace
+		if(hand_size == 2)
 		{
+			if(m_G.p[m_G.active_player].cards[0].card == ace) //if either of the first two cards are an ace
+			{
 				choice = ace_table[m_G.p[m_G.active_player].cards[1].card%10][m_G.dealer_cards[0].card%10];
-		}
-		else if(m_G.p[m_G.active_player].cards[1].card == ace) //if either of the first two cards are an ace
-		{
+			}
+			else if(m_G.p[m_G.active_player].cards[1].card == ace) //if either of the first two cards are an ace
+			{
 				choice = ace_table[m_G.p[m_G.active_player].cards[0].card%10][m_G.dealer_cards[0].card%10];
+			}
 		}
-	}
-	else{
-		choice = total_table[value%20][m_G.dealer_cards[0].card%10];
-	}
+		else
+		{
+			choice = total_table[value%20][m_G.dealer_cards[0].card%10];
+		}
 
-	if(choice == "DoubleDown"){
-		cout << "Doubling Down!\n";
-		m_P.A = doubling;
-	}
-	else if(choice == "Hit"){
-		cout << "I want to hit.\n";
-		m_P.A = hitting;
-	}
-	else{
-		cout << "I want to stand\n";
-		m_P.A = standing;
-		TIMER(1);
-	}
-	p_io->publish (m_P); //publish to dealer
-	}
+		if(choice == "DoubleDown")
+		{
+			cout << "Doubling Down!\n";
+			m_P.A = doubling;
+		}
+		else if(choice == "Hit")
+		{
+			cout << "I want to hit.\n";
+			m_P.A = hitting;
+		}
+		else
+		{
+			cout << "I want to stand\n";
+			m_P.A = standing;
+			TIMER(1);
+		}
+		p_io->publish (m_P); //publish to dealer
+	 }
          }
          break;
          case EndHand:
@@ -482,7 +604,6 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
               std::cout << "The dealer says end of hand." << std::endl; 
-              decision =0; //change the decision to 0 so ensure that it will wait for the player decision when we go back to play
               // calculate win or lose
 	      cout<< "Dealer's Hand:\n";
               int dealer_points = Hand_Value ( m_G.dealer_cards );
@@ -703,6 +824,7 @@ player::player ()
 
    play_window->begin();
 
+//PLAYER CARDS
    Fl_Box* card1 = new Fl_Box(600,100,50,75,"Card1"); //child 0
    card1->box(FL_PLASTIC_DOWN_BOX);
    card1->color(FL_WHITE);
@@ -734,15 +856,73 @@ player::player ()
    card10->box(FL_PLASTIC_DOWN_BOX);
    card10->color(FL_WHITE);
 
+//DEALER CARDS
+   Fl_Box* card11 = new Fl_Box(600,500,50,75,"Card1"); //child 10
+   card11->box(FL_PLASTIC_DOWN_BOX);
+   card11->color(FL_WHITE);
+   Fl_Box* card12 = new Fl_Box(675,500,50,75,"Card2"); //child 11
+   card12->box(FL_PLASTIC_DOWN_BOX);
+   card12->color(FL_WHITE);
+   Fl_Box* card13 = new Fl_Box(750,500,50,75,"Card3"); //child 12
+   card13->box(FL_PLASTIC_DOWN_BOX);
+   card13->color(FL_WHITE);
+   Fl_Box* card14 = new Fl_Box(825,500,50,75,"Card4"); //child 13
+   card14->box(FL_PLASTIC_DOWN_BOX);
+   card14->color(FL_WHITE);
+   Fl_Box* card15 = new Fl_Box(900,500,50,75,"Card5"); //child 14
+   card15->box(FL_PLASTIC_DOWN_BOX);
+   card15->color(FL_WHITE);
+   Fl_Box* card16 = new Fl_Box(600,600,50,75,"Card6"); //child 15
+   card16->box(FL_PLASTIC_DOWN_BOX);
+   card16->color(FL_WHITE);
+   Fl_Box* card17 = new Fl_Box(675,600,50,75,"Card7"); //child 16
+   card17->box(FL_PLASTIC_DOWN_BOX);
+   card17->color(FL_WHITE);
+   Fl_Box* card18 = new Fl_Box(750,600,50,75,"Card8"); //child 17
+   card18->box(FL_PLASTIC_DOWN_BOX);
+   card18->color(FL_WHITE);
+   Fl_Box* card19 = new Fl_Box(825,600,50,75,"Card9"); //child 18
+   card19->box(FL_PLASTIC_DOWN_BOX);
+   card19->color(FL_WHITE);
+   Fl_Box* card20 = new Fl_Box(900,600,50,75,"Card10"); //child 19
+   card20->box(FL_PLASTIC_DOWN_BOX);
+   card20->color(FL_WHITE);
+
+//hide all of the cards at startup
+   card1->hide();
+   card2->hide();
+   card3->hide();
+   card4->hide();
+   card5->hide();
+   card6->hide();
+   card7->hide();
+   card8->hide();
+   card9->hide();
+   card10->hide();
+   card11->hide();
+   card12->hide();
+   card13->hide();
+   card14->hide();
+   card15->hide();
+   card16->hide();
+   card17->hide();
+   card18->hide();
+   card19->hide();
+   card20->hide();
+
+
    Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
    hit_button->box(FL_OSHADOW_BOX);
    hit_button->color((Fl_Color)160);
+   hit_button->callback(hitCB);
    Fl_Button* stand_button = new Fl_Button(750,300,60,40,"Stand");
    stand_button->box(FL_OSHADOW_BOX);
    stand_button->color((Fl_Color)160);
+   stand_button->callback(standCB);
    Fl_Button*double_button = new Fl_Button(850,300,60,40,"Double");
    double_button->box(FL_OSHADOW_BOX);
    double_button->color((Fl_Color)160);
+   double_button->callback(doubleCB);
 
 
    Fl_Button* exitbut = new Fl_Button(0,0,75,25,"Exit");

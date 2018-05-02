@@ -11,32 +11,6 @@ static player* PTR;
 #include "callback.h" // uses PTR as a global
 int player_mode;
 
-void HitCB(Fl_Widget* w, void* p)
-{
-	
-    
-}
-
-void StandCB(Fl_Widget*w, void* p)
-{
-
-}
-
-void DoubleCB(Fl_Widget *w, void* p)
-{
-
-}
-
-void PlayerCB(Fl_Widget *w, void* p)
-{
-	
-}
-
-void GameTypeCB(Fl_Widget* w, void* p)
-{
-
-}
-
 int main ( int argc, char* argv[] )
 {
    // create the dealer object

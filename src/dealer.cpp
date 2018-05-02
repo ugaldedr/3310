@@ -53,7 +53,7 @@ UberCasino::card_t Next_Card () //this function deals the next card, can be to p
    UberCasino::card_t retval; //variable for card to return
    int value = 0; //initialize variable for card value
    int suit = rand() % 4; //generate a random number from 0-3
-   bool found = false; //initialize boolean for a card found variable
+/*   bool found = false; //initialize boolean for a card found variable
 
 //Loop and switch statment for eight shoe deck
 do //do  while loop that executes until a valid card value is found
@@ -76,10 +76,10 @@ do //do  while loop that executes until a valid card value is found
 	case 11: if(eight_deck[value] != 0){retval.card = jack; eight_deck[value]+=-1; found = true;} break;
 	case 12: if(eight_deck[value] != 0){retval.card = queen; eight_deck[value]+=-1; found = true;} break;
    }
-}while(!found);
+}while(!found);*/
 
 //switch statement infinite shoe
-/* value = rand()%13; //generate a random number from 0-12
+ value = rand()%13; //generate a random number from 0-12
  switch(value) //switch statement that returns the card value from king to queen (0 to 12)
    {
 	case 0: retval.card = king; break;
@@ -95,7 +95,7 @@ do //do  while loop that executes until a valid card value is found
 	case 10: retval.card = ten; break;
 	case 11: retval.card = jack; break;
 	case 12: retval.card = queen; break;
-   }*/
+   }
    retval.suite = lut[suit]; //set the suit of the card to a random value
    retval.valid = true; // set the card to be valid
    return retval; //return the card
