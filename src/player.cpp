@@ -910,6 +910,12 @@ player::player ()
    card19->hide();
    card20->hide();
 
+   Fl_Text_Buffer* buff = new Fl_Text_Buffer();
+   Fl_Text_Display* status= new Fl_Text_Display(600, 350, 400,50);
+   status->box(FL_ENGRAVED_BOX);
+   status->buffer(buff);
+   buff->text("Test MESSAGE");
+
 
    Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
    hit_button->box(FL_OSHADOW_BOX);
