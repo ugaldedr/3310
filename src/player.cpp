@@ -136,6 +136,22 @@ void doubleCB(Fl_Widget* w, void* p)
 	decision = 3;
 }
 
+void helpCB(Fl_Widget* w, void* p)
+{
+ 	string message = "Welcome to UberCasino!\n\nA list of available dealers and their numbers will appear.\nPlease enter the dealer number of the game you would like to enter.\nThen select a play mode from the drop down (Manual or one of our automatic modes).\nPress the START button when you have chosen a play mode and a valid dealer.";
+	char copy[message.length()+1];
+	strcpy(copy,message.c_str());
+	fl_message(copy);
+}
+
+void howtoCB(Fl_Widget* w, void* p)
+{
+ 	string message = "Rules of Blackjack:\nObtain a higher total than the dealer without exceeding 21.\nFace cards count as 10. Aces count as either 1 or 11.\nPress HIT to obtain another card.\nPress STAND to end your turn.\nPress DOUBLE to double your ante, obtain 1 more card, and end your turn.\n\nDealer must hit on any total below 17.\nHaving a Blackjack(A + value of 10) pays 1.5 times the ante.\nIf your total is higher than 21, you BUST and lose.\nIf your total is the same as the dealer, you PUSH and receive your ante back.\n\nENJOY YOUR GAME!";
+	char copy[message.length()+1];
+	strcpy(copy,message.c_str());
+	fl_message(copy);
+}
+
 //function for updating card values in the GUI
 void player::update_cards(UberCasino::card_t cards[], void* o)
 {
@@ -816,13 +832,15 @@ player::player ()
    Fl_Multiline_Output* dealer = new Fl_Multiline_Output(305,325,100,100,"List of Dealers"); //child 0
    dealer->value("");
 
-   Fl_Input* input = new Fl_Input(375,225,30,30,"Please enter a Dealer Number");
+   Fl_Input* input = new Fl_Input(345,225,30,30,"Please enter a Dealer Number");
    input->value("");
+   input->align(FL_ALIGN_TOP);
 
    Fl_Button* start_button = new Fl_Button(325,265,70,20,"Start"); //child 2
    Fl_Text_Display* background = new Fl_Text_Display(335,135,50,30,"UberCasino"); //child 3
    Fl_Choice* choice = new Fl_Choice(275,180,225,15,"Select Game Type"); //child 4
-   Fl_Button* ExitBut = new Fl_Button(5,500,70,25,"EXIT");//child 5
+   Fl_Button* ExitBut = new Fl_Button(5,400,70,25,"EXIT");//child 5
+   Fl_Button* help1 = new Fl_Button(5,350,70,25,"HELP"); //child 6
 
    start_button->box(FL_PLASTIC_ROUND_DOWN_BOX);
    start_button->labelcolor((Fl_Color)1);
@@ -845,6 +863,7 @@ player::player ()
    
 
    ExitBut->callback(exitCB);
+   help1->callback(helpCB);
 
    start_window->end();
 
@@ -962,7 +981,9 @@ player::player ()
 
 
    Fl_Button* exitbut = new Fl_Button(0,0,75,25,"Exit");
+   Fl_Button* howto = new Fl_Button(0,25,75,25,"HELP");
    exitbut->callback(exitCB);
+   howto->callback(howtoCB);
 
    play_window->end();
    play_window->resizable(play_window);

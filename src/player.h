@@ -26,6 +26,7 @@
 #include <FL/Fl_Input_Choice.H>
 #include <Fl/Fl_Int_Input.H>
 #include <Fl/Fl_Multiline_Output.H>
+#include <Fl/fl_ask.H>
 
 #include "io.h"
 extern int player_mode;
