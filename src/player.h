@@ -25,6 +25,7 @@
 #include <FL/Fl_Slider.H>
 #include <FL/Fl_Input_Choice.H>
 #include <Fl/Fl_Int_Input.H>
+#include <Fl/Fl_Multiline_Output.H>
 
 #include "io.h"
 extern int player_mode;
@@ -70,6 +71,7 @@ class player
       Game   m_G;
       Fl_Window* start_window;
       Fl_Window* play_window;
+      //Fl_Text_Buffer* buff;
 
       void setName (std::string);
       // There are 3 possible inputs to the dealer

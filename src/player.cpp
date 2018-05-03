@@ -16,8 +16,7 @@
 #include "player.h"
 
 //global variables
-//player mode, 1 = manual mode, 2 = conservative mode, 3 =Reckless mode, 4 = Basic Strategy Mode
-//int player_mode; 
+//player mode, 1 = manual mode, 2 = conservative mode, 3 = Reckless mode, 4 = Basic Strategy Mode
 //decision is a variable holding the player's action
 int decision=0;
 
@@ -112,7 +111,9 @@ void player::startCB(Fl_Widget* w, void *p)
 //actual start button callback
 void player::startCB2(Fl_Widget* w)
 {
-	this->user_input(string(1,'0'));
+	Fl_Input* i = (Fl_Input*)this->start_window->child(1);
+	string copy = i->value();
+	this->user_input(copy);
 	this->start_window->hide();
 	this->play_window->show();
 }
@@ -168,7 +169,6 @@ void player::update_cards(UberCasino::card_t cards[], void* o)
 			}
 			char copy[display.length()+1];
 			strcpy(copy,display.c_str());	
-			cout << copy;
 			p->play_window->child(i)->copy_label(copy);
 		}
 		else
@@ -427,12 +427,23 @@ void player::manage_state () //function for transitioning player between states
             // print the list to stdout, should change to a FLTK window
             if (m_dealer_list.size () > 0 )
             {
+              string list = "";
               for (unsigned int i=0;i<m_dealer_list.size ();i++)
               {
                  std::cout << "Dealer # " << i 
                            << " name " << m_dealer_list[i].name << std::endl;
+
+		 list +=std::to_string(i);
+		 list +=") ";
+		 list +=m_dealer_list[i].name;
+		 list +="\n";
               }
               std::cout << "Enter the Dealer # to join.." << std::endl;
+
+	      char copy[list.length()+1];
+	      strcpy(copy,list.c_str());
+	      Fl_Multiline_Output* o = (Fl_Multiline_Output*)this->start_window->child(0);
+	      o->value(copy);
             }
          }
          break;
@@ -788,10 +799,17 @@ player::player ()
 
  //FLTK start window initialization
    start_window->begin();
-   Fl_Button* start_button = new Fl_Button(325,265,70,20,"Start");
-   Fl_Text_Display* background = new Fl_Text_Display(335,135,50,30,"UberCasino");
-   Fl_Choice* choice = new Fl_Choice(275,180,225,15,"Select Game Type");
-   Fl_Button* ExitBut = new Fl_Button(5,400,70,25,"EXIT");
+
+   Fl_Multiline_Output* dealer = new Fl_Multiline_Output(305,325,100,100,"List of Dealers"); //child 0
+   dealer->value("");
+
+   Fl_Input* input = new Fl_Input(375,225,30,30,"Please enter a Dealer Number");
+   input->value("");
+
+   Fl_Button* start_button = new Fl_Button(325,265,70,20,"Start"); //child 2
+   Fl_Text_Display* background = new Fl_Text_Display(335,135,50,30,"UberCasino"); //child 3
+   Fl_Choice* choice = new Fl_Choice(275,180,225,15,"Select Game Type"); //child 4
+   Fl_Button* ExitBut = new Fl_Button(5,500,70,25,"EXIT");//child 5
 
    start_button->box(FL_PLASTIC_ROUND_DOWN_BOX);
    start_button->labelcolor((Fl_Color)1);
@@ -811,6 +829,7 @@ player::player ()
    choice->add("Conservative");
    choice->add("Reckless");
    choice->add("Basic Strategy");
+   
 
    ExitBut->callback(exitCB);
 
@@ -910,11 +929,11 @@ player::player ()
    card19->hide();
    card20->hide();
 
-   Fl_Text_Buffer* buff = new Fl_Text_Buffer();
+   /*Fl_Text_Buffer* buff = new Fl_Text_Buffer();
    Fl_Text_Display* status= new Fl_Text_Display(600, 350, 400,50);
    status->box(FL_ENGRAVED_BOX);
    status->buffer(buff);
-   buff->text("Test MESSAGE");
+   buff->text("Test MESSAGE");*/
 
 
    Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
