@@ -27,6 +27,7 @@
 #include <Fl/Fl_Int_Input.H>
 #include <Fl/Fl_Multiline_Output.H>
 #include <Fl/fl_ask.H>
+#include <FL/Fl_JPEG_Image.H>
 
 #include "io.h"
 extern int player_mode;
@@ -72,7 +73,6 @@ class player
       Game   m_G;
       Fl_Window* start_window;
       Fl_Window* play_window;
-      //Fl_Text_Buffer* buff;
 
       void setName (std::string);
       // There are 3 possible inputs to the dealer
@@ -96,6 +96,9 @@ class player
       static void minusCB(Fl_Widget* w, void* p);
       void minusCB2(Fl_Widget* w);
       void update_bal();
+      void update_total(int i);
+      static void strategyCB(Fl_Widget* w, void* p);
+
 
 
       player ();

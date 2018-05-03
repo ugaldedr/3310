@@ -217,11 +217,31 @@ void player::minusCB2(Fl_Widget* w)
 	o->value(c);
 }
 
+void player::strategyCB(Fl_Widget* w, void* p)
+{
+	Fl_Window* image_window = new Fl_Window(825,825,"Basic Strategy");
+	image_window->begin();
+	Fl_JPEG_Image* myimage;
+	Fl_Box* image_box = new Fl_Box(0,0,800,800);
+	myimage = new Fl_JPEG_Image("strategy.jpg");
+	image_window->end();
+	image_box->image(myimage);
+	image_window->show();
+}
+
 void player::update_bal()
 {
 	string bal = std::to_string(this->m_balance);
 	const char* d = bal.c_str();
 	Fl_Output* p = (Fl_Output*)this->play_window->child(23);
+	p->value(d);
+}
+
+void player::update_total(int i)
+{
+	string bal = std::to_string(i);
+	const char* d = bal.c_str();
+	Fl_Output* p = (Fl_Output*)this->play_window->child(30);
 	p->value(d);
 }
 
@@ -576,6 +596,7 @@ void player::manage_state () //function for transitioning player between states
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards ); //calculate the value of your hand
 	    update_cards(m_G.p[m_G.active_player].cards,this);
 	    update_dealer(m_G.dealer_cards,this);
+	    update_total(value);
             std::cout << "The value of my hand is "<< value << std::endl;
 
 //if hand value is 21 or above
@@ -1098,6 +1119,10 @@ player::player ()
    ante_display->align(FL_ALIGN_TOP);
    ante_display->box(FL_BORDER_BOX);
 
+//Hand Total Widget
+   Fl_Output* total = new Fl_Output(1050,260,50,25,"Hand Total"); //child 30
+   total->box(FL_BORDER_BOX);
+   total->align(FL_ALIGN_TOP);
 
 //Exit and Help buttons
    Fl_Button* exitbut = new Fl_Button(0,0,75,25,"Exit");
@@ -1105,8 +1130,13 @@ player::player ()
    exitbut->callback(exitCB);
    howto->callback(howtoCB);
 
+//button to display basic strategy image
+   Fl_Button* table = new Fl_Button(0,50,75,25,"Strategy");
+   table->callback(strategyCB,this);
+
    play_window->end();
    play_window->resizable(play_window);
+
    
    // member objects
    p_io = new dds_io<Player,PlayerSeq,PlayerTypeSupport_var,PlayerTypeSupport,PlayerDataWriter_var,
