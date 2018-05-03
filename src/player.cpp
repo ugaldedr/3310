@@ -118,16 +118,19 @@ void player::startCB2(Fl_Widget* w)
 	this->play_window->show();
 }
 
+//callback for hit button
 void hitCB(Fl_Widget* w, void* p)
 {
 	decision = 1;
 }
 
+//callback for stand button
 void standCB(Fl_Widget* w, void* p)
 {
 	decision = 2;
 }
 
+//callback for double down button
 void doubleCB(Fl_Widget* w, void* p)
 {
 	decision = 3;
@@ -167,7 +170,7 @@ void player::update_cards(UberCasino::card_t cards[], void* o)
 				case clubs: display+=" C"; break;
 				case spades: display+=" S"; break;
 			}
-			char copy[display.length()+1];
+			char copy[display.length()+1]; //creating a char* out of a string
 			strcpy(copy,display.c_str());	
 			p->play_window->child(i)->copy_label(copy);
 		}
@@ -221,6 +224,15 @@ void player::update_dealer(UberCasino::card_t cards[], void* o)
 			p->play_window->child(i+10)->hide();
 		}
 	}
+}
+
+//use this function to change the status message on the play window
+void player::change_status(string s)
+{
+	char copy[s.length()+1];
+	strcpy(copy,s.c_str());
+	Fl_Output* o = (Fl_Output*)this->play_window->child(20);
+	o->value(copy);
 }
 
 //function for counting hand total given an array of cards
@@ -488,7 +500,7 @@ void player::manage_state () //function for transitioning player between states
 		while(decision==0); //wait here while decision is still 0
 		if(decision == 1)
 		{
-			std::cout << "I have decided to hit " << std::endl;
+			std::cout << "I have decided to hit " << std::endl; change_status("I am hitting");
               		m_P.A = hitting;
 			decision = 0;
 		} 
@@ -617,6 +629,7 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
               std::cout << "The dealer says end of hand." << std::endl; 
               // calculate win or lose
 	      cout<< "Dealer's Hand:\n";
+	      update_dealer(m_G.dealer_cards,this);
               int dealer_points = Hand_Value ( m_G.dealer_cards );
               // calculate the hand value
               cout<< "Player's cards: \n";
@@ -929,11 +942,9 @@ player::player ()
    card19->hide();
    card20->hide();
 
-   /*Fl_Text_Buffer* buff = new Fl_Text_Buffer();
-   Fl_Text_Display* status= new Fl_Text_Display(600, 350, 400,50);
+   Fl_Output* status= new Fl_Output(600, 350, 400,50); //child 20
    status->box(FL_ENGRAVED_BOX);
-   status->buffer(buff);
-   buff->text("Test MESSAGE");*/
+   status->value("Game status here");
 
 
    Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
