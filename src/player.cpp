@@ -113,6 +113,22 @@ void player::startCB2(Fl_Widget* w)
 {
 	Fl_Input* i = (Fl_Input*)this->start_window->child(1);
 	string copy = i->value();
+	
+
+	string player_name = this->m_P.name;
+	char copy2[player_name.length()+1];
+	strcpy(copy2,player_name.c_str());
+	this->play_window->child(21)->copy_label(copy2);
+
+	if(m_dealer_list.size() >0)
+	{
+	int num = stoi(copy);
+	string deal_name = this->m_dealer_list[num].name;
+	char copy1[deal_name.length()+1];
+	strcpy(copy1,deal_name.c_str());
+	this->play_window->child(22)->copy_label(copy1);
+	}
+
 	this->user_input(copy);
 	this->start_window->hide();
 	this->play_window->show();
@@ -181,10 +197,10 @@ void player::update_cards(UberCasino::card_t cards[], void* o)
 			}
 			switch(cards[i].suite)
 			{
-				case hearts: display+=" H"; break;
-				case diamonds: display+=" D"; break;
-				case clubs: display+=" C"; break;
-				case spades: display+=" S"; break;
+				case hearts: display+="/H"; break;
+				case diamonds: display+="/D"; break;
+				case clubs: display+="/C"; break;
+				case spades: display+="/S"; break;
 			}
 			char copy[display.length()+1]; //creating a char* out of a string
 			strcpy(copy,display.c_str());	
@@ -226,10 +242,10 @@ void player::update_dealer(UberCasino::card_t cards[], void* o)
 			}
 			switch(cards[i].suite)
 			{
-				case hearts: display+=" H"; break;
-				case diamonds: display+=" D"; break;
-				case clubs: display+=" C"; break;
-				case spades: display+=" S"; break;
+				case hearts: display+="/H"; break;
+				case diamonds: display+="/D"; break;
+				case clubs: display+="/C"; break;
+				case spades: display+="/S"; break;
 			}
 			char copy[display.length()+1];
 			strcpy(copy,display.c_str());	
@@ -436,6 +452,7 @@ void player::manage_state () //function for transitioning player between states
            std::cout << "EndHand: Exit" << std::endl;
 #endif
            std::cout << "set up all the variables to play another" << std::endl;
+	   change_status("Waiting for next hand...");
          }
          break;
       }
@@ -507,28 +524,33 @@ void player::manage_state () //function for transitioning player between states
 	{
 		m_P.A = standing;
 		decision = 0;
+		change_status("Standing...");
 		p_io->publish(m_P);
 	}
 //manual mode 
         else if(player_mode == 1)
 	{
-		cout << "1: Hit\n2:Stand\n";
+		cout << "1: Hit\n2:Stand\n3.Double Down\n";
+		change_status("Please choose an action.");
 		while(decision==0); //wait here while decision is still 0
 		if(decision == 1)
 		{
-			std::cout << "I have decided to hit " << std::endl; change_status("I am hitting");
+			std::cout << "I have decided to hit " << std::endl;
+			change_status("I am hitting.");
               		m_P.A = hitting;
 			decision = 0;
 		} 
 		else if (decision==2)
 		{
 			std::cout << "I have decided to stand" << std::endl;
+			change_status("I have decided to stand.");
                		m_P.A = standing;
 			decision = 0;
 		}
 		else if (decision == 3)
 		{
 			cout << "I am doubling down" << endl;
+			change_status("Double Down!");
 			m_P.A = doubling;
 			decision = 0;
 		}
@@ -541,12 +563,13 @@ void player::manage_state () //function for transitioning player between states
 	   	if (( value > 11)) //dont hit above 11 because you may lose
            	{
            		std::cout << "I have decided to stand " << std::endl;
+			change_status("I might bust? Standing.");
            	    	m_P.A = standing;
-           	    	TIMER(1);
             	}
             	else if ((value < 11))//only hit when you're below 11
             	{
                		std::cout << "I have decided to hit " << std::endl;
+			change_status("I can't bust. Hit!");
                		m_P.A = hitting;
             	}
             	p_io->publish  ( m_P ); //publish to dealer
@@ -558,16 +581,19 @@ void player::manage_state () //function for transitioning player between states
 		if((value  == 10 || value == 11))
 		{
 			std::cout << "Double it!" <<std::endl;
+			change_status("I can win twice! Double Down!");
 			m_P.A = doubling;
 	 	}
 		if(value < 21)
 	 	{
 			std::cout << "I want to hit" <<std::endl;
-	 	       m_P.A = hitting;
+			change_status("I'm not to 21 yet. Hit!");
+	 	        m_P.A = hitting;
 	 	}
 	 	else
 	   	{
 			std::cout << "I want to stand" <<std::endl;
+			change_status("Looks like a winner! Stand.");
 			m_P.A = standing;
 	   	}
 		p_io->publish (m_P); //publish to dealer
@@ -589,14 +615,14 @@ void player::manage_state () //function for transitioning player between states
 		if(value == 21)
 		{
 			cout << "I want to stand\n";
+			change_status("Can't get a better hand than this. Stand");
 			m_P.A = standing;
-			TIMER(1);
 		}
 		else if(value > 21)
 		{
 			cout << "I have busted\n";
+			change_status("Unlucky draw.");
 			m_P.A = standing;
-			TIMER(1);
 		}
 		if(hand_size == 2)
 		{
@@ -617,18 +643,20 @@ void player::manage_state () //function for transitioning player between states
 		if(choice == "DoubleDown")
 		{
 			cout << "Doubling Down!\n";
+			change_status("I have a good chance. Double Down!");
 			m_P.A = doubling;
 		}
 		else if(choice == "Hit")
 		{
 			cout << "I want to hit.\n";
+			change_status("Gotta do better than this. Hit!");
 			m_P.A = hitting;
 		}
 		else
 		{
 			cout << "I want to stand\n";
+			change_status("This is probably good enough. Stand.");
 			m_P.A = standing;
-			TIMER(1);
 		}
 		p_io->publish (m_P); //publish to dealer
 	 }
@@ -651,28 +679,27 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
               cout<< "Player's cards: \n";
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
-              if(player_points > 21)
+              if(player_points > 21)//if player busts
 	      {
 		 cout << "Dealer Wins" << endl;
+		 change_status("I busted. Dealer wins.");
 		 m_balance = m_balance - 10.0;
 	      }
-	      else if(player_points > 21) //if Player busts, Dealer wins no matter what
-	      {
-		 cout << "Dealer Wins" << endl;
-		 m_balance = m_balance - 10.0;
-              }
               else if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) ) //if dealer has busted but player has not, player wins
               {
                  std::cout << "Player Wins" << std::endl;
+		 change_status("Dealer busted! I win.");
                  m_balance = m_balance + 10.0;
               }
               else if ( player_points ==  dealer_points ) //if they have the same value, it is a push
               {
                  std::cout << "Push" << std::endl;
+		 change_status("We have the same total. Push.");
               }
               else //else if dealer has a higher value than player but neither have busted
               {
                  std::cout << "Dealer Wins" << std::endl;
+		 change_status("Dealer is closer. Dealer wins.");
                  m_balance = m_balance - 10.0;
               }
 
@@ -963,8 +990,14 @@ player::player ()
 
    Fl_Output* status= new Fl_Output(600, 350, 400,50); //child 20
    status->box(FL_ENGRAVED_BOX);
-   status->value("Game status here");
+   status->value("Waiting for Game to begin...");
 
+   Fl_Box* player_name= new Fl_Box(725,25,100,25); //child 21
+   player_name->box(FL_RSHADOW_BOX);
+   player_name->label("Player");
+   Fl_Box* dealer_name= new Fl_Box(725,700,100,25); //child 22
+   dealer_name->box(FL_RSHADOW_BOX);
+   dealer_name->label("Dealer");
 
    Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
    hit_button->box(FL_OSHADOW_BOX);
