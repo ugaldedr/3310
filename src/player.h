@@ -91,6 +91,11 @@ class player
       void update_cards(UberCasino::card_t cards[], void* o);
       void update_dealer(UberCasino::card_t cards[], void* o);
       void change_status(string s);
+      static void plusCB(Fl_Widget* w, void* p);
+      void plusCB2(Fl_Widget* w);
+      static void minusCB(Fl_Widget* w, void* p);
+      void minusCB2(Fl_Widget* w);
+      void update_bal();
 
 
       player ();

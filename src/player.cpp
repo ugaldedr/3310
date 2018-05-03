@@ -19,6 +19,7 @@
 //player mode, 1 = manual mode, 2 = conservative mode, 3 = Reckless mode, 4 = Basic Strategy Mode
 //decision is a variable holding the player's action
 int decision=0;
+int ante = 10;
 
 //tables for basic strategy, must value of card %10 to get the proper decision
 string const ace_table[10][10] ={
@@ -120,14 +121,26 @@ void player::startCB2(Fl_Widget* w)
 	strcpy(copy2,player_name.c_str());
 	this->play_window->child(21)->copy_label(copy2);
 
-	if(m_dealer_list.size() >0)
+//change dealer name, if dealer is available
+	if(m_dealer_list.size() > 0)
 	{
-	int num = stoi(copy);
-	string deal_name = this->m_dealer_list[num].name;
-	char copy1[deal_name.length()+1];
-	strcpy(copy1,deal_name.c_str());
-	this->play_window->child(22)->copy_label(copy1);
+		int num = stoi(copy);
+		string deal_name = this->m_dealer_list[num].name;
+		char copy1[deal_name.length()+1];
+		strcpy(copy1,deal_name.c_str());
+		this->play_window->child(22)->copy_label(copy1);
 	}
+//show starting bet of 10 dollars
+	string bet = std::to_string(ante);
+	const char* c = bet.c_str();
+	Fl_Output* o = (Fl_Output*)this->play_window->child(29);
+	o->value(c);
+
+//show starting balance
+	string bal = std::to_string(this->m_balance);
+	const char* d = bal.c_str();
+	Fl_Output* p = (Fl_Output*)this->play_window->child(23);
+	p->value(d);
 
 	this->user_input(copy);
 	this->start_window->hide();
@@ -166,6 +179,50 @@ void howtoCB(Fl_Widget* w, void* p)
 	char copy[message.length()+1];
 	strcpy(copy,message.c_str());
 	fl_message(copy);
+}
+
+void player::plusCB(Fl_Widget* w, void* p)
+{
+	player* o = (player*)p;
+	o->plusCB2(w);
+}
+
+void player::plusCB2(Fl_Widget* w)
+{
+	if(ante < (this->m_balance - 5))
+	{
+		ante+=5;
+	}
+	string bet = std::to_string(ante);
+	const char* c = bet.c_str();
+	Fl_Output* o = (Fl_Output*)this->play_window->child(29);
+	o->value(c);
+}
+
+void player::minusCB(Fl_Widget* w, void* p)
+{
+	player* o = (player*)p;
+	o->minusCB2(w);
+}
+
+void player::minusCB2(Fl_Widget* w)
+{
+	if(this->m_balance > 5)
+	{
+		ante-=5;
+	}
+	string bet = std::to_string(ante);
+	const char* c =bet.c_str();
+	Fl_Output* o = (Fl_Output*)this->play_window->child(29);
+	o->value(c);
+}
+
+void player::update_bal()
+{
+	string bal = std::to_string(this->m_balance);
+	const char* d = bal.c_str();
+	Fl_Output* p = (Fl_Output*)this->play_window->child(23);
+	p->value(d);
 }
 
 //function for updating card values in the GUI
@@ -211,6 +268,8 @@ void player::update_cards(UberCasino::card_t cards[], void* o)
 			p->play_window->child(i)->hide();
 		}
 	}
+
+	p->play_window->redraw();
 }
 
 //function for updating card values in the GUI
@@ -552,6 +611,7 @@ void player::manage_state () //function for transitioning player between states
 			cout << "I am doubling down" << endl;
 			change_status("Double Down!");
 			m_P.A = doubling;
+			ante*=2;
 			decision = 0;
 		}
 		p_io->publish(m_P);
@@ -582,6 +642,7 @@ void player::manage_state () //function for transitioning player between states
 		{
 			std::cout << "Double it!" <<std::endl;
 			change_status("I can win twice! Double Down!");
+			ante*=2;
 			m_P.A = doubling;
 	 	}
 		if(value < 21)
@@ -644,6 +705,7 @@ void player::manage_state () //function for transitioning player between states
 		{
 			cout << "Doubling Down!\n";
 			change_status("I have a good chance. Double Down!");
+			ante*=2;
 			m_P.A = doubling;
 		}
 		else if(choice == "Hit")
@@ -683,13 +745,15 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
 	      {
 		 cout << "Dealer Wins" << endl;
 		 change_status("I busted. Dealer wins.");
-		 m_balance = m_balance - 10.0;
+		 m_balance = m_balance - ante;
+		 update_bal();
 	      }
               else if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) ) //if dealer has busted but player has not, player wins
               {
                  std::cout << "Player Wins" << std::endl;
 		 change_status("Dealer busted! I win.");
-                 m_balance = m_balance + 10.0;
+                 m_balance = m_balance + ante;
+		 update_bal();
               }
               else if ( player_points ==  dealer_points ) //if they have the same value, it is a push
               {
@@ -700,12 +764,14 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
               {
                  std::cout << "Dealer Wins" << std::endl;
 		 change_status("Dealer is closer. Dealer wins.");
-                 m_balance = m_balance - 10.0;
+                 m_balance = m_balance - ante;
+	 	 update_bal();
               }
 
-              if (m_balance > 10.0 )              {
+              if (m_balance > 10.0 )              
+	      {
                  // this is just a way to start the next hand
-                 TIMER(2);
+                 TIMER(3);
               }
               else
               {
@@ -988,10 +1054,13 @@ player::player ()
    card19->hide();
    card20->hide();
 
+
+//status message bar
    Fl_Output* status= new Fl_Output(600, 350, 400,50); //child 20
    status->box(FL_ENGRAVED_BOX);
    status->value("Waiting for Game to begin...");
 
+//Dealer and Player name plates
    Fl_Box* player_name= new Fl_Box(725,25,100,25); //child 21
    player_name->box(FL_RSHADOW_BOX);
    player_name->label("Player");
@@ -999,20 +1068,38 @@ player::player ()
    dealer_name->box(FL_RSHADOW_BOX);
    dealer_name->label("Dealer");
 
-   Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit");
+//Player's Balance Widget
+   Fl_Output* balance = new Fl_Output(1025,360,100,25,"Balance"); //child 23
+   balance->align(FL_ALIGN_TOP);
+   balance->box(FL_BORDER_BOX);
+
+//Action buttons
+   Fl_Button* hit_button = new Fl_Button(650,300,60,40,"Hit"); //child 24
    hit_button->box(FL_OSHADOW_BOX);
    hit_button->color((Fl_Color)160);
    hit_button->callback(hitCB);
-   Fl_Button* stand_button = new Fl_Button(750,300,60,40,"Stand");
+   Fl_Button* stand_button = new Fl_Button(750,300,60,40,"Stand"); //child 25
    stand_button->box(FL_OSHADOW_BOX);
    stand_button->color((Fl_Color)160);
    stand_button->callback(standCB);
-   Fl_Button*double_button = new Fl_Button(850,300,60,40,"Double");
+   Fl_Button*double_button = new Fl_Button(850,300,60,40,"Double"); //child 26
    double_button->box(FL_OSHADOW_BOX);
    double_button->color((Fl_Color)160);
    double_button->callback(doubleCB);
 
+//Ante changing buttons and display
+   Fl_Button* plus = new Fl_Button(1100,310,25,25,"+"); //child 27
+   plus->box(FL_THIN_UP_BOX);
+   plus->callback(plusCB,this);
+   Fl_Button* minus = new Fl_Button(1025,310,25,25,"-"); //child 28
+   minus->box(FL_THIN_UP_BOX);
+   minus->callback(minusCB,this);
+   Fl_Output* ante_display = new Fl_Output(1050,310,50,25,"Ante"); //child 29
+   ante_display->align(FL_ALIGN_TOP);
+   ante_display->box(FL_BORDER_BOX);
 
+
+//Exit and Help buttons
    Fl_Button* exitbut = new Fl_Button(0,0,75,25,"Exit");
    Fl_Button* howto = new Fl_Button(0,25,75,25,"HELP");
    exitbut->callback(exitCB);
