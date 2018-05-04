@@ -41,8 +41,6 @@ class player
       enum player_state_t {Init,StartHand,Playing,EndHand} m_player_state;
       std::string m_name;
       void manage_state ();
-      void lock ();
-      void unlock ();
       unsigned int m_dealer_idx;
       std::vector<Dealer> m_dealer_list;
       std::string m_user_event_string;

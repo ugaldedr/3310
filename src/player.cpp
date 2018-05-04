@@ -19,6 +19,7 @@
 //player mode, 1 = manual mode, 2 = conservative mode, 3 = Reckless mode, 4 = Basic Strategy Mode
 //decision is a variable holding the player's action
 int decision=0;
+//ante is the bet amount of the player
 int ante = 10;
 
 //tables for basic strategy, must value of card %10 to get the proper decision
@@ -115,10 +116,12 @@ void player::startCB2(Fl_Widget* w)
 	Fl_Input* i = (Fl_Input*)this->start_window->child(1);
 	string copy = i->value();
 	
-
+//processing to turn string into char*
+//display player's name in next window
 	string player_name = this->m_P.name;
 	char copy2[player_name.length()+1];
-	strcpy(copy2,player_name.c_str());
+	strncpy(copy2,player_name.c_str(),player_name.length());
+	copy2[player_name.length()] = '\0';
 	this->play_window->child(21)->copy_label(copy2);
 
 //change dealer name, if dealer is available
@@ -127,7 +130,8 @@ void player::startCB2(Fl_Widget* w)
 		int num = stoi(copy);
 		string deal_name = this->m_dealer_list[num].name;
 		char copy1[deal_name.length()+1];
-		strcpy(copy1,deal_name.c_str());
+		strncpy(copy1,deal_name.c_str(),deal_name.length());
+		copy1[deal_name.length()]='\0';
 		this->play_window->child(22)->copy_label(copy1);
 	}
 //show starting bet of 10 dollars
@@ -165,28 +169,26 @@ void doubleCB(Fl_Widget* w, void* p)
 	decision = 3;
 }
 
+//callback for help button pushed in first screen
 void helpCB(Fl_Widget* w, void* p)
 {
- 	string message = "Welcome to UberCasino!\n\nA list of available dealers and their numbers will appear.\nPlease enter the dealer number of the game you would like to enter.\nThen select a play mode from the drop down (Manual or one of our automatic modes).\nPress the START button when you have chosen a play mode and a valid dealer.";
-	char copy[message.length()+1];
-	strcpy(copy,message.c_str());
-	fl_message(copy);
+	fl_message("Welcome to UberCasino!\n\nA list of available dealers and their numbers will appear.\nPlease enter the dealer number of the game you would like to enter.\nThen select a play mode from the drop down (Manual or one of our automatic modes).\nPress the START button when you have chosen a play mode and a valid dealer.");
 }
 
+//callback for help button pushed to explain rules of Blackjack
 void howtoCB(Fl_Widget* w, void* p)
 {
- 	string message = "Rules of Blackjack:\nObtain a higher total than the dealer without exceeding 21.\nFace cards count as 10. Aces count as either 1 or 11.\nPress HIT to obtain another card.\nPress STAND to end your turn.\nPress DOUBLE to double your ante, obtain 1 more card, and end your turn.\n\nDealer must hit on any total below 17.\nHaving a Blackjack(A + value of 10) pays 1.5 times the ante.\nIf your total is higher than 21, you BUST and lose.\nIf your total is the same as the dealer, you PUSH and receive your ante back.\n\nENJOY YOUR GAME!";
-	char copy[message.length()+1];
-	strcpy(copy,message.c_str());
-	fl_message(copy);
+	fl_message("Rules of Blackjack:\nObtain a higher total than the dealer without exceeding 21.\nFace cards count as 10. Aces count as either 1 or 11.\nPress HIT to obtain another card.\nPress STAND to end your turn.\nPress DOUBLE to double your ante, obtain 1 more card, and end your turn.\n\nDealer must hit on any total below 17.\nHaving a Blackjack(A + value of 10) pays 1.5 times the ante.\nIf your total is higher than 21, you BUST and lose.\nIf your total is the same as the dealer, you PUSH and receive your ante back.\n\nENJOY YOUR GAME!");
 }
 
+//static callback to allow passing of player object
 void player::plusCB(Fl_Widget* w, void* p)
 {
 	player* o = (player*)p;
 	o->plusCB2(w);
 }
 
+//actual callback of pushing + button next to the ante
 void player::plusCB2(Fl_Widget* w)
 {
 	if(ante < (this->m_balance - 5))
@@ -199,12 +201,14 @@ void player::plusCB2(Fl_Widget* w)
 	o->value(c);
 }
 
+//callback to pass player object
 void player::minusCB(Fl_Widget* w, void* p)
 {
 	player* o = (player*)p;
 	o->minusCB2(w);
 }
 
+//actual callback subtracting from the ante
 void player::minusCB2(Fl_Widget* w)
 {
 	if(this->m_balance > 5)
@@ -217,6 +221,7 @@ void player::minusCB2(Fl_Widget* w)
 	o->value(c);
 }
 
+//callback to button that will create pop up of basic strategy table
 void player::strategyCB(Fl_Widget* w, void* p)
 {
 	Fl_Window* image_window = new Fl_Window(825,825,"Basic Strategy");
@@ -229,6 +234,7 @@ void player::strategyCB(Fl_Widget* w, void* p)
 	image_window->show();
 }
 
+//function to update the player's balance
 void player::update_bal()
 {
 	string bal = std::to_string(this->m_balance);
@@ -237,6 +243,7 @@ void player::update_bal()
 	p->value(d);
 }
 
+//function to update the player's hand total
 void player::update_total(int i)
 {
 	string bal = std::to_string(i);
@@ -282,7 +289,8 @@ void player::update_cards(UberCasino::card_t cards[], void* o)
 				case spades: display+="/S"; break;
 			}
 			char copy[display.length()+1]; //creating a char* out of a string
-			strcpy(copy,display.c_str());	
+			strncpy(copy,display.c_str(),display.length());
+			copy[display.length()]='\0';	
 			p->play_window->child(i)->copy_label(copy);
 		}
 		else
@@ -329,7 +337,8 @@ void player::update_dealer(UberCasino::card_t cards[], void* o)
 				case spades: display+="/S"; break;
 			}
 			char copy[display.length()+1];
-			strcpy(copy,display.c_str());	
+			strncpy(copy,display.c_str(),display.length());
+			copy[display.length()]='\0';	
 			p->play_window->child(i+10)->copy_label(copy);
 		}
 		else
@@ -343,7 +352,8 @@ void player::update_dealer(UberCasino::card_t cards[], void* o)
 void player::change_status(string s)
 {
 	char copy[s.length()+1];
-	strcpy(copy,s.c_str());
+	strncpy(copy,s.c_str(),s.length());
+	copy[s.length()] = '\0';
 	Fl_Output* o = (Fl_Output*)this->play_window->child(20);
 	o->value(copy);
 }
@@ -382,19 +392,6 @@ void delay_thread ( int seconds, std::function <void(void)> callback)
   // this routine is created as a posix thread.
   boost::this_thread::sleep_for(boost::chrono::seconds(seconds));
   callback ();
-}
-
-void player::lock ()
-{
-  // if this code is being used as part of an fltk program
-  // a lock may be needed.  The fltk lock or something
-  // like pthread_mutex() should work fine.
-  std::cout << "****************************************" << std::endl;
-}
-
-void player::unlock ()
-{
-  // see comments under the lock () method
 }
 
 std::string player::to_string ( player_state_t p ) //helper function to convert player state to string
@@ -567,7 +564,8 @@ void player::manage_state () //function for transitioning player between states
               std::cout << "Enter the Dealer # to join.." << std::endl;
 
 	      char copy[list.length()+1];
-	      strcpy(copy,list.c_str());
+	      strncpy(copy,list.c_str(),list.length());
+	      copy[list.length()] = '\0';
 	      Fl_Multiline_Output* o = (Fl_Multiline_Output*)this->start_window->child(0);
 	      o->value(copy);
             }
@@ -825,33 +823,27 @@ void player::timer_expired ( )
 {
    // this is called by the timer thread callback when the delay has expired
    // note: only one timer can be active at a time
-   lock ();
    m_timer_event = true;
    std::cout << "Timer event has been received " << std::endl;
    manage_state ();
-   unlock ();
 }
 
 void player::external_data (Player P)
 {
    // this is called when data is received
-   lock ();
    m_P = P;
    m_Player_recv = true;
    std::cout << "Player data has been received" << std::endl;
    manage_state ();
-   unlock ();
 }
 
 void player::external_data (Dealer D)
 {
    // this is called when data is received
-   lock ();
    m_D = D;
    m_Dealer_recv = true;
    std::cout << "Dealer data has been received" << std::endl;
    manage_state ();
-   unlock ();
 }
 
 void player::external_data (Game G)
@@ -863,7 +855,6 @@ void player::external_data (Game G)
    // they are mutually exclusive
    //     m_Game_recv      when the game uids match
    //     m_Game_recv_idx  when the game uids and the idx match
-   lock ();
 
    // first, the game needs to match   
    boost::uuids::uuid t;
@@ -902,23 +893,16 @@ void player::external_data (Game G)
       }
       manage_state ();
    }
-   else
-      // single player, this is a problem.  otherwise it is OK
-      // std::cout << "Game was ignored " << std::endl;
-
-   unlock ();
 }
 
 void player::user_input (std::string I)
 {
    // this is called when the user types in input
    // from the console.  any / all input is accepted
-   lock ();
    m_user_event_string = I;
    m_user_event = true;
    std::cout << "User input received" << std::endl;
    manage_state ();
-   unlock ();
 }
 
 void player::setName (std::string Name )
@@ -948,7 +932,7 @@ player::player ()
    Fl_Multiline_Output* dealer = new Fl_Multiline_Output(305,325,100,100,"List of Dealers"); //child 0
    dealer->value("");
 
-   Fl_Input* input = new Fl_Input(345,225,30,30,"Please enter a Dealer Number");
+   Fl_Input* input = new Fl_Input(345,225,30,30,"Please enter a Dealer Number"); //child 1
    input->value("");
    input->align(FL_ALIGN_TOP);
 

@@ -32,38 +32,12 @@ int main ( int argc, char* argv[] )
    memcpy ( P.m_P.uid, &uuid, sizeof ( P.m_P.uid ) );
    P.m_my_uid = uuid;
 
-/*processing to turn UUID into a string so that it can be displayed
-string tmp = boost::uuids::to_string(uuid);
-const char* id = tmp.c_str();
-string text = "The Player ID is: ";
-text += id;
-const char* text1 = text.c_str();*/
-
    //Main window for UberCasino
    P.start_window->show();
    return Fl::run();
-   //create player group
- /*  
-    Players = new FL_Group(150, 50, 800, 450);
-    {
-	Players->begin();
-	Fl_Pack *inputBoxes = new Fl_Pack(150, 50, 200, 400);
-	{
-		inputBoxes->begin();
-		Fl_Input *name = new Fl_Input(200, 200, 250, 25, "Player Name");
-
-		inputBoxes->end();
-	}
-	Fl_Button *NewPlayer = new Fl_Button(725, 400, 60, 30, "Join");
-	NewPlayer->callback(PlayerCB);
-
-
-    }
-    
-*/
 
    // a buffer to accept input
-   char line[100];
+/*   char line[100];
    // the main loop
    std::cout << "Enter 'q' to exit" << std::endl;
    std::cout << "-------------------------------------------" << std::endl;
@@ -72,7 +46,7 @@ const char* text1 = text.c_str();*/
      if (line[0] == 'q' ) break;
      P.user_input ( std::string (line) );
    }
-
+*/
 
 }
 
