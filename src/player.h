@@ -34,7 +34,11 @@ extern int player_mode;
 
 Fl_Double_Window* main_window();
 
-
+/*************************************************************
+*This class creates a gui for the player. It communicates    *
+*with the cLI Dealer and plays Blackjack by selecting a game *
+*type							     *
+**************************************************************/
 class player
 {
    private:

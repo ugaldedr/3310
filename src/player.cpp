@@ -960,6 +960,7 @@ player::player ()
    choice->add("Conservative");
    choice->add("Reckless");
    choice->add("Basic Strategy");
+   choice->value(0);
    
 
    ExitBut->callback(exitCB);
