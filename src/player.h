@@ -34,6 +34,7 @@ extern int player_mode;
 
 Fl_Double_Window* main_window();
 
+
 class player
 {
    private:
@@ -73,6 +74,8 @@ class player
       Game   m_G;
       Fl_Window* start_window;
       Fl_Window* play_window;
+      Fl_Button* plusbutton;
+      Fl_Button* minusbutton;
 
       void setName (std::string);
       // There are 3 possible inputs to the dealer

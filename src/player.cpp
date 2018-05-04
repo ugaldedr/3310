@@ -146,11 +146,11 @@ void player::startCB2(Fl_Widget* w)
 	this->start_window->hide();
 	this->play_window->show();
 }
-
 //callback for hit button
 void hitCB(Fl_Widget* w, void* p)
 {
 	decision = 1;
+	
 }
 
 //callback for stand button
@@ -243,6 +243,8 @@ void player::update_total(int i)
 	const char* d = bal.c_str();
 	Fl_Output* p = (Fl_Output*)this->play_window->child(30);
 	p->value(d);
+	this->plusbutton->deactivate();
+	this->minusbutton->deactivate();
 }
 
 //function for updating card values in the GUI
@@ -1109,12 +1111,12 @@ player::player ()
    double_button->callback(doubleCB);
 
 //Ante changing buttons and display
-   Fl_Button* plus = new Fl_Button(1100,310,25,25,"+"); //child 27
-   plus->box(FL_THIN_UP_BOX);
-   plus->callback(plusCB,this);
-   Fl_Button* minus = new Fl_Button(1025,310,25,25,"-"); //child 28
-   minus->box(FL_THIN_UP_BOX);
-   minus->callback(minusCB,this);
+   plusbutton = new Fl_Button(1100,310,25,25,"+"); //child 27
+   plusbutton->box(FL_THIN_UP_BOX);
+   plusbutton->callback(plusCB,this);
+   minusbutton = new Fl_Button(1025,310,25,25,"-"); //child 28
+   minusbutton->box(FL_THIN_UP_BOX);
+   minusbutton->callback(minusCB,this);
    Fl_Output* ante_display = new Fl_Output(1050,310,50,25,"Ante"); //child 29
    ante_display->align(FL_ALIGN_TOP);
    ante_display->box(FL_BORDER_BOX);
