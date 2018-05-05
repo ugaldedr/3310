@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <assert.h>
 
 
 #include <boost/thread.hpp>
@@ -21,8 +22,6 @@
 #include <FL/Fl_Box.H>
 #include <FL/Fl_Value_Output.H>
 #include <FL/Fl_Counter.H>
-#include <FL/Fl_Repeat_Button.H>
-#include <FL/Fl_Slider.H>
 #include <FL/Fl_Input_Choice.H>
 #include <Fl/Fl_Int_Input.H>
 #include <Fl/Fl_Multiline_Output.H>
@@ -36,7 +35,7 @@ Fl_Double_Window* main_window();
 
 /*************************************************************
 *This class creates a gui for the player. It communicates    *
-*with the cLI Dealer and plays Blackjack by selecting a game *
+*with the cli Dealer and plays Blackjack by selecting a game *
 *type							     *
 **************************************************************/
 class player

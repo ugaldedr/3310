@@ -120,6 +120,7 @@ void player::startCB2(Fl_Widget* w)
 //display player's name in next window
 	string player_name = this->m_P.name;
 	char copy2[player_name.length()+1];
+	assert(copy2);
 	strncpy(copy2,player_name.c_str(),player_name.length());
 	copy2[player_name.length()] = '\0';
 	this->play_window->child(21)->copy_label(copy2);
@@ -130,6 +131,7 @@ void player::startCB2(Fl_Widget* w)
 		int num = stoi(copy);
 		string deal_name = this->m_dealer_list[num].name;
 		char copy1[deal_name.length()+1];
+		assert(copy1);
 		strncpy(copy1,deal_name.c_str(),deal_name.length());
 		copy1[deal_name.length()]='\0';
 		this->play_window->child(22)->copy_label(copy1);
@@ -289,6 +291,7 @@ void player::update_cards(UberCasino::card_t cards[], void* o)
 				case spades: display+="/S"; break;
 			}
 			char copy[display.length()+1]; //creating a char* out of a string
+			assert(copy);
 			strncpy(copy,display.c_str(),display.length());
 			copy[display.length()]='\0';	
 			p->play_window->child(i)->copy_label(copy);
@@ -337,6 +340,7 @@ void player::update_dealer(UberCasino::card_t cards[], void* o)
 				case spades: display+="/S"; break;
 			}
 			char copy[display.length()+1];
+			assert(copy);
 			strncpy(copy,display.c_str(),display.length());
 			copy[display.length()]='\0';	
 			p->play_window->child(i+10)->copy_label(copy);
@@ -352,6 +356,7 @@ void player::update_dealer(UberCasino::card_t cards[], void* o)
 void player::change_status(string s)
 {
 	char copy[s.length()+1];
+	assert(copy);
 	strncpy(copy,s.c_str(),s.length());
 	copy[s.length()] = '\0';
 	Fl_Output* o = (Fl_Output*)this->play_window->child(20);
@@ -564,6 +569,7 @@ void player::manage_state () //function for transitioning player between states
               std::cout << "Enter the Dealer # to join.." << std::endl;
 
 	      char copy[list.length()+1];
+	      assert(copy);
 	      strncpy(copy,list.c_str(),list.length());
 	      copy[list.length()] = '\0';
 	      Fl_Multiline_Output* o = (Fl_Multiline_Output*)this->start_window->child(0);
@@ -598,6 +604,8 @@ void player::manage_state () //function for transitioning player between states
 	    update_dealer(m_G.dealer_cards,this);
 	    update_total(value);
             std::cout << "The value of my hand is "<< value << std::endl;
+	    assert(ante > 0);
+	    assert(ante <= m_balance);
 
 //if hand value is 21 or above
 	if(value >= 21)
@@ -635,6 +643,7 @@ void player::manage_state () //function for transitioning player between states
 			ante*=2;
 			decision = 0;
 		}
+		assert(player_mode == 1);
 		p_io->publish(m_P);
 	}
 //conservative mode(automatic)
@@ -653,6 +662,7 @@ void player::manage_state () //function for transitioning player between states
 			change_status("I can't bust. Hit!");
                		m_P.A = hitting;
             	}
+		assert(player_mode==2);
             	p_io->publish  ( m_P ); //publish to dealer
          }
 //reckless mode (automatic)
@@ -678,6 +688,7 @@ void player::manage_state () //function for transitioning player between states
 			change_status("Looks like a winner! Stand.");
 			m_P.A = standing;
 	   	}
+		assert(player_mode==3);
 		p_io->publish (m_P); //publish to dealer
 	}
 //basic strategy mode (automatic)
@@ -741,6 +752,7 @@ void player::manage_state () //function for transitioning player between states
 			change_status("This is probably good enough. Stand.");
 			m_P.A = standing;
 		}
+		assert(player_mode==4);
 		p_io->publish (m_P); //publish to dealer
 	 }
          }
@@ -753,6 +765,7 @@ void player::manage_state () //function for transitioning player between states
 std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
             if  ( m_G.gstate == end_hand ) 
             {
+	      assert(m_balance >=10);
               std::cout << "The dealer says end of hand." << std::endl; 
               // calculate win or lose
 	      cout<< "Dealer's Hand:\n";
