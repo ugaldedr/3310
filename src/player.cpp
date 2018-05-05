@@ -85,6 +85,7 @@ void choiceCB(Fl_Widget* w, void* p)
     //Game type selection
      if(type == 0)	//manual mode
 	{
+	cout << "MANUAL MODE SELECTED\n\n\n";
 	  player_mode = 1;
 	}
      else if (type == 1) //Conservative mode
@@ -213,7 +214,7 @@ void player::minusCB(Fl_Widget* w, void* p)
 //actual callback subtracting from the ante
 void player::minusCB2(Fl_Widget* w)
 {
-	if(this->m_balance > 5)
+	if(ante > 5)
 	{
 		ante-=5;
 	}
@@ -252,8 +253,6 @@ void player::update_total(int i)
 	const char* d = bal.c_str();
 	Fl_Output* p = (Fl_Output*)this->play_window->child(30);
 	p->value(d);
-	this->plusbutton->deactivate();
-	this->minusbutton->deactivate();
 }
 
 //function for updating card values in the GUI
@@ -373,7 +372,17 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
       {
          switch ( cards[i].card ) //switch case to increase total based on face value of card
          {
-            case ace: if(total >=11){total=total+1;cout<<"ace(1)\n";}else{total=total+11;cout<<"ace(11)\n";}break; //ace is 1 only when hand is > 11, otherwise ace = 11
+            case ace: if(total >=11)
+			{
+				total=total+1;
+				cout<<"ace(1)\n";
+			}
+			else
+			{
+				total=total+11;
+				cout<<"ace(11)\n";
+			}
+			break; //ace is 1 only when hand is > 11, otherwise ace = 11
             case two: total=total+2;cout<<"two\n";break;
             case three: total=total+3;cout<<"three\n";break;
             case four: total=total+4;cout<<"four\n";break;
@@ -388,6 +397,35 @@ unsigned int Hand_Value ( UberCasino::card_t cards[] )
             case king: total=total+10;cout<<"king\n";break;
          }
       }
+   }
+//secondary calculation if player has busted, to see if any Aces can be reduced to 1 to prevent busting
+   if(total > 21)
+   {
+	total = 0;
+   	for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the possible cards
+   	{
+      		if ( cards[i].valid ) //check only valid cards
+      		{
+         		switch ( cards[i].card ) //switch case to increase total based on face value of card
+         		{
+           		 	case ace: total=total+1;cout<<"ace(1)\n";break; //count aces as 1, see if total goes lower than 21
+            			case two: total=total+2;cout<<"two\n";break;
+            			case three: total=total+3;cout<<"three\n";break;
+            			case four: total=total+4;cout<<"four\n";break;
+            			case five: total=total+5;cout<<"five\n";break;
+            			case six: total=total+6;cout<<"six\n";break;
+            			case seven: total=total+7;cout<<"seven\n";break;
+            			case eight: total=total+8;cout<<"eight\n";break;
+            			case nine: total=total+9;cout<<"nine\n";break;
+            			case ten: total=total+10;cout<<"ten\n";break;
+            			case jack: total=total+10;cout<<"jack\n";break;
+            			case queen: total=total+10;cout<<"queen\n";break;
+            			case king: total=total+10;cout<<"king\n";break;
+         		}
+      		}
+
+
+   	}
    }
    return total; //return the calculated hand total
 }
@@ -600,10 +638,17 @@ void player::manage_state () //function for transitioning player between states
             std::cout << "Playing: Entry " << std::endl;
 #endif
             unsigned int value = Hand_Value ( m_G.p[m_G.active_player].cards ); //calculate the value of your hand
+
+//update GUI
 	    update_cards(m_G.p[m_G.active_player].cards,this);
 	    update_dealer(m_G.dealer_cards,this);
 	    update_total(value);
             std::cout << "The value of my hand is "<< value << std::endl;
+
+	//Player should not be able to change ante in the middle of the hand
+	    this->plusbutton->deactivate();
+	    this->minusbutton->deactivate();
+	    
 	    assert(ante > 0);
 	    assert(ante <= m_balance);
 
@@ -641,6 +686,12 @@ void player::manage_state () //function for transitioning player between states
 			change_status("Double Down!");
 			m_P.A = doubling;
 			ante*=2;
+
+			string bet = std::to_string(ante); //update ante display to show new bet amount
+			const char* c =bet.c_str();
+			Fl_Output* o = (Fl_Output*)this->play_window->child(29);
+			o->value(c);
+
 			decision = 0;
 		}
 		assert(player_mode == 1);
@@ -674,6 +725,12 @@ void player::manage_state () //function for transitioning player between states
 			std::cout << "Double it!" <<std::endl;
 			change_status("I can win twice! Double Down!");
 			ante*=2;
+
+			string bet = std::to_string(ante); //update ante display to show new bet amount
+			const char* c =bet.c_str();
+			Fl_Output* o = (Fl_Output*)this->play_window->child(29);
+			o->value(c);
+
 			m_P.A = doubling;
 	 	}
 		if(value < 21)
@@ -738,6 +795,12 @@ void player::manage_state () //function for transitioning player between states
 			cout << "Doubling Down!\n";
 			change_status("I have a good chance. Double Down!");
 			ante*=2;
+
+			string bet = std::to_string(ante); //update ante display to show new bet amount
+			const char* c =bet.c_str();
+			Fl_Output* o = (Fl_Output*)this->play_window->child(29);
+			o->value(c);
+
 			m_P.A = doubling;
 		}
 		else if(choice == "Hit")
@@ -774,15 +837,36 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
               // calculate the hand value
               cout<< "Player's cards: \n";
               int player_points = Hand_Value ( m_G.p[m_G.active_player].cards );
+
+	      //update GUI to show final player cards
+	      update_cards(m_G.p[m_G.active_player].cards,this);
+	      update_total(player_points);
               std::cout << "Dealer has " << dealer_points << " Player has " << player_points << std::endl;
-              if(player_points > 21)//if player busts
+
+	      //check hand size for potential of blackjack
+	      int hand_size = 0;
+	      for (unsigned int i=0; i< UberCasino::MAX_CARDS_PER_PLAYER;i++) //iterate through all of the possible cards
+   	      {
+      	 	if ( m_G.p[m_G.active_player].cards[i].valid) //check only valid cards
+      		{
+			hand_size+=1;
+		}
+	      }
+
+	      if(player_points == 21 && hand_size == 2) //player has a blackjack, pays out 1.5
+	      {
+		 change_status("Winner! Winner! Chicken Dinner!");
+		 m_balance = m_balance + 1.5 * ante;
+		 update_bal();
+	      }
+              else if(player_points > 21)//if player busts
 	      {
 		 cout << "Dealer Wins" << endl;
 		 change_status("I busted. Dealer wins.");
 		 m_balance = m_balance - ante;
 		 update_bal();
 	      }
-              else if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points < 21) ) ) //if dealer has busted but player has not, player wins
+              else if ( dealer_points > 21 || ( (player_points > dealer_points) && (player_points <= 21) ) ) //if dealer has busted but player has not, player wins
               {
                  std::cout << "Player Wins" << std::endl;
 		 change_status("Dealer busted! I win.");
@@ -804,8 +888,12 @@ std::cout << "the state is " << (int)  m_G.gstate  << std::endl;
 
               if (m_balance > 10.0 )              
 	      {
+
+		//allow Player to change their ante after the hand ends
+		 this->plusbutton->activate();
+		 this->minusbutton->activate();
                  // this is just a way to start the next hand
-                 TIMER(3);
+                 TIMER(5);
               }
               else
               {
